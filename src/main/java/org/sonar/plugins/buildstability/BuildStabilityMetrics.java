@@ -29,15 +29,15 @@ import java.util.List;
  * @author Evgeny Mandrikov
  */
 public class BuildStabilityMetrics implements Metrics {
-  public static final String DOMAIN_BUILD = "Build";
+  public static final String DOMAIN_BUILD = "Continuous integration";
 
   /**
    * Number of successful builds.
    */
   public static final Metric SUCCESSFUL = new Metric(
-      "successful",
+      "build_successes",
       "Successful Builds",
-      "Successful Builds",
+      "Number of successful builds",
       Metric.ValueType.INT,
       Metric.DIRECTION_BETTER,
       false,
@@ -48,9 +48,9 @@ public class BuildStabilityMetrics implements Metrics {
    * Number of failed builds.
    */
   public static final Metric FAILED = new Metric(
-      "failed",
+      "build_failures",
       "Failed Builds",
-      "Failed Builds",
+      "Number of failed builds",
       Metric.ValueType.INT,
       Metric.DIRECTION_WORST,
       false,
@@ -58,13 +58,12 @@ public class BuildStabilityMetrics implements Metrics {
   );
 
   /**
-   * Success rate of the CI build of the project on Hudson (measured as
-   * percentage of successful Hudson builds out of last 10 build)
+   * Ratio of successful builds. Measured as percentage of successful builds out of all last builds.
    */
   public static final Metric SUCCESS_RATE = new Metric(
-      "success_rate", // key
-      "Success Rate", // name
-      "Success Rate", // description
+      "build_success_density", // key
+      "Success Rate (%)", // name
+      "Ratio of successful builds", // description
       Metric.ValueType.PERCENT,
       Metric.DIRECTION_BETTER,
       false,
@@ -75,9 +74,9 @@ public class BuildStabilityMetrics implements Metrics {
    * Build average duration.
    */
   public static final Metric AVG_DURATION = new Metric(
-      "avg_duration",
-      "Avg Duration",
-      "Avg Duration",
+      "build_average_duration",
+      "Average Duration",
+      "Average Duration",
       Metric.ValueType.MILLISEC,
       Metric.DIRECTION_WORST,
       false,

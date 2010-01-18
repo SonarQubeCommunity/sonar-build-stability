@@ -32,7 +32,7 @@ import java.util.List;
         key = BuildStabilitySensor.BUILDS_PROPERTY,
         defaultValue = BuildStabilitySensor.BUILDS_DEFAULT_VALUE + "",
         name = "Builds",
-        description = "",
+        description = "Number of builds to analyze.",
         project = true,
         module = true,
         global = true
@@ -41,19 +41,19 @@ import java.util.List;
         key = BuildStabilitySensor.USERNAME_PROPERTY,
         defaultValue = "",
         name = "Username",
-        description = "",
+        description = "Username to connect with Continuous Integration Server. Leave blank for anonymous.",
         project = true,
         module = true,
-        global = false
+        global = true
     ),
     @Property(
         key = BuildStabilitySensor.PASSWORD_PROPERTY,
         defaultValue = "",
         name = "Password",
-        description = "",
+        description = "Password to connect with Continuous Integration Server. Leave blank for anonymous.",
         project = true,
         module = true,
-        global = false
+        global = true
     )
 })
 public class BuildStabilityPlugin implements Plugin {
@@ -68,7 +68,8 @@ public class BuildStabilityPlugin implements Plugin {
   }
 
   public String getDescription() {
-    return "Generates reports based on information about builds from Continuous Integration System.";
+    return "Generates reports based on information about builds from Continuous Integration System " +
+        "(supports <a href='http://hudson-ci.org/'>Hudson</a> and <a href='http://www.atlassian.com/software/bamboo'>Bamboo</a>).";
   }
 
   public List<Class<? extends Extension>> getExtensions() {

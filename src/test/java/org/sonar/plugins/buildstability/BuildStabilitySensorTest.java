@@ -61,13 +61,16 @@ public class BuildStabilitySensorTest {
   public void testAnalyse() throws Exception {
     BuildStabilitySensor sensor = spy(this.sensor);
     Project project = mock(Project.class);
-    CiConnector connector = mock(CiConnector.class);
+    MavenProject mavenProject = mock(MavenProject.class);
+    when(mavenProject.getCiManagement()).thenReturn(new CiManagement());
+    when(project.getPom()).thenReturn(mavenProject);
     when(project.getConfiguration()).thenReturn(new BaseConfiguration());
+    CiConnector connector = mock(CiConnector.class);
     when(connector.getBuilds(25)).thenReturn(Arrays.asList(
         new Build(1, "Fake", true, 10),
         new Build(2, "Fake", false, 4)
     ));
-    Mockito.doReturn(connector).when(sensor).getConnector(project);
+    Mockito.doReturn(connector).when(sensor).getConnector((String) any(), (String) any(), (String) any(), (String) any());
     SensorContext context = mock(SensorContext.class);
 
     sensor.analyse(project, context);

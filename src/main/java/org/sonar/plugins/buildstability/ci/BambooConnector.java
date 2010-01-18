@@ -18,8 +18,10 @@ package org.sonar.plugins.buildstability.ci;
 
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +49,7 @@ public class BambooConnector extends AbstractCiConnector {
   }
 
   @Override
-  public List<Build> getBuilds(int count) throws Exception {
+  public List<Build> getBuilds(int count) throws IOException, DocumentException {
     List<Build> builds = new ArrayList<Build>();
     Document dom = executeMethod(new GetMethod(getUri(base, key, count)));
     List<Element> buildsElem = dom.getRootElement().element("builds").elements("build");

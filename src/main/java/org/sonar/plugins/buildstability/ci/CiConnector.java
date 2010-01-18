@@ -16,11 +16,14 @@
 
 package org.sonar.plugins.buildstability.ci;
 
+import org.dom4j.DocumentException;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
  * @author Evgeny Mandrikov
  */
 public interface CiConnector {
-  List<Build> getBuilds(int count) throws Exception;
+  List<Build> getBuilds(int count) throws IOException, DocumentException;
 }

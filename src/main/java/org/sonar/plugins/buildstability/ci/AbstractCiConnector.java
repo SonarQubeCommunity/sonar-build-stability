@@ -44,7 +44,7 @@ public abstract class AbstractCiConnector implements CiConnector {
     }
   }
 
-  public List<Build> getBuilds(int count) throws Exception {
+  public List<Build> getBuilds(int count) throws IOException, DocumentException {
     throw new RuntimeException("Not implemented");
   }
 

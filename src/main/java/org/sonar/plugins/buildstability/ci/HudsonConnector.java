@@ -18,8 +18,10 @@ package org.sonar.plugins.buildstability.ci;
 
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class HudsonConnector extends AbstractCiConnector {
   }
 
   @Override
-  public List<Build> getBuilds(int count) throws Exception {
+  public List<Build> getBuilds(int count) throws IOException, DocumentException {
     List<Build> builds = new ArrayList<Build>();
     Build last = getBuild(url, "lastBuild");
     builds.add(last);
@@ -49,7 +51,7 @@ public class HudsonConnector extends AbstractCiConnector {
     return builds;
   }
 
-  private Build getBuild(String job, String number) throws Exception {
+  private Build getBuild(String job, String number) throws IOException, DocumentException {
     GetMethod method = new GetMethod(job + "/" + number + "/api/xml/");
     Document dom = executeMethod(method);
     Element root = dom.getRootElement();

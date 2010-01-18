@@ -43,43 +43,50 @@ public class BuildStabilitySensor implements Sensor {
 
   public void analyse(Project project, SensorContext context) {
     Logger logger = LoggerFactory.getLogger(getClass());
+    CiManagement ciManagement = project.getPom().getCiManagement();
+    String system = ciManagement.getSystem();
+    String url = ciManagement.getUrl();
+    String username = project.getConfiguration().getString(USERNAME_PROPERTY);
+    String password = project.getConfiguration().getString(PASSWORD_PROPERTY);
+    CiConnector connector = getConnector(system, url, username, password);
+    if (connector == null) {
+      logger.warn("Unknown CiManagement system: {}", system);
+      return;
+    }
+    int buildsToRetrieve = project.getConfiguration().getInt(BUILDS_PROPERTY, BUILDS_DEFAULT_VALUE);
+    List<Build> builds;
     try {
-      CiConnector connector = getConnector(project);
-      if (connector == null) {
-        return;
-      }
-
-      int buildsToRetrieve = project.getConfiguration().getInt(BUILDS_PROPERTY, BUILDS_DEFAULT_VALUE);
-      List<Build> builds = connector.getBuilds(buildsToRetrieve);
-      double successful = 0;
-      double failed = 0;
-      double duration = 0;
-      for (Build build : builds) {
-        if (build.isSuccessfull()) {
-          successful++;
-        } else {
-          failed++;
-        }
-        duration += build.getDuration();
-      }
-
-      double count = successful + failed;
-      double avgDuration = duration / count;
-      double sucessRate = successful / count * 100;
-      context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESSFUL, successful));
-      context.saveMeasure(new Measure(BuildStabilityMetrics.FAILED, failed));
-      context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESS_RATE, sucessRate));
-      context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
+      builds = connector.getBuilds(buildsToRetrieve);
     } catch (Exception e) {
       logger.error(e.getMessage(), e);
+      return;
     }
+    analyze(context, builds);
   }
 
-  protected CiConnector getConnector(Project project) {
-    String system = project.getPom().getCiManagement().getSystem();
-    String url = project.getPom().getCiManagement().getUrl();
-    String username = (String) project.getProperty(USERNAME_PROPERTY);
-    String password = (String) project.getProperty(PASSWORD_PROPERTY);
+  private void analyze(SensorContext context, List<Build> builds) {
+    double successful = 0;
+    double failed = 0;
+    double duration = 0;
+    for (Build build : builds) {
+      if (build.isSuccessfull()) {
+        successful++;
+      } else {
+        failed++;
+      }
+      duration += build.getDuration();
+    }
+
+    double count = successful + failed;
+    double avgDuration = duration / count;
+    double sucessRate = successful / count * 100;
+    context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESSFUL, successful));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.FAILED, failed));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESS_RATE, sucessRate));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
+  }
+
+  protected CiConnector getConnector(String system, String url, String username, String password) {
     if (BambooConnector.SYSTEM.equalsIgnoreCase(system)) {
       return new BambooConnector(url, username, password);
     } else if (HudsonConnector.SYSTEM.equals(system)) {
@@ -87,7 +94,6 @@ public class BuildStabilitySensor implements Sensor {
     } else if (TeamCityConnector.SYSTEM.equalsIgnoreCase(system)) {
       return new TeamCityConnector(url, username, password);
     } else {
-      LoggerFactory.getLogger(getClass()).warn("Unknown CiManagement system: " + system);
       return null;
     }
   }
