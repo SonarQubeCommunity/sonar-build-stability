@@ -1,0 +1,26 @@
+<% if measure('success_rate') %>
+  <div class="yui-gd">
+    <div class="yui-u first">
+      <div class="dashbox">
+        <h3>Build success</h3>
+
+        <p>
+          <span class="big"><%= format_measure('success_rate', :suffix => '') %> <%= tendency_icon('success_rate', false) %></span>
+        </p>
+
+        <p><%= format_measure('successful', :suffix => ' successful') %> <%= tendency_icon('successful') %></p>
+
+        <p><%= format_measure('failed', :suffix => ' failed') %> <%= tendency_icon('failed') %></p>
+      </div>
+    </div>
+    <div class="yui-u">
+      <div class="dashbox">
+        <h3>Average duration</h3>
+
+        <p>
+          <span class="big"><%= format_measure('avg_duration', :suffix => '') %> <%= tendency_icon('avg_duration', false) %></span>
+        </p>
+      </div>
+    </div>
+  </div>
+<% end %>
