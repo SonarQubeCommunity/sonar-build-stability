@@ -54,6 +54,15 @@ import java.util.List;
         project = true,
         module = true,
         global = true
+    ),
+    @Property(
+        key = BuildStabilitySensor.USE_JSECURITYCHECK_PROPERTY,
+        defaultValue = BuildStabilitySensor.USE_JSECURITYCHECK_DEFAULT_VALUE + "",
+        name = "Use j_security_check",
+        description = "Set this property to true, if your Hudson delegates security to servlet container",
+        project = true,
+        module = true,
+        global = true
     )
 })
 public class BuildStabilityPlugin implements Plugin {

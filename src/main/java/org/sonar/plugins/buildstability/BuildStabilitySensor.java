@@ -35,6 +35,8 @@ public class BuildStabilitySensor implements Sensor {
   public static final int BUILDS_DEFAULT_VALUE = 25;
   public static final String USERNAME_PROPERTY = "sonar.build-stability.username";
   public static final String PASSWORD_PROPERTY = "sonar.build-stability.password";
+  public static final String USE_JSECURITYCHECK_PROPERTY = "sonar.build-stability.use_jsecuritycheck";
+  public static final boolean USE_JSECURITYCHECK_DEFAULT_VALUE = false;
 
   public boolean shouldExecuteOnProject(Project project) {
     CiManagement ci = project.getPom().getCiManagement();
@@ -48,7 +50,8 @@ public class BuildStabilitySensor implements Sensor {
     String url = ciManagement.getUrl();
     String username = project.getConfiguration().getString(USERNAME_PROPERTY);
     String password = project.getConfiguration().getString(PASSWORD_PROPERTY);
-    CiConnector connector = getConnector(system, url, username, password);
+    boolean useJSecurityCheck = project.getConfiguration().getBoolean(USE_JSECURITYCHECK_PROPERTY, USE_JSECURITYCHECK_DEFAULT_VALUE);
+    CiConnector connector = getConnector(system, url, username, password, useJSecurityCheck);
     if (connector == null) {
       logger.warn("Unknown CiManagement system: {}", system);
       return;
@@ -86,11 +89,11 @@ public class BuildStabilitySensor implements Sensor {
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
   }
 
-  protected CiConnector getConnector(String system, String url, String username, String password) {
+  protected CiConnector getConnector(String system, String url, String username, String password, boolean useJSecurityCheck) {
     if (BambooConnector.SYSTEM.equalsIgnoreCase(system)) {
       return new BambooConnector(url, username, password);
     } else if (HudsonConnector.SYSTEM.equals(system)) {
-      return new HudsonConnector(url, username, password);
+      return new HudsonConnector(url, username, password, useJSecurityCheck);
     } else if (TeamCityConnector.SYSTEM.equalsIgnoreCase(system)) {
       return new TeamCityConnector(url, username, password);
     } else {

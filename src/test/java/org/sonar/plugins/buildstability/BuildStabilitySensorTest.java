@@ -70,7 +70,13 @@ public class BuildStabilitySensorTest {
         new Build(1, "Fake", true, 10),
         new Build(2, "Fake", false, 4)
     ));
-    Mockito.doReturn(connector).when(sensor).getConnector((String) any(), (String) any(), (String) any(), (String) any());
+    Mockito.doReturn(connector).when(sensor).getConnector(
+        anyString(),
+        anyString(),
+        anyString(),
+        anyString(),
+        anyBoolean()
+    );
     SensorContext context = mock(SensorContext.class);
 
     sensor.analyse(project, context);

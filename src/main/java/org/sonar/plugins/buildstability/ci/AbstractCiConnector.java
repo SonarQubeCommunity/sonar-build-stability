@@ -33,9 +33,13 @@ import java.util.List;
  * @author Evgeny Mandrikov
  */
 public abstract class AbstractCiConnector implements CiConnector {
+  private String username;
+  private String password;
   private HttpClient client;
 
   protected AbstractCiConnector(String username, String password) {
+    this.username = username;
+    this.password = password;
     client = new HttpClient();
     if (!StringUtils.isBlank(username) && !StringUtils.isBlank(password)) {
       client.getParams().setAuthenticationPreemptive(true);
@@ -54,5 +58,17 @@ public abstract class AbstractCiConnector implements CiConnector {
       throw new IOException("Unexpected status code: " + method.getStatusCode());
     }
     return new SAXReader().read(method.getResponseBodyAsStream());
+  }
+
+  protected HttpClient getClient() {
+    return client;
+  }
+
+  protected String getUsername() {
+    return username;
+  }
+
+  protected String getPassword() {
+    return password;
   }
 }
