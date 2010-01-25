@@ -64,25 +64,25 @@ public class BuildStabilitySensor implements Sensor {
       logger.error(e.getMessage(), e);
       return;
     }
-    analyze(context, builds);
+    analyseBuilds(builds, context);
   }
 
-  private void analyze(SensorContext context, List<Build> builds) {
+  protected void analyseBuilds(List<Build> builds, SensorContext context) {
     double successful = 0;
     double failed = 0;
     double duration = 0;
     for (Build build : builds) {
       if (build.isSuccessfull()) {
         successful++;
+        duration += build.getDuration();
       } else {
         failed++;
       }
-      duration += build.getDuration();
     }
 
     double count = successful + failed;
-    double avgDuration = duration / count;
-    double sucessRate = successful / count * 100;
+    double avgDuration = successful != 0 ? duration / successful : 0;
+    double sucessRate = count != 0 ? successful / count * 100 : 0;
     context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESSFUL, successful));
     context.saveMeasure(new Measure(BuildStabilityMetrics.FAILED, failed));
     context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESS_RATE, sucessRate));

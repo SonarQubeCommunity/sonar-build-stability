@@ -71,7 +71,7 @@ public class BuildStabilityMetrics implements Metrics {
   );
 
   /**
-   * Build average duration.
+   * Build average duration. Includes only duration of successful builds.
    */
   public static final Metric AVG_DURATION = new Metric(
       "build_average_duration",
