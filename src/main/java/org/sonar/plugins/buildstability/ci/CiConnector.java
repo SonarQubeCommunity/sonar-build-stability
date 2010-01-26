@@ -90,7 +90,7 @@ public class CiConnector {
     try {
       return new SAXReader().read(method.getResponseBodyAsStream());
     } catch (DocumentException e) {
-      throw new IOException(e);
+      throw new RuntimeException(e);
     }
   }
 
