@@ -19,10 +19,5 @@ package org.sonar.plugins.buildstability.ci;
 /**
  * @author Evgeny Mandrikov
  */
-public class TeamCityConnector extends AbstractCiConnector {
-  public static final String SYSTEM = "TeamCity";
-
-  public TeamCityConnector(String url, String username, String password) {
-    super(username, password);
-  }
+public interface Model {
 }

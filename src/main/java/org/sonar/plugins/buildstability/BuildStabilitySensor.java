@@ -23,16 +23,19 @@ import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.Project;
-import org.sonar.plugins.buildstability.ci.*;
+import org.sonar.plugins.buildstability.ci.Build;
+import org.sonar.plugins.buildstability.ci.CiConnector;
+import org.sonar.plugins.buildstability.ci.CiFactory;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
  * @author Evgeny Mandrikov
  */
 public class BuildStabilitySensor implements Sensor {
-  public static final String BUILDS_PROPERTY = "sonar.build-stability.builds";
-  public static final int BUILDS_DEFAULT_VALUE = 25;
+  public static final String DAYS_PROPERTY = "sonar.build-stability.days";
+  public static final int DAYS_DEFAULT_VALUE = 30;
   public static final String USERNAME_PROPERTY = "sonar.build-stability.username";
   public static final String PASSWORD_PROPERTY = "sonar.build-stability.password";
   public static final String USE_JSECURITYCHECK_PROPERTY = "sonar.build-stability.use_jsecuritycheck";
@@ -51,15 +54,17 @@ public class BuildStabilitySensor implements Sensor {
     String username = project.getConfiguration().getString(USERNAME_PROPERTY);
     String password = project.getConfiguration().getString(PASSWORD_PROPERTY);
     boolean useJSecurityCheck = project.getConfiguration().getBoolean(USE_JSECURITYCHECK_PROPERTY, USE_JSECURITYCHECK_DEFAULT_VALUE);
-    CiConnector connector = getConnector(system, url, username, password, useJSecurityCheck);
+    CiConnector connector = CiFactory.create(system, url, username, password, useJSecurityCheck);
     if (connector == null) {
       logger.warn("Unknown CiManagement system: {}", system);
       return;
     }
-    int buildsToRetrieve = project.getConfiguration().getInt(BUILDS_PROPERTY, BUILDS_DEFAULT_VALUE);
+    int daysToRetrieve = project.getConfiguration().getInt(DAYS_PROPERTY, DAYS_DEFAULT_VALUE);
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.DAY_OF_MONTH, daysToRetrieve);
     List<Build> builds;
     try {
-      builds = connector.getBuilds(buildsToRetrieve);
+      builds = connector.getBuildsSince(calendar.getTime());
     } catch (Exception e) {
       logger.error(e.getMessage(), e);
       return;
@@ -75,7 +80,7 @@ public class BuildStabilitySensor implements Sensor {
     double longest = Double.NEGATIVE_INFINITY;
     for (Build build : builds) {
       double buildDuration = build.getDuration();
-      if (build.isSuccessfull()) {
+      if (build.isSuccessful()) {
         successful++;
         duration += buildDuration;
         shortest = Math.min(shortest, buildDuration);
@@ -100,17 +105,5 @@ public class BuildStabilitySensor implements Sensor {
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
     context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_DURATION, longest));
     context.saveMeasure(new Measure(BuildStabilityMetrics.SHORTEST_DURATION, shortest));
-  }
-
-  protected CiConnector getConnector(String system, String url, String username, String password, boolean useJSecurityCheck) {
-    if (BambooConnector.SYSTEM.equalsIgnoreCase(system)) {
-      return new BambooConnector(url, username, password);
-    } else if (HudsonConnector.SYSTEM.equals(system)) {
-      return new HudsonConnector(url, username, password, useJSecurityCheck);
-    } else if (TeamCityConnector.SYSTEM.equalsIgnoreCase(system)) {
-      return new TeamCityConnector(url, username, password);
-    } else {
-      return null;
-    }
   }
 }

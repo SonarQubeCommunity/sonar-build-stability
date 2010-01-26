@@ -29,10 +29,10 @@ import java.util.List;
  */
 @Properties({
     @Property(
-        key = BuildStabilitySensor.BUILDS_PROPERTY,
-        defaultValue = BuildStabilitySensor.BUILDS_DEFAULT_VALUE + "",
-        name = "Builds",
-        description = "Number of builds to analyze.",
+        key = BuildStabilitySensor.DAYS_PROPERTY,
+        defaultValue = BuildStabilitySensor.DAYS_DEFAULT_VALUE + "",
+        name = "Days",
+        description = "Number of days to analyze.",
         project = true,
         module = true,
         global = true

@@ -18,50 +18,98 @@ package org.sonar.plugins.buildstability.ci;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.util.Date;
+
 /**
  * @author Evgeny Mandrikov
  */
-public class Build {
-  private final int number;
-  private final String result;
-  private final boolean successfull;
-  private final double duration;
+public class Build implements Model {
+  /**
+   * Build number.
+   */
+  private int number;
 
   /**
-   * @param number      build number
-   * @param result      build result
-   * @param successfull true, if build successfulls
-   * @param duration    build duration in millisec
+   * Build result.
    */
-  public Build(int number, String result, boolean successfull, double duration) {
+  private String result;
+
+  /**
+   * True, if build successfull.
+   */
+  private boolean successful;
+
+  /**
+   * Build duration in millisec.
+   */
+  private double duration;
+
+  /**
+   * Build timestamp.
+   */
+  private long timestamp;
+
+  public Build(int number, String result, boolean successful, double duration) {
     this.number = number;
     this.result = result;
-    this.successfull = successfull;
+    this.successful = successful;
     this.duration = duration;
+  }
+
+  public Build() {
   }
 
   public int getNumber() {
     return number;
   }
 
+  public void setNumber(int number) {
+    this.number = number;
+  }
+
   public String getResult() {
     return result;
   }
 
-  public boolean isSuccessfull() {
-    return successfull;
+  public void setResult(String result) {
+    this.result = result;
+  }
+
+  public boolean isSuccessful() {
+    return successful;
+  }
+
+  public void setSuccessful(boolean successful) {
+    this.successful = successful;
   }
 
   public double getDuration() {
     return duration;
   }
 
+  public void setDuration(double duration) {
+    this.duration = duration;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
+  }
+
+  public Date getDate() {
+    return new Date(timestamp);
+  }
+
+  public void setTimestamp(long timestamp) {
+    this.timestamp = timestamp;
+  }
+
   @Override
   public String toString() {
     return new ToStringBuilder(this).
         append("number", number).
+        append("timestamp", timestamp).
         append("result", result).
-        append("successfull", successfull).
+        append("successful", successful).
         append("duration", duration).
         toString();
   }
