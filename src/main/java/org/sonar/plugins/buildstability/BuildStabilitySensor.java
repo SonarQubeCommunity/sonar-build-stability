@@ -61,7 +61,7 @@ public class BuildStabilitySensor implements Sensor {
     }
     int daysToRetrieve = project.getConfiguration().getInt(DAYS_PROPERTY, DAYS_DEFAULT_VALUE);
     Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_MONTH, daysToRetrieve);
+    calendar.add(Calendar.DAY_OF_MONTH, -daysToRetrieve);
     List<Build> builds;
     try {
       builds = connector.getBuildsSince(calendar.getTime());

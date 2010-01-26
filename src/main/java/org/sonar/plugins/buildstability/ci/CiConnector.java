@@ -42,11 +42,17 @@ public class CiConnector {
 
   protected Build getLastBuild() throws IOException {
     Document dom = executeGetMethod(server.getLastBuildUrl());
+    if (dom == null) {
+      return null;
+    }
     return server.getBuildUnmarshaller().toModel(dom.getRootElement());
   }
 
   protected Build getBuild(String number) throws IOException {
     Document dom = executeGetMethod(server.getBuildUrl(number));
+    if (dom == null) {
+      return null;
+    }
     return server.getBuildUnmarshaller().toModel(dom.getRootElement());
   }
 
@@ -74,6 +80,9 @@ public class CiConnector {
       builds.add(last);
       number--;
       last = getBuild(number);
+      if (last == null) {
+        break;
+      }
     }
     return builds;
   }
@@ -84,6 +93,9 @@ public class CiConnector {
 
   protected Document executeMethod(GetMethod method) throws IOException {
     client.executeMethod(method);
+    if (method.getStatusCode() == 404) {
+      return null;
+    }
     if (method.getStatusCode() != 200) {
       throw new IOException("Unexpected status code: " + method.getStatusCode());
     }
