@@ -64,16 +64,18 @@ public class BuildStabilitySensorTest {
     List<Build> builds = Arrays.asList(
         new Build(1, "Fake", true, 10),
         new Build(2, "Fake", false, 4),
-        new Build(3, "Fake", true, 4),
-        new Build(4, "Fake", true, 4)
+        new Build(3, "Fake", true, 3),
+        new Build(4, "Fake", true, 5)
     );
 
     sensor.analyseBuilds(builds, context);
 
-    Mockito.verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.SUCCESSFUL, 3.0))));
+    Mockito.verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.BUILDS, 4.0))));
     Mockito.verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.FAILED, 1.0))));
     Mockito.verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.SUCCESS_RATE, 75.0))));
     Mockito.verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 6.0))));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 3.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
   }
 
   @Test
@@ -85,10 +87,12 @@ public class BuildStabilitySensorTest {
 
     sensor.analyseBuilds(builds, context);
 
-    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SUCCESSFUL, 0.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.BUILDS, 1.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.FAILED, 1.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SUCCESS_RATE, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 0.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 0.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 0.0)));
   }
 
   @Test
@@ -100,10 +104,12 @@ public class BuildStabilitySensorTest {
 
     sensor.analyseBuilds(builds, context);
 
-    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SUCCESSFUL, 1.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.BUILDS, 1.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.FAILED, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SUCCESS_RATE, 100.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 10.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 10.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
   }
 
   @Test
@@ -113,9 +119,11 @@ public class BuildStabilitySensorTest {
 
     sensor.analyseBuilds(builds, context);
 
-    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SUCCESSFUL, 0.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.BUILDS, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.FAILED, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SUCCESS_RATE, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 0.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 0.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 0.0)));
   }
 }

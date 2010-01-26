@@ -1,9 +1,11 @@
 <%
+   builds_measure = measure('builds')
    success_rate_measure = measure('build_success_density')
-   average_duration_measure = measure('build_average_duration')
-   successfull_measure = measure('build_successes')
    failed_measure = measure('build_failures')
-   if success_rate_measure
+   average_duration_measure = measure('build_average_duration')
+   longest_duration_measure = measure('build_longest_duration')
+   shortest_duration_measure = measure('build_shortest_duration')
+   if builds_measure
 %>
   <div class="yui-gd">
     <div class="yui-u first">
@@ -14,17 +16,29 @@
           <span class="big"><%= format_measure(success_rate_measure, :suffix => '') %> <%= tendency_icon(success_rate_measure, false) %></span>
         </p>
 
-        <p><%= format_measure(successfull_measure, :suffix => ' successful') %> <%= tendency_icon(successfull_measure) %></p>
+        <p>
+          <%= format_measure(builds_measure, :suffix => ' builds') %> <%= tendency_icon(builds_measure) %>
+        </p>
 
-        <p><%= format_measure(failed_measure, :suffix => ' failed') %> <%= tendency_icon(failed_measure) %></p>
+        <p>
+          <%= format_measure(failed_measure, :suffix => ' failed') %> <%= tendency_icon(failed_measure) %>
+        </p>
       </div>
     </div>
     <div class="yui-u">
       <div class="dashbox">
-        <h3>Average duration</h3>
+        <h3>Average duration of successful builds</h3>
 
         <p>
           <span class="big"><%= format_measure(average_duration_measure, :suffix => '') %> <%= tendency_icon(average_duration_measure, false) %></span>
+        </p>
+
+        <p>
+          <%= format_measure(longest_duration_measure, :prefix => 'Longest successful build ') %> <%= tendency_icon(longest_duration_measure) %>
+        </p>
+
+        <p>
+          <%= format_measure(shortest_duration_measure, :prefix => 'Shortest successful build ') %> <%= tendency_icon(shortest_duration_measure) %>
         </p>
       </div>
     </div>

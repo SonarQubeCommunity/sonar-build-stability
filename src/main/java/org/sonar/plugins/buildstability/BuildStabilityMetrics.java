@@ -32,14 +32,14 @@ public class BuildStabilityMetrics implements Metrics {
   public static final String DOMAIN_BUILD = "Continuous integration";
 
   /**
-   * Number of successful builds.
+   * Number of builds.
    */
-  public static final Metric SUCCESSFUL = new Metric(
-      "build_successes",
-      "Successful Builds",
-      "Number of successful builds",
+  public static final Metric BUILDS = new Metric(
+      "builds",
+      "Builds",
+      "Number of builds",
       Metric.ValueType.INT,
-      Metric.DIRECTION_BETTER,
+      Metric.DIRECTION_NONE,
       false,
       DOMAIN_BUILD
   );
@@ -83,12 +83,40 @@ public class BuildStabilityMetrics implements Metrics {
       DOMAIN_BUILD
   );
 
+  /**
+   * Duration of longest successful build.
+   */
+  public static final Metric LONGEST_DURATION = new Metric(
+      "build_longest_duration",
+      "Longest duration",
+      "Duration of longest successful build",
+      Metric.ValueType.MILLISEC,
+      Metric.DIRECTION_NONE, // TODO
+      false,
+      DOMAIN_BUILD
+  );
+
+  /**
+   * Duration of shortest successful build.
+   */
+  public static final Metric SHORTEST_DURATION = new Metric(
+      "build_shortest_duration",
+      "Shortest duration",
+      "Duration of shortest successful build",
+      Metric.ValueType.MILLISEC,
+      Metric.DIRECTION_NONE, // TODO
+      false,
+      DOMAIN_BUILD
+  );
+
   public List<Metric> getMetrics() {
     return Arrays.asList(
-        SUCCESSFUL,
+        BUILDS,
         FAILED,
         SUCCESS_RATE,
-        AVG_DURATION
+        AVG_DURATION,
+        LONGEST_DURATION,
+        SHORTEST_DURATION
     );
   }
 }

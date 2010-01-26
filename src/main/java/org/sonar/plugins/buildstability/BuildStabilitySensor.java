@@ -71,10 +71,15 @@ public class BuildStabilitySensor implements Sensor {
     double successful = 0;
     double failed = 0;
     double duration = 0;
+    double shortest = Double.POSITIVE_INFINITY;
+    double longest = Double.NEGATIVE_INFINITY;
     for (Build build : builds) {
+      double buildDuration = build.getDuration();
       if (build.isSuccessfull()) {
         successful++;
-        duration += build.getDuration();
+        duration += buildDuration;
+        shortest = Math.min(shortest, buildDuration);
+        longest = Math.max(longest, buildDuration);
       } else {
         failed++;
       }
@@ -83,10 +88,18 @@ public class BuildStabilitySensor implements Sensor {
     double count = successful + failed;
     double avgDuration = successful != 0 ? duration / successful : 0;
     double sucessRate = count != 0 ? successful / count * 100 : 0;
-    context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESSFUL, successful));
+    if (Double.isInfinite(longest)) {
+      longest = 0;
+    }
+    if (Double.isInfinite(shortest)) {
+      shortest = 0;
+    }
+    context.saveMeasure(new Measure(BuildStabilityMetrics.BUILDS, count));
     context.saveMeasure(new Measure(BuildStabilityMetrics.FAILED, failed));
     context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESS_RATE, sucessRate));
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_DURATION, longest));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.SHORTEST_DURATION, shortest));
   }
 
   protected CiConnector getConnector(String system, String url, String username, String password, boolean useJSecurityCheck) {
