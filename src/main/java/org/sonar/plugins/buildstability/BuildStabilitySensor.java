@@ -16,12 +16,14 @@
 
 package org.sonar.plugins.buildstability;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.CiManagement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.Measure;
+import org.sonar.api.measures.PropertiesBuilder;
 import org.sonar.api.resources.Project;
 import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.CiConnector;
@@ -36,27 +38,37 @@ import java.util.List;
 public class BuildStabilitySensor implements Sensor {
   public static final String DAYS_PROPERTY = "sonar.build-stability.days";
   public static final int DAYS_DEFAULT_VALUE = 30;
-  public static final String USERNAME_PROPERTY = "sonar.build-stability.username";
-  public static final String PASSWORD_PROPERTY = "sonar.build-stability.password";
+  public static final String USERNAME_PROPERTY = "sonar.build-stability.username.secured";
+  public static final String PASSWORD_PROPERTY = "sonar.build-stability.password.secured";
   public static final String USE_JSECURITYCHECK_PROPERTY = "sonar.build-stability.use_jsecuritycheck";
   public static final boolean USE_JSECURITYCHECK_DEFAULT_VALUE = false;
+  public static final String CI_URL_PROPERTY = "sonar.build-stability.url";
 
   public boolean shouldExecuteOnProject(Project project) {
+    return StringUtils.isNotEmpty(getCiUrl(project));
+  }
+
+  protected String getCiUrl(Project project) {
+    String url = project.getConfiguration().getString(CI_URL_PROPERTY);
+    if (StringUtils.isNotEmpty(url)) {
+      return url;
+    }
     CiManagement ci = project.getPom().getCiManagement();
-    return ci != null;
+    if (ci != null && StringUtils.isNotEmpty(ci.getSystem()) && StringUtils.isNotEmpty(ci.getUrl())) {
+      return ci.getSystem() + ":" + ci.getUrl();
+    }
+    return null;
   }
 
   public void analyse(Project project, SensorContext context) {
     Logger logger = LoggerFactory.getLogger(getClass());
-    CiManagement ciManagement = project.getPom().getCiManagement();
-    String system = ciManagement.getSystem();
-    String url = ciManagement.getUrl();
+    String ciUrl = getCiUrl(project);
     String username = project.getConfiguration().getString(USERNAME_PROPERTY);
     String password = project.getConfiguration().getString(PASSWORD_PROPERTY);
     boolean useJSecurityCheck = project.getConfiguration().getBoolean(USE_JSECURITYCHECK_PROPERTY, USE_JSECURITYCHECK_DEFAULT_VALUE);
-    CiConnector connector = CiFactory.create(system, url, username, password, useJSecurityCheck);
+    CiConnector connector = CiFactory.create(ciUrl, username, password, useJSecurityCheck);
     if (connector == null) {
-      logger.warn("Unknown CiManagement system: {}", system);
+      logger.warn("Unknown CiManagement system: {}", ciUrl);
       return;
     }
     int daysToRetrieve = project.getConfiguration().getInt(DAYS_PROPERTY, DAYS_DEFAULT_VALUE);
@@ -73,13 +85,22 @@ public class BuildStabilitySensor implements Sensor {
   }
 
   protected void analyseBuilds(List<Build> builds, SensorContext context) {
+    Logger logger = LoggerFactory.getLogger(getClass());
+
+    PropertiesBuilder<Integer, Double> durationsBuilder = new PropertiesBuilder<Integer, Double>(BuildStabilityMetrics.DURATIONS);
+    PropertiesBuilder<Integer, String> resultsBuilder = new PropertiesBuilder<Integer, String>(BuildStabilityMetrics.RESULTS);
+
     double successful = 0;
     double failed = 0;
     double duration = 0;
     double shortest = Double.POSITIVE_INFINITY;
     double longest = Double.NEGATIVE_INFINITY;
     for (Build build : builds) {
+      logger.info(build.toString());
+      int buildNumber = build.getNumber();
       double buildDuration = build.getDuration();
+      resultsBuilder.add(buildNumber, build.isSuccessful() ? "t" : "f");
+      durationsBuilder.add(buildNumber, buildDuration);
       if (build.isSuccessful()) {
         successful++;
         duration += buildDuration;
@@ -105,5 +126,9 @@ public class BuildStabilitySensor implements Sensor {
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
     context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_DURATION, longest));
     context.saveMeasure(new Measure(BuildStabilityMetrics.SHORTEST_DURATION, shortest));
+    Measure durations = durationsBuilder.build();
+    logger.info("Durations: " + durations.getData());
+    context.saveMeasure(durations);
+//    context.saveMeasure(resultsBuilder.build());
   }
 }

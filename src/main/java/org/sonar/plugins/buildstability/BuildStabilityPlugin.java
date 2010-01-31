@@ -38,6 +38,15 @@ import java.util.List;
         global = true
     ),
     @Property(
+        key = BuildStabilitySensor.CI_URL_PROPERTY,
+        defaultValue = "",
+        name = "Url", // TODO
+        description = "",
+        project = true,
+        module = true,
+        global = true
+    ),
+    @Property(
         key = BuildStabilitySensor.USERNAME_PROPERTY,
         defaultValue = "",
         name = "Username",
@@ -85,7 +94,8 @@ public class BuildStabilityPlugin implements Plugin {
     return Arrays.asList(
         BuildStabilityMetrics.class,
         BuildStabilitySensor.class,
-        BuildStabilityWidget.class
+        BuildStabilityWidget.class,
+        BuildStabilityChart.class
     );
   }
 }

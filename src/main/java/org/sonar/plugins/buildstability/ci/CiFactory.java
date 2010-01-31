@@ -16,6 +16,7 @@
 
 package org.sonar.plugins.buildstability.ci;
 
+import org.apache.commons.lang.StringUtils;
 import org.sonar.plugins.buildstability.ci.bamboo.BambooServer;
 import org.sonar.plugins.buildstability.ci.hudson.HudsonServer;
 
@@ -29,13 +30,25 @@ public final class CiFactory {
   private CiFactory() {
   }
 
+  public static String getSystem(String ciUrl) {
+    return StringUtils.substringBefore(ciUrl, ":");
+  }
+
+  public static String getUrl(String ciUrl) {
+    return StringUtils.substringAfter(ciUrl, ":");
+  }
+
+  public static CiConnector create(String ciUrl, String username, String password, boolean useJSecurityCheck) {
+    return create(getSystem(ciUrl), getUrl(ciUrl), username, password, useJSecurityCheck);
+  }
+
   public static CiConnector create(String system, String url, String username, String password, boolean useJSecurityCheck) {
     AbstractServer server;
     String pattern;
-    if (BambooServer.SYSTEM.equals(system)) {
+    if (BambooServer.SYSTEM.equalsIgnoreCase(system)) {
       server = new BambooServer();
       pattern = BambooServer.PATTERN;
-    } else if (HudsonServer.SYSTEM.equals(system)) {
+    } else if (HudsonServer.SYSTEM.equalsIgnoreCase(system)) {
       server = new HudsonServer();
       ((HudsonServer) server).setUseJSecurityCheck(useJSecurityCheck);
       pattern = HudsonServer.PATTERN;

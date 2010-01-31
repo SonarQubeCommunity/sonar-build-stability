@@ -109,6 +109,26 @@ public class BuildStabilityMetrics implements Metrics {
       DOMAIN_BUILD
   );
 
+  public static final Metric DURATIONS = new Metric(
+      "build_durations",
+      "Durations",
+      "Durations",
+      Metric.ValueType.DATA,
+      Metric.DIRECTION_NONE,
+      false,
+      DOMAIN_BUILD
+  );
+
+  public static final Metric RESULTS = new Metric(
+      "build_results",
+      "Results",
+      "Results",
+      Metric.ValueType.DATA,
+      Metric.DIRECTION_NONE,
+      false,
+      DOMAIN_BUILD
+  );
+
   public List<Metric> getMetrics() {
     return Arrays.asList(
         BUILDS,
@@ -116,7 +136,9 @@ public class BuildStabilityMetrics implements Metrics {
         SUCCESS_RATE,
         AVG_DURATION,
         LONGEST_DURATION,
-        SHORTEST_DURATION
+        SHORTEST_DURATION,
+        DURATIONS
+//        RESULTS
     );
   }
 }

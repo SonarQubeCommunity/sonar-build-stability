@@ -16,6 +16,7 @@
 
 package org.sonar.plugins.buildstability;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.maven.model.CiManagement;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
@@ -51,10 +52,17 @@ public class BuildStabilitySensorTest {
   public void testShouldExecuteOnProject() throws Exception {
     Project project = mock(Project.class);
     MavenProject mavenProject = mock(MavenProject.class);
-    when(mavenProject.getCiManagement()).thenReturn(null, new CiManagement());
+    CiManagement ciManagement = new CiManagement();
+    ciManagement.setSystem("Hudson");
+    ciManagement.setUrl("http://localhost");
+    Configuration configuration = mock(Configuration.class);
+    when(configuration.getString(BuildStabilitySensor.CI_URL_PROPERTY)).thenReturn(null, "Hudson:http://localhost");
+    when(project.getConfiguration()).thenReturn(configuration);
+    when(mavenProject.getCiManagement()).thenReturn(null, null, ciManagement);
     when(project.getPom()).thenReturn(mavenProject);
 
     assertFalse(sensor.shouldExecuteOnProject(project));
+    assertTrue(sensor.shouldExecuteOnProject(project));
     assertTrue(sensor.shouldExecuteOnProject(project));
   }
 
@@ -76,6 +84,7 @@ public class BuildStabilitySensorTest {
     Mockito.verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 6.0))));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 3.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=10.0;2=4.0;3=3.0;4=5.0")));
   }
 
   @Test
@@ -93,6 +102,7 @@ public class BuildStabilitySensorTest {
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 0.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=10.0")));
   }
 
   @Test
@@ -110,6 +120,7 @@ public class BuildStabilitySensorTest {
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 10.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 10.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=10.0")));
   }
 
   @Test
@@ -125,5 +136,6 @@ public class BuildStabilitySensorTest {
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 0.0)));
     Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 0.0)));
+    Mockito.verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "")));
   }
 }

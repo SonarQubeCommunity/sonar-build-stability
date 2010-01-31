@@ -34,6 +34,6 @@ public class BuildStabilityPluginTest {
 
   @Test
   public void testGetExtensions() throws Exception {
-    assertEquals(plugin.getExtensions().size(), 3);
+    assertEquals(plugin.getExtensions().size(), 4);
   }
 }
