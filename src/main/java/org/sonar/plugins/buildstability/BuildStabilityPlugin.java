@@ -44,7 +44,7 @@ import java.util.List;
         description = "",
         project = true,
         module = true,
-        global = true
+        global = false
     ),
     @Property(
         key = BuildStabilitySensor.USERNAME_PROPERTY,
