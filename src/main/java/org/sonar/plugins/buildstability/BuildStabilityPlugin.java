@@ -40,8 +40,10 @@ import java.util.List;
     @Property(
         key = BuildStabilitySensor.CI_URL_PROPERTY,
         defaultValue = "",
-        name = "Url", // TODO
-        description = "",
+        name = "CiManagement",
+        description = "Continuous Integration Server. Leave blank to take this value from <i>pom.xml</i>. Example:" +
+            "<i>Hudson:http://hudson.glassfish.org/job/hudson/</i>" +
+            "or <i>Bamboo:http://ci.codehaus.org/browse/SONAR</i>",
         project = true,
         module = true,
         global = false
