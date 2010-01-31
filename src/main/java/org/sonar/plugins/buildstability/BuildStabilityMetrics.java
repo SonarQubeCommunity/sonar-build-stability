@@ -109,6 +109,9 @@ public class BuildStabilityMetrics implements Metrics {
       DOMAIN_BUILD
   );
 
+  /**
+   * TODO comment me (seconds)
+   */
   public static final Metric DURATIONS = new Metric(
       "build_durations",
       "Durations",
@@ -137,8 +140,8 @@ public class BuildStabilityMetrics implements Metrics {
         AVG_DURATION,
         LONGEST_DURATION,
         SHORTEST_DURATION,
-        DURATIONS
-//        RESULTS
+        DURATIONS,
+        RESULTS
     );
   }
 }

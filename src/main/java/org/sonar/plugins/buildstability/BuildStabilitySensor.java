@@ -96,11 +96,12 @@ public class BuildStabilitySensor implements Sensor {
     double shortest = Double.POSITIVE_INFINITY;
     double longest = Double.NEGATIVE_INFINITY;
     for (Build build : builds) {
-      logger.info(build.toString());
+      logger.debug(build.toString());
+
       int buildNumber = build.getNumber();
       double buildDuration = build.getDuration();
-      resultsBuilder.add(buildNumber, build.isSuccessful() ? "t" : "f");
-      durationsBuilder.add(buildNumber, buildDuration);
+      resultsBuilder.add(buildNumber, build.isSuccessful() ? "g" : "r");
+      durationsBuilder.add(buildNumber, buildDuration / 1000);
       if (build.isSuccessful()) {
         successful++;
         duration += buildDuration;
@@ -126,9 +127,9 @@ public class BuildStabilitySensor implements Sensor {
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
     context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_DURATION, longest));
     context.saveMeasure(new Measure(BuildStabilityMetrics.SHORTEST_DURATION, shortest));
-    Measure durations = durationsBuilder.build();
-    logger.info("Durations: " + durations.getData());
-    context.saveMeasure(durations);
-//    context.saveMeasure(resultsBuilder.build());
+    if (builds.size() > 0) {
+      context.saveMeasure(durationsBuilder.build());
+      context.saveMeasure(resultsBuilder.build());
+    }
   }
 }

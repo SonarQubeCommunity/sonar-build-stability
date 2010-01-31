@@ -74,7 +74,7 @@ public class BuildStabilityChart extends AbstractChart {
 
     Font font = getFont(params.getValue(PARAM_FONT_SIZE));
     configureDomainAxis(plot, font);
-    configureRangeAxis(plot, "ms", font);
+    configureRangeAxis(plot, "s", font);
     configureRenderer(plot, params.getValue(PARAM_COLORS, "", true));
     configureValues(dataset, params.getValue(PARAM_VALUES, "", true));
 
@@ -103,7 +103,7 @@ public class BuildStabilityChart extends AbstractChart {
     ArrayList<Paint> paints = new ArrayList<Paint>();
     for (String pair : pairs) {
       String[] keyValue = StringUtils.split(pair, "=");
-      paints.add("t".equals(keyValue[1]) ? Color.GREEN : Color.RED);
+      paints.add("r".equals(keyValue[1]) ? Color.RED : Color.GREEN);
     }
 
     renderer.setColors(paints.toArray(new Paint[paints.size()]));

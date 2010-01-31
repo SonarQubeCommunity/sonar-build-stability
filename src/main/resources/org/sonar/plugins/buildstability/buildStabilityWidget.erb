@@ -5,6 +5,8 @@
    average_duration_measure = measure('build_average_duration')
    longest_duration_measure = measure('build_longest_duration')
    shortest_duration_measure = measure('build_shortest_duration')
+   durations_measure = measure('build_durations')
+   results_measure = measure('build_results')
    if builds_measure
 %>
   <div class="yui-gd">
@@ -42,5 +44,10 @@
         </p>
       </div>
     </div>
+    <% if durations_measure && results_measure %>
+      <div>
+        <%= chart('ck=buildsbar&w=350&h=200&v=' + durations_measure.data + '&c=' + results_measure.data) %>
+      </div>
+    <% end %>
   </div>
 <% end %>

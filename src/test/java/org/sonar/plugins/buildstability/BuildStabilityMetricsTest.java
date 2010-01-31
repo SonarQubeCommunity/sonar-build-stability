@@ -34,6 +34,6 @@ public class BuildStabilityMetricsTest {
 
   @Test
   public void testGetMetrics() throws Exception {
-    assertEquals(metrics.getMetrics().size(), 7);
+    assertEquals(metrics.getMetrics().size(), 8);
   }
 }
