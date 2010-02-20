@@ -66,16 +66,16 @@ public class BuildStabilitySensor implements Sensor {
     String username = project.getConfiguration().getString(USERNAME_PROPERTY);
     String password = project.getConfiguration().getString(PASSWORD_PROPERTY);
     boolean useJSecurityCheck = project.getConfiguration().getBoolean(USE_JSECURITYCHECK_PROPERTY, USE_JSECURITYCHECK_DEFAULT_VALUE);
-    CiConnector connector = CiFactory.create(ciUrl, username, password, useJSecurityCheck);
-    if (connector == null) {
-      logger.warn("Unknown CiManagement system: {}", ciUrl);
-      return;
-    }
-    int daysToRetrieve = project.getConfiguration().getInt(DAYS_PROPERTY, DAYS_DEFAULT_VALUE);
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_MONTH, -daysToRetrieve);
     List<Build> builds;
     try {
+      CiConnector connector = CiFactory.create(ciUrl, username, password, useJSecurityCheck);
+      if (connector == null) {
+        logger.warn("Unknown CiManagement system: {}", ciUrl);
+        return;
+      }
+      int daysToRetrieve = project.getConfiguration().getInt(DAYS_PROPERTY, DAYS_DEFAULT_VALUE);
+      Calendar calendar = Calendar.getInstance();
+      calendar.add(Calendar.DAY_OF_MONTH, -daysToRetrieve);
       builds = connector.getBuildsSince(calendar.getTime());
     } catch (Exception e) {
       logger.error(e.getMessage(), e);
