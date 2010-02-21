@@ -18,7 +18,6 @@ package org.sonar.plugins.buildstability;
 
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
@@ -38,6 +37,7 @@ public class BuildStabilityChart extends AbstractChart {
   private static final String FONT_NAME = "SansSerif";
   private static final String PARAM_VALUES = "v";
   private static final String PARAM_COLORS = "c";
+  private static final String PARAM_DAYS = "d";
   private static final String PARAM_FONT_SIZE = "fs";
 
   public String getKey() {
@@ -73,7 +73,7 @@ public class BuildStabilityChart extends AbstractChart {
     CategoryPlot plot = new CategoryPlot();
 
     Font font = getFont(params.getValue(PARAM_FONT_SIZE));
-    configureDomainAxis(plot, font);
+    configureDomainAxis(plot, params.getValue(PARAM_DAYS));
     configureRangeAxis(plot, "s", font);
     configureRenderer(plot, params.getValue(PARAM_COLORS, "", true));
     configureValues(dataset, params.getValue(PARAM_VALUES, "", true));
@@ -113,13 +113,12 @@ public class BuildStabilityChart extends AbstractChart {
     plot.setRenderer(renderer);
   }
 
-  private void configureDomainAxis(CategoryPlot plot, Font font) {
+  private void configureDomainAxis(CategoryPlot plot, String days) {
     CategoryAxis categoryAxis = new CategoryAxis();
-    categoryAxis.setCategoryMargin(0);
-    categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-    categoryAxis.setTickMarksVisible(true);
-    categoryAxis.setTickLabelFont(font);
-    categoryAxis.setTickLabelPaint(OUTLINE_COLOR);
+    if (!StringUtils.isBlank(days)) {
+      categoryAxis.setLabel("Last " + days + " days");
+    }
+    categoryAxis.setTickLabelsVisible(false);
     plot.setDomainAxis(categoryAxis);
     plot.setDomainGridlinesVisible(false);
   }
