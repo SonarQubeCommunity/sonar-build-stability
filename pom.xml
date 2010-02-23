@@ -7,7 +7,7 @@
   </parent>
 
   <artifactId>sonar-build-stability-plugin</artifactId>
-  <version>0.2-SNAPSHOT</version>
+  <version>1.0</version>
   <name>Sonar Build Stability Plugin</name>
 
   <inceptionYear>2010</inceptionYear>
@@ -118,9 +118,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/trunk/build-stability</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/build-stability</developerConnection>
-    <url>http://svn.sonar-plugins.codehaus.org</url>
+    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.0</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.0</developerConnection>
+    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.0</url>
   </scm>
 
   <issueManagement>
