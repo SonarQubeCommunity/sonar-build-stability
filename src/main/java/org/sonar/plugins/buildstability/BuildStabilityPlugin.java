@@ -42,8 +42,8 @@ import java.util.List;
         defaultValue = "",
         name = "CiManagement",
         description = "Continuous Integration Server. Leave blank to take this value from <i>pom.xml</i>. Example:" +
-            "<i>Hudson:http://hudson.glassfish.org/job/hudson/</i>" +
-            "or <i>Bamboo:http://ci.codehaus.org/browse/SONAR</i>",
+            "\"Hudson:http://hudson.glassfish.org/job/hudson/\"" +
+            "or \"Bamboo:http://ci.codehaus.org/browse/SONAR\".",
         project = true,
         module = true,
         global = false
