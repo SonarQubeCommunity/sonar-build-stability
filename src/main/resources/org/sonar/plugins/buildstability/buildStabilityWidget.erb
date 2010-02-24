@@ -46,7 +46,7 @@
     </div>
     <% if durations_measure && results_measure %>
       <div>
-        <%= chart('ck=buildsbar&w=350&h=200&v=' + durations_measure.data + '&c=' + results_measure.data + '&d=' + configuration('sonar.build-stability.days', '30')) %>
+        <%= chart('ck=buildsbar&w=350&h=200&v=' + durations_measure.data + '&c=' + results_measure.data) %>
       </div>
     <% end %>
   </div>

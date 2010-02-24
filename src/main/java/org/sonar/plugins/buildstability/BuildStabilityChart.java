@@ -37,7 +37,7 @@ public class BuildStabilityChart extends AbstractChart {
   private static final String FONT_NAME = "SansSerif";
   private static final String PARAM_VALUES = "v";
   private static final String PARAM_COLORS = "c";
-  private static final String PARAM_DAYS = "d";
+//  private static final String PARAM_DAYS = "d";
   private static final String PARAM_FONT_SIZE = "fs";
 
   public String getKey() {
@@ -73,7 +73,9 @@ public class BuildStabilityChart extends AbstractChart {
     CategoryPlot plot = new CategoryPlot();
 
     Font font = getFont(params.getValue(PARAM_FONT_SIZE));
-    configureDomainAxis(plot, params.getValue(PARAM_DAYS));
+    // TODO see SONARPLUGINS-379
+//    configureDomainAxis(plot, params.getValue(PARAM_DAYS));
+    configureDomainAxis(plot, "");
     configureRangeAxis(plot, "s", font);
     configureRenderer(plot, params.getValue(PARAM_COLORS, "", true));
     configureValues(dataset, params.getValue(PARAM_VALUES, "", true));
