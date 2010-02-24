@@ -16,6 +16,7 @@
 
 package org.sonar.plugins.buildstability;
 
+import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.maven.model.CiManagement;
 import org.apache.maven.project.MavenProject;
@@ -30,8 +31,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 
@@ -44,6 +45,22 @@ public class BuildStabilitySensorTest {
   @Before
   public void setUp() throws Exception {
     sensor = new BuildStabilitySensor();
+  }
+
+  @Test
+  public void urlInConfigurationTakesPrecedence() throws Exception {
+    MavenProject mavenProject = new MavenProject();
+    CiManagement ciManagement = new CiManagement();
+    ciManagement.setSystem("Hudson");
+    ciManagement.setUrl("pom");
+    mavenProject.setCiManagement(ciManagement);
+    Configuration configuration = new BaseConfiguration();
+    configuration.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:conf");
+    Project project = mock(Project.class);
+    when(project.getPom()).thenReturn(mavenProject);
+    when(project.getConfiguration()).thenReturn(configuration);
+
+    assertThat(sensor.getCiUrl(project), is("Hudson:conf"));
   }
 
   @Test
