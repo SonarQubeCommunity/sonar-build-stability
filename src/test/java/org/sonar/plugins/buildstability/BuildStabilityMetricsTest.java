@@ -19,7 +19,8 @@ package org.sonar.plugins.buildstability;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Evgeny Mandrikov
@@ -34,6 +35,6 @@ public class BuildStabilityMetricsTest {
 
   @Test
   public void testGetMetrics() throws Exception {
-    assertEquals(metrics.getMetrics().size(), 8);
+    assertThat(metrics.getMetrics().size(), is(9));
   }
 }

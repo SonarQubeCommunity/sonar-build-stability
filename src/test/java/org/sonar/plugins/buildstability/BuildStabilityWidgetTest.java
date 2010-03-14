@@ -18,8 +18,7 @@ package org.sonar.plugins.buildstability;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -29,6 +28,6 @@ public class BuildStabilityWidgetTest {
   @Test
   public void testGetTemplatePath() {
     String path = new BuildStabilityWidget().getTemplatePath();
-    assertThat(getClass().getResource(path), not(nullValue()));
+    assertThat(getClass().getResource(path), notNullValue());
   }
 }
