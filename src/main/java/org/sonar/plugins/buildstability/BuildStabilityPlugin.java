@@ -33,9 +33,9 @@ import java.util.List;
         defaultValue = BuildStabilitySensor.DAYS_DEFAULT_VALUE + "",
         name = "Days",
         description = "Number of days to analyze.",
+        global = true,
         project = true,
-        module = true,
-        global = true
+        module = false
     ),
     @Property(
         key = BuildStabilitySensor.CI_URL_PROPERTY,
@@ -44,36 +44,36 @@ import java.util.List;
         description = "Continuous Integration Server. Leave blank to take this value from <i>pom.xml</i>. Example:" +
             "\"Hudson:http://hudson.glassfish.org/job/hudson/\"" +
             "or \"Bamboo:http://ci.codehaus.org/browse/SONAR\".",
+        global = false,
         project = true,
-        module = true,
-        global = false
+        module = false
     ),
     @Property(
         key = BuildStabilitySensor.USERNAME_PROPERTY,
         defaultValue = "",
         name = "Username",
         description = "Username to connect with Continuous Integration Server. Leave blank for anonymous.",
+        global = true,
         project = true,
-        module = true,
-        global = true
+        module = false
     ),
     @Property(
         key = BuildStabilitySensor.PASSWORD_PROPERTY,
         defaultValue = "",
         name = "Password",
         description = "Password to connect with Continuous Integration Server. Leave blank for anonymous.",
+        global = true,
         project = true,
-        module = true,
-        global = true
+        module = false
     ),
     @Property(
         key = BuildStabilitySensor.USE_JSECURITYCHECK_PROPERTY,
         defaultValue = BuildStabilitySensor.USE_JSECURITYCHECK_DEFAULT_VALUE + "",
         name = "Use j_security_check",
         description = "Set this property to true, if your Hudson delegates security to servlet container.",
+        global = true,
         project = true,
-        module = true,
-        global = true
+        module = false
     )
 })
 public class BuildStabilityPlugin implements Plugin {

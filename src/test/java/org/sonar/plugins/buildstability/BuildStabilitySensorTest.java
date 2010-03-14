@@ -72,6 +72,7 @@ public class BuildStabilitySensorTest {
     ciManagement.setUrl("http://localhost");
     Configuration configuration = mock(Configuration.class);
     when(configuration.getString(BuildStabilitySensor.CI_URL_PROPERTY)).thenReturn(null, "Hudson:http://localhost");
+    when(project.isRoot()).thenReturn(true);
     when(project.getConfiguration()).thenReturn(configuration);
     when(mavenProject.getCiManagement()).thenReturn(null, null, ciManagement);
     when(project.getPom()).thenReturn(mavenProject);

@@ -46,7 +46,8 @@ public class BuildStabilitySensor implements Sensor {
   public static final String CI_URL_PROPERTY = "sonar.build-stability.url";
 
   public boolean shouldExecuteOnProject(Project project) {
-    return StringUtils.isNotEmpty(getCiUrl(project));
+    return project.isRoot() &&
+        StringUtils.isNotEmpty(getCiUrl(project));
   }
 
   protected String getCiUrl(Project project) {
