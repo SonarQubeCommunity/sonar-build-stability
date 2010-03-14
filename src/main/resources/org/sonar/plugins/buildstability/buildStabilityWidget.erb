@@ -7,6 +7,7 @@
    shortest_duration_measure = measure('build_shortest_duration')
    durations_measure = measure('build_durations')
    results_measure = measure('build_results')
+   average_time_to_fix_measure = measure('build_average_time_to_fix_failure')
    if builds_measure
 %>
   <div class="yui-gd">
@@ -41,6 +42,10 @@
 
         <p>
           <%= format_measure(shortest_duration_measure, :prefix => 'Shortest ') %> <%= tendency_icon(shortest_duration_measure) %>
+        </p>
+
+        <p>
+          <%= format_measure(average_time_to_fix_measure, :prefix => 'Average time to fix a failure ') %> <%= tendency_icon(average_time_to_fix_measure) %>
         </p>
       </div>
     </div>

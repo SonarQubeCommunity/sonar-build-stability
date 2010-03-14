@@ -86,10 +86,10 @@ public class BuildStabilitySensorTest {
   public void testAnalyzeBuilds() throws Exception {
     SensorContext context = mock(SensorContext.class);
     List<Build> builds = Arrays.asList(
-        new Build(1, "Fake", true, 10),
-        new Build(2, "Fake", false, 4),
-        new Build(3, "Fake", true, 3),
-        new Build(4, "Fake", true, 5)
+        new Build(1, 0, "Fake", true, 10),
+        new Build(2, 1, "Fake", false, 4),
+        new Build(3, 10, "Fake", true, 3),
+        new Build(4, 20, "Fake", true, 5)
     );
 
     sensor.analyseBuilds(builds, context);
@@ -102,6 +102,7 @@ public class BuildStabilitySensorTest {
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=0.01;2=0.0040;3=0.0030;4=0.0050")));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.RESULTS, "1=g;2=r;3=g;4=g")));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 9.0)));
     verifyNoMoreInteractions(context);
   }
 
@@ -109,7 +110,7 @@ public class BuildStabilitySensorTest {
   public void testNoSuccessfulBuilds() throws Exception {
     SensorContext context = mock(SensorContext.class);
     List<Build> builds = Arrays.asList(
-        new Build(1, "Fake", false, 10)
+        new Build(1, 0, "Fake", false, 10)
     );
 
     sensor.analyseBuilds(builds, context);
@@ -122,6 +123,7 @@ public class BuildStabilitySensorTest {
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 0.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=0.01")));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.RESULTS, "1=r")));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 0.0)));
     verifyNoMoreInteractions(context);
   }
 
@@ -129,7 +131,7 @@ public class BuildStabilitySensorTest {
   public void testNoFailedBuilds() throws Exception {
     SensorContext context = mock(SensorContext.class);
     List<Build> builds = Arrays.asList(
-        new Build(1, "Fake", true, 10)
+        new Build(1, 0, "Fake", true, 10)
     );
 
     sensor.analyseBuilds(builds, context);
@@ -142,6 +144,7 @@ public class BuildStabilitySensorTest {
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=0.01")));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.RESULTS, "1=g")));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 0.0)));
     verifyNoMoreInteractions(context);
   }
 
@@ -158,6 +161,7 @@ public class BuildStabilitySensorTest {
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 0.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 0.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 0.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 0.0)));
     verifyNoMoreInteractions(context);
   }
 }

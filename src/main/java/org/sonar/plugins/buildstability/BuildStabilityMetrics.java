@@ -107,12 +107,12 @@ public class BuildStabilityMetrics implements Metrics {
   );
 
   /**
-   * Average time to fix a failure.
+   * Average time to fix a failure
    */
   public static final Metric AVG_TIME_TO_FIX = new Metric(
       "build_average_time_to_fix_failure",
-      "Average time to fix failure",
-      "Average time to fix failure",
+      "Average time to fix a failure",
+      "Average time to fix a failure",
       Metric.ValueType.MILLISEC,
       Metric.DIRECTION_NONE, // TODO
       false,

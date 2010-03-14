@@ -49,8 +49,9 @@ public class Build implements Model {
    */
   private long timestamp;
 
-  public Build(int number, String result, boolean successful, double duration) {
+  public Build(int number, long timestamp, String result, boolean successful, double duration) {
     this.number = number;
+    this.timestamp = timestamp;
     this.result = result;
     this.successful = successful;
     this.duration = duration;
