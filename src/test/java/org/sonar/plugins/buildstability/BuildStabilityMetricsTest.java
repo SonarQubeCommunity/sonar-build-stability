@@ -35,6 +35,6 @@ public class BuildStabilityMetricsTest {
 
   @Test
   public void testGetMetrics() throws Exception {
-    assertThat(metrics.getMetrics().size(), is(9));
+    assertThat(metrics.getMetrics().size(), is(11));
   }
 }

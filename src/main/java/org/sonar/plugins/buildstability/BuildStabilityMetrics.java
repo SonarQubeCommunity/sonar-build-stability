@@ -58,9 +58,9 @@ public class BuildStabilityMetrics implements Metrics {
    * Ratio of successful builds. Measured as percentage of successful builds out of all last builds.
    */
   public static final Metric SUCCESS_RATE = new Metric(
-      "build_success_density", // key
-      "Success Rate (%)", // name
-      "Ratio of successful builds", // description
+      "build_success_density",
+      "Success Rate (%)",
+      "Ratio of successful builds",
       Metric.ValueType.PERCENT,
       Metric.DIRECTION_BETTER,
       false,
@@ -107,12 +107,38 @@ public class BuildStabilityMetrics implements Metrics {
   );
 
   /**
-   * Average time to fix a failure
+   * Average time to fix a failure.
    */
   public static final Metric AVG_TIME_TO_FIX = new Metric(
       "build_average_time_to_fix_failure",
       "Average time to fix a failure",
       "Average time to fix a failure",
+      Metric.ValueType.MILLISEC,
+      Metric.DIRECTION_NONE, // TODO
+      false,
+      DOMAIN_BUILD
+  );
+
+  /**
+   * Longest time to fix a failure.
+   */
+  public static final Metric LONGEST_TIME_TO_FIX = new Metric(
+      "build_longest_time_to_fix_failure",
+      "Longest time to fix a failure",
+      "Longest time to fix a failure",
+      Metric.ValueType.MILLISEC,
+      Metric.DIRECTION_NONE, // TODO
+      false,
+      DOMAIN_BUILD
+  );
+
+  /**
+   * Average number of builds between fixes.
+   */
+  public static final Metric AVG_BUILDS_TO_FIX = new Metric(
+      "build_average_builds_to_fix_failure",
+      "Average number of builds between fixes",
+      "Average number of builds between fixes",
       Metric.ValueType.MILLISEC,
       Metric.DIRECTION_NONE, // TODO
       false,
@@ -132,6 +158,9 @@ public class BuildStabilityMetrics implements Metrics {
       DOMAIN_BUILD
   );
 
+  /**
+   * TODO comment me
+   */
   public static final Metric RESULTS = new Metric(
       "build_results",
       "Results",
@@ -147,10 +176,15 @@ public class BuildStabilityMetrics implements Metrics {
         BUILDS,
         FAILED,
         SUCCESS_RATE,
+
         AVG_DURATION,
         LONGEST_DURATION,
         SHORTEST_DURATION,
+
         AVG_TIME_TO_FIX,
+        LONGEST_TIME_TO_FIX,
+        AVG_BUILDS_TO_FIX,
+
         DURATIONS,
         RESULTS
     );

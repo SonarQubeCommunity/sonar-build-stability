@@ -104,6 +104,8 @@ public class BuildStabilitySensor implements Sensor {
     boolean flag = true;
     long firstFail = 0;
     double totalTimeToFix = 0;
+    double totalBuildsToFix = 0; // TODO use
+    double longestTimeToFix = Double.NEGATIVE_INFINITY;
     int fixes = 0;
 
     for (Build build : builds) {
@@ -119,13 +121,17 @@ public class BuildStabilitySensor implements Sensor {
         shortest = Math.min(shortest, buildDuration);
         longest = Math.max(longest, buildDuration);
         if (!flag) {
-          totalTimeToFix += build.getTimestamp() - firstFail;
+          // Build fixed
+          double timeToFix = build.getTimestamp() - firstFail;
+          totalTimeToFix += timeToFix;
+          longestTimeToFix = Math.max(longestTimeToFix, timeToFix);
           fixes++;
           flag = true;
         }
       } else {
         failed++;
         if (flag) {
+          // Build failed
           firstFail = build.getTimestamp();
           flag = false;
         }
@@ -136,22 +142,25 @@ public class BuildStabilitySensor implements Sensor {
     double avgDuration = successful != 0 ? duration / successful : 0;
     double avgTimeToFix = fixes != 0 ? totalTimeToFix / fixes : 0;
     double sucessRate = count != 0 ? successful / count * 100 : 0;
-    if (Double.isInfinite(longest)) {
-      longest = 0;
-    }
-    if (Double.isInfinite(shortest)) {
-      shortest = 0;
-    }
+
     context.saveMeasure(new Measure(BuildStabilityMetrics.BUILDS, count));
     context.saveMeasure(new Measure(BuildStabilityMetrics.FAILED, failed));
     context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESS_RATE, sucessRate));
+
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_DURATION, longest));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.SHORTEST_DURATION, shortest));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_DURATION, normalize(longest)));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.SHORTEST_DURATION, normalize(shortest)));
+
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_TIME_TO_FIX, avgTimeToFix));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, normalize(longestTimeToFix)));
+
     if (builds.size() > 0) {
       context.saveMeasure(durationsBuilder.build());
       context.saveMeasure(resultsBuilder.build());
     }
+  }
+
+  private double normalize(double value) {
+    return Double.isInfinite(value) ? 0 : value;
   }
 }
