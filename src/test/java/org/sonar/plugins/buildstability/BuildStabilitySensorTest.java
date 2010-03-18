@@ -104,6 +104,7 @@ public class BuildStabilitySensorTest {
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 9.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 9.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, 1.0)));
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=0.01;2=0.0040;3=0.0030;4=0.0050")));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.RESULTS, "1=g;2=r;3=g;4=g")));
@@ -130,6 +131,7 @@ public class BuildStabilitySensorTest {
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 0.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 0.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, 0.0)));
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=0.01")));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.RESULTS, "1=r")));
@@ -156,6 +158,7 @@ public class BuildStabilitySensorTest {
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 0.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 0.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, 0.0)));
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=0.01")));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.RESULTS, "1=g")));
@@ -180,6 +183,7 @@ public class BuildStabilitySensorTest {
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 0.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 0.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, 0.0)));
 
     verifyNoMoreInteractions(context);
   }

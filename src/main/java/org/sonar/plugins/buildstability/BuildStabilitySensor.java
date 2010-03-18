@@ -101,12 +101,11 @@ public class BuildStabilitySensor implements Sensor {
     double shortest = Double.POSITIVE_INFINITY;
     double longest = Double.NEGATIVE_INFINITY;
 
-    boolean flag = true;
-    long firstFail = 0;
     double totalTimeToFix = 0;
-    double totalBuildsToFix = 0; // TODO use
+    double totalBuildsToFix = 0;
     double longestTimeToFix = Double.NEGATIVE_INFINITY;
     int fixes = 0;
+    Build firstFailed = null;
 
     for (Build build : builds) {
       logger.debug(build.toString());
@@ -120,39 +119,38 @@ public class BuildStabilitySensor implements Sensor {
         duration += buildDuration;
         shortest = Math.min(shortest, buildDuration);
         longest = Math.max(longest, buildDuration);
-        if (!flag) {
+        if (firstFailed != null) {
           // Build fixed
-          double timeToFix = build.getTimestamp() - firstFail;
+          long buildsToFix = build.getNumber() - firstFailed.getNumber();
+          totalBuildsToFix += buildsToFix;
+          double timeToFix = build.getTimestamp() - firstFailed.getTimestamp();
           totalTimeToFix += timeToFix;
           longestTimeToFix = Math.max(longestTimeToFix, timeToFix);
           fixes++;
-          flag = true;
+          firstFailed = null;
         }
       } else {
         failed++;
-        if (flag) {
+        if (firstFailed == null) {
           // Build failed
-          firstFail = build.getTimestamp();
-          flag = false;
+          firstFailed = build;
         }
       }
     }
 
     double count = successful + failed;
-    double avgDuration = successful != 0 ? duration / successful : 0;
-    double avgTimeToFix = fixes != 0 ? totalTimeToFix / fixes : 0;
-    double sucessRate = count != 0 ? successful / count * 100 : 0;
 
     context.saveMeasure(new Measure(BuildStabilityMetrics.BUILDS, count));
     context.saveMeasure(new Measure(BuildStabilityMetrics.FAILED, failed));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESS_RATE, sucessRate));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESS_RATE, divide(successful, count) * 100));
 
-    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, avgDuration));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, divide(duration, successful)));
     context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_DURATION, normalize(longest)));
     context.saveMeasure(new Measure(BuildStabilityMetrics.SHORTEST_DURATION, normalize(shortest)));
 
-    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_TIME_TO_FIX, avgTimeToFix));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_TIME_TO_FIX, divide(totalTimeToFix, fixes)));
     context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, normalize(longestTimeToFix)));
+    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, divide(totalBuildsToFix, fixes)));
 
     if (builds.size() > 0) {
       context.saveMeasure(durationsBuilder.build());
@@ -162,5 +160,9 @@ public class BuildStabilitySensor implements Sensor {
 
   private double normalize(double value) {
     return Double.isInfinite(value) ? 0 : value;
+  }
+
+  private double divide(double v1, double v2) {
+    return v2 == 0 ? 0 : v1 / v2;
   }
 }
