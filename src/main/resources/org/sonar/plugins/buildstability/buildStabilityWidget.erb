@@ -2,12 +2,18 @@
    builds_measure = measure('builds')
    success_rate_measure = measure('build_success_density')
    failed_measure = measure('build_failures')
+
    average_duration_measure = measure('build_average_duration')
    longest_duration_measure = measure('build_longest_duration')
    shortest_duration_measure = measure('build_shortest_duration')
+
+   average_time_to_fix_measure = measure('build_average_time_to_fix_failure')
+   longest_time_to_fix_measure = measure('build_longest_time_to_fix_failure')
+   average_builds_to_fix_measure = measure('build_average_builds_to_fix_failure')
+
    durations_measure = measure('build_durations')
    results_measure = measure('build_results')
-   average_time_to_fix_measure = measure('build_average_time_to_fix_failure')
+
    if builds_measure
 %>
   <div class="yui-gd">
@@ -44,8 +50,17 @@
           <%= format_measure(shortest_duration_measure, :prefix => 'Shortest ') %> <%= tendency_icon(shortest_duration_measure) %>
         </p>
 
+        <!-- TODO move into another block -->
         <p>
           <%= format_measure(average_time_to_fix_measure, :prefix => 'Average time to fix a failure ') %> <%= tendency_icon(average_time_to_fix_measure) %>
+        </p>
+
+        <p>
+          <%= format_measure(longest_time_to_fix_measure, :prefix => 'Longest ') %> <%= tendency_icon(longest_time_to_fix_measure) %>
+        </p>
+
+        <p>
+          <%= format_measure(average_builds_to_fix_measure, :prefix => 'Average number of builds ') %> <%= tendency_icon(average_builds_to_fix_measure) %>
         </p>
       </div>
     </div>
