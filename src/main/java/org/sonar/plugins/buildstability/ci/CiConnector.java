@@ -38,6 +38,7 @@ public class CiConnector {
   protected CiConnector(AbstractServer server) {
     this.server = server;
     client = new HttpClient();
+    client.getParams().setSoTimeout(30);
   }
 
   protected Build getLastBuild() throws IOException {
