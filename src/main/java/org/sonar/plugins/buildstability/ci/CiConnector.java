@@ -31,6 +31,7 @@ import java.util.List;
  * @author Evgeny Mandrikov
  */
 public class CiConnector {
+  private static final int TIMEOUT = 30 * 1000;
 
   private HttpClient client;
   private AbstractServer server;
@@ -38,7 +39,7 @@ public class CiConnector {
   protected CiConnector(AbstractServer server) {
     this.server = server;
     client = new HttpClient();
-    client.getParams().setSoTimeout(30);
+    client.getParams().setSoTimeout(TIMEOUT);
   }
 
   protected Build getLastBuild() throws IOException {
