@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.sonar-plugins</groupId>
     <artifactId>parent</artifactId>
-    <version>4</version>
+    <version>5</version>
   </parent>
 
   <artifactId>sonar-build-stability-plugin</artifactId>
@@ -49,6 +49,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
               <artifactSet>
                 <includes>
                   <include>org.codehaus.sonar-plugins:sonar-build-stability-plugin</include>
@@ -67,12 +68,14 @@
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-plugin-api</artifactId>
       <version>${sonar.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>2.0.9</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
