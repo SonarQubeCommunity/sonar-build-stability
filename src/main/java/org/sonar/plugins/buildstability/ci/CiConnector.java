@@ -102,7 +102,7 @@ public class CiConnector {
       throw new IOException("Unexpected status code: " + method.getStatusCode());
     }
     try {
-      return new SAXReader().read(method.getResponseBodyAsStream());
+      return new SAXReader().read(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
     } catch (DocumentException e) {
       throw new RuntimeException(e);
     }
