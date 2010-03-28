@@ -23,10 +23,11 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Evgeny Mandrikov
@@ -103,7 +104,21 @@ public class CiConnector {
       throw new IOException("Unexpected status code: " + method.getStatusCode());
     }
     try {
-      return new SAXReader().read(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
+      SAXReader reader = new SAXReader();
+      String response = method.getResponseBodyAsString();
+      Pattern pattern = Pattern.compile("<\\?xml(?: \\w*=\".*\") encoding=\"(.*)\".*");
+      Matcher matcher = pattern.matcher(response);
+      if (matcher.matches()) {
+        reader.setEncoding(matcher.group(1));
+      } else {
+        String contentType = method.getResponseHeader("Content-Type").getValue();
+        pattern = Pattern.compile(".*charset=([^;]*).*");
+        matcher = pattern.matcher(contentType);
+        if (matcher.matches()) {
+          reader.setEncoding(matcher.group(1));
+        }
+      }
+      return reader.read(response);
     } catch (DocumentException e) {
       throw new RuntimeException(e);
     }
