@@ -59,6 +59,9 @@ public final class CiFactory {
     server.setPassword(password);
 
     int i = url.indexOf(pattern);
+    if (i == -1) {
+      return null;
+    }
     String base = url.substring(0, i);
     String key = url.substring(i + pattern.length());
     server.setHost(base);
