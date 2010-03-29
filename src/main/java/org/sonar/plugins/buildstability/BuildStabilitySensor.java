@@ -73,7 +73,7 @@ public class BuildStabilitySensor implements Sensor {
     try {
       CiConnector connector = CiFactory.create(ciUrl, username, password, useJSecurityCheck);
       if (connector == null) {
-        logger.warn("Unknown CiManagement system: {}", ciUrl);
+        logger.warn("Unknown CiManagement system or incorrect URL: {}", ciUrl);
         return;
       }
       int daysToRetrieve = project.getConfiguration().getInt(DAYS_PROPERTY, DAYS_DEFAULT_VALUE);
