@@ -29,9 +29,7 @@ import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.CiConnector;
 import org.sonar.plugins.buildstability.ci.CiFactory;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Evgeny Mandrikov
@@ -91,6 +89,12 @@ public class BuildStabilitySensor implements Sensor {
 
   protected void analyseBuilds(List<Build> builds, SensorContext context) {
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    Collections.sort(builds, new Comparator<Build>() {
+      public int compare(Build o1, Build o2) {
+        return o1.getNumber() - o2.getNumber();
+      }
+    });
 
     PropertiesBuilder<Integer, Double> durationsBuilder = new PropertiesBuilder<Integer, Double>(BuildStabilityMetrics.DURATIONS);
     PropertiesBuilder<Integer, String> resultsBuilder = new PropertiesBuilder<Integer, String>(BuildStabilityMetrics.RESULTS);

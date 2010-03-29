@@ -139,7 +139,7 @@ public class BuildStabilityMetrics implements Metrics {
       "build_average_builds_to_fix_failure",
       "Average number of builds between fixes",
       "Average number of builds between fixes",
-      Metric.ValueType.MILLISEC,
+      Metric.ValueType.INT,
       Metric.DIRECTION_NONE, // TODO
       false,
       DOMAIN_BUILD
