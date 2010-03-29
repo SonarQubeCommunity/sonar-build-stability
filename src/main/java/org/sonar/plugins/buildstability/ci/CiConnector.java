@@ -106,22 +106,23 @@ public class CiConnector {
     try {
       SAXReader reader = new SAXReader();
       String response = method.getResponseBodyAsString();
-      Pattern pattern = Pattern.compile("<\\?xml(?: \\w*=\".*\") encoding=\"(.*)\".*");
+      Pattern pattern = Pattern.compile("<\\?xml(?: \\w*=\".*\") encoding=\"([^ ]*)\".*");
       Matcher matcher = pattern.matcher(response);
+      String encoding = "UTF-8";
       if (matcher.matches()) {
-        reader.setEncoding(matcher.group(1));
+        encoding = matcher.group(1);
       } else {
         String contentType = method.getResponseHeader("Content-Type").getValue();
         pattern = Pattern.compile(".*charset=([^;]*).*");
         matcher = pattern.matcher(contentType);
         if (matcher.matches()) {
-          reader.setEncoding(matcher.group(1));
+          encoding = matcher.group(1);
         }
       }
-      return reader.read(response);
+      reader.setEncoding(encoding);
+      return reader.read(method.getResponseBodyAsStream());
     } catch (DocumentException e) {
       throw new RuntimeException(e);
     }
   }
-
 }

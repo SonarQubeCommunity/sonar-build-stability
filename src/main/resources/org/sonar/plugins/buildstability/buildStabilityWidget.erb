@@ -49,10 +49,12 @@
         <p>
           <%= format_measure(shortest_duration_measure, :prefix => 'Shortest ') %> <%= tendency_icon(shortest_duration_measure) %>
         </p>
+      </div>
+      <div class="dashbox">
+        <h3>Average time to fix a failure</h3>
 
-        <!-- TODO move into another block -->
         <p>
-          <%= format_measure(average_time_to_fix_measure, :prefix => 'Average time to fix a failure ') %> <%= tendency_icon(average_time_to_fix_measure) %>
+          <span class="big"><%= format_measure(average_time_to_fix_measure, :suffix => ' ') %> <%= tendency_icon(average_time_to_fix_measure, false) %></span>
         </p>
 
         <p>
