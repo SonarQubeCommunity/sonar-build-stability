@@ -78,14 +78,16 @@ public class CiConnector {
   public List<Build> getBuildsSince(Date date) throws IOException {
     server.doLogin(client);
     List<Build> builds = new ArrayList<Build>();
-    Build last = getLastBuild();
+    Build current = getLastBuild();
+    builds.add(current);
+    Build last = current;
     int number = last.getNumber();
-    while (date.before(last.getDate())) {
-      builds.add(last);
+    while (date.before(last.getDate()) && number > 0) {
       number--;
-      last = getBuild(number);
-      if (last == null) {
-        break;
+      current = getBuild(number);
+      if (current != null) {
+        builds.add(current);
+        last = current;
       }
     }
     return builds;
