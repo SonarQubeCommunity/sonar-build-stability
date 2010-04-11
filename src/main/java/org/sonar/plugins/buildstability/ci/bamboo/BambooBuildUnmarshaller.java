@@ -49,6 +49,7 @@ public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
       Date date = sdf.parse(buildStartedTime);
       build.setTimestamp(date.getTime());
     } catch (ParseException ignored) {
+      // ignore
     }
     build.setDuration(Double.parseDouble(domElement.elementText("buildDurationInSeconds")) * 1000);
     build.setSuccessful(SUCCESSFULL.equalsIgnoreCase(state));

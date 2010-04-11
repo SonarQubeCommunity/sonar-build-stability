@@ -21,6 +21,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.sonar.api.utils.SonarException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public class CiConnector {
       reader.setEncoding(encoding);
       return reader.read(method.getResponseBodyAsStream());
     } catch (DocumentException e) {
-      throw new RuntimeException(e);
+      throw new SonarException(e);
     }
   }
 }

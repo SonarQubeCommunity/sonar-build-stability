@@ -156,7 +156,7 @@ public class BuildStabilitySensor implements Sensor {
     context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, normalize(longestTimeToFix)));
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, divide(totalBuildsToFix, fixes)));
 
-    if (builds.size() > 0) {
+    if (!builds.isEmpty()) {
       context.saveMeasure(durationsBuilder.build());
       context.saveMeasure(resultsBuilder.build());
     }
