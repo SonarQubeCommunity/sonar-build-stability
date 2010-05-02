@@ -96,6 +96,7 @@ public class BuildStabilityPlugin implements Plugin {
     return Arrays.asList(
         BuildStabilityMetrics.class,
         BuildStabilitySensor.class,
+        BuildStabilityEventsSensor.class,
         BuildStabilityWidget.class,
         BuildStabilityChart.class
     );

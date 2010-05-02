@@ -35,6 +35,6 @@ public class BuildStabilityPluginTest {
 
   @Test
   public void testGetExtensions() throws Exception {
-    assertThat(plugin.getExtensions().size(), is(4));
+    assertThat(plugin.getExtensions().size(), is(5));
   }
 }

@@ -4,9 +4,12 @@
     <groupId>org.codehaus.sonar-plugins</groupId>
     <artifactId>parent</artifactId>
     <version>5</version>
+    <relativePath>../parent</relativePath>
   </parent>
 
   <artifactId>sonar-build-stability-plugin</artifactId>
+  <!-- TODO Godin: Use sonar-dev-mojo -->
+  <packaging>jar</packaging>
   <version>1.2-SNAPSHOT</version>
   <name>Sonar Build Stability Plugin</name>
 
@@ -18,7 +21,7 @@
   </organization>
 
   <properties>
-    <sonar.version>1.12</sonar.version>
+    <sonar.version>2.2-SNAPSHOT</sonar.version>
 
     <sonarVersion>1.12</sonarVersion>
     <pluginArtifact>${project.build.directory}/${project.build.finalName}-shaded.jar</pluginArtifact>
@@ -93,18 +96,12 @@
     <!-- unit tests -->
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
-      <artifactId>sonar-plugin-api</artifactId>
+      <artifactId>sonar-testing-harness</artifactId>
       <version>${sonar.version}</version>
-      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.5</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
+      <!-- TODO Godin: Should be in sonar-testing-harness ? -->
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <version>1.8.0</version>
