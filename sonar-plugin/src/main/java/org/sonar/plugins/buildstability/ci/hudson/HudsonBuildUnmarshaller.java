@@ -17,13 +17,13 @@
 package org.sonar.plugins.buildstability.ci.hudson;
 
 import org.dom4j.Element;
-import org.sonar.plugins.buildstability.ci.Build;
+import org.sonar.plugins.buildstability.Build;
 import org.sonar.plugins.buildstability.ci.Unmarshaller;
 
 /**
  * @author Evgeny Mandrikov
  */
-public class HudsonBuildUnmarshaller implements Unmarshaller<Build> {
+public class HudsonBuildUnmarshaller implements Unmarshaller {
   public Build toModel(Element domElement) {
     Build build = new Build();
 

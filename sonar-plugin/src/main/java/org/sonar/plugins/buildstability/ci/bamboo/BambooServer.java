@@ -17,7 +17,6 @@
 package org.sonar.plugins.buildstability.ci.bamboo;
 
 import org.sonar.plugins.buildstability.ci.AbstractServer;
-import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.Unmarshaller;
 
 /**
@@ -28,7 +27,7 @@ import org.sonar.plugins.buildstability.ci.Unmarshaller;
 public class BambooServer extends AbstractServer {
   public static final String SYSTEM = "Bamboo";
   public static final String PATTERN = "/browse/";
-  private static final Unmarshaller<Build> BUILD_UNMARSHALLER = new BambooBuildUnmarshaller();
+  private static final Unmarshaller BUILD_UNMARSHALLER = new BambooBuildUnmarshaller();
 
   protected String getBuildUrl(String number) {
     StringBuilder sb = new StringBuilder(getHost())
@@ -43,7 +42,7 @@ public class BambooServer extends AbstractServer {
   }
 
   @Override
-  protected Unmarshaller<Build> getBuildUnmarshaller() {
+  protected Unmarshaller getBuildUnmarshaller() {
     return BUILD_UNMARSHALLER;
   }
 }

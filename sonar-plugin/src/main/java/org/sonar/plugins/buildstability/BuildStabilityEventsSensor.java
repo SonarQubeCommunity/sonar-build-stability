@@ -20,7 +20,6 @@ import org.sonar.api.batch.Event;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.resources.Project;
-import org.sonar.plugins.buildstability.ci.Build;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +35,7 @@ public class BuildStabilityEventsSensor implements Sensor {
   }
 
   public void analyse(Project project, SensorContext context) {
+    // TODO we can remove old events here
     List<Build> builds = getBuildsFromEvents(project, context);
     // TODO don't create another sensor
     new BuildStabilitySensor().analyseBuilds(builds, context);
@@ -55,13 +55,10 @@ public class BuildStabilityEventsSensor implements Sensor {
   }
 
   protected static Build parse(Event event) {
-    Build build = new Build();
-    // TODO parse event.getData();
-    build.setNumber(0);
-    build.setTimestamp(event.getDate().getTime());
-    build.setSuccessful(true);
-    build.setDuration(0);
-    return build;
+    if (event.getData() == null) {
+      return null;
+    }
+    return Build.fromString(event.getData());
   }
 
   private static boolean isBuildCategory(Event event) {

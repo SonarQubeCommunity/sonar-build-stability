@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.resources.Project;
 import org.sonar.api.test.IsMeasure;
-import org.sonar.plugins.buildstability.ci.Build;
 
 import java.util.Arrays;
 import java.util.Collections;

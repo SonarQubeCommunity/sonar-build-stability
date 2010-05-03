@@ -21,10 +21,8 @@ import org.junit.Test;
 import org.sonar.api.batch.Event;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.resources.Project;
-import org.sonar.plugins.buildstability.ci.Build;
 
 import java.util.Arrays;
-import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -47,7 +45,7 @@ public class BuildStabilityEventsSensorTest {
   @Test
   public void doNotTouchOtherCategories() throws Exception {
     Event build = new Event("Build", "Description", BuildStabilityEventsSensor.CATEGORY_BUILD, null);
-    build.setDate(new Date());
+    build.setData(new Build(1, 0, "ok", true, 60).convertToString());
     when(context.getEvents(project)).thenReturn(Arrays.asList(
         new Event("0.1-SNAPSHOT", "Description", Event.CATEGORY_VERSION, null),
         new Event("Alert", "Description", Event.CATEGORY_ALERT, null),
@@ -55,16 +53,5 @@ public class BuildStabilityEventsSensorTest {
     ));
 
     assertThat(BuildStabilityEventsSensor.getBuildsFromEvents(project, context).size(), is(1));
-  }
-
-  @Test
-  public void testParse() throws Exception {
-    Date date = new Date();
-    Event event = new Event("Build", "Description", BuildStabilityEventsSensor.CATEGORY_BUILD, date, 0);
-    event.setData(""); // TODO
-
-    Build build = BuildStabilityEventsSensor.parse(event);
-
-    assertThat(build.getTimestamp(), is(date.getTime()));
   }
 }

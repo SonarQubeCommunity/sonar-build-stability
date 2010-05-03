@@ -22,6 +22,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.sonar.api.utils.SonarException;
+import org.sonar.plugins.buildstability.Build;
 
 import java.io.IOException;
 import java.util.ArrayList;

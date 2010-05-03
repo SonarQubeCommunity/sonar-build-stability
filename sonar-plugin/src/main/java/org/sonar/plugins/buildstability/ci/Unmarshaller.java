@@ -17,10 +17,11 @@
 package org.sonar.plugins.buildstability.ci;
 
 import org.dom4j.Element;
+import org.sonar.plugins.buildstability.Build;
 
 /**
  * @author Evgeny Mandrikov
  */
-public interface Unmarshaller<MODEL extends Model> {
-  MODEL toModel(Element domElement);
+public interface Unmarshaller {
+  Build toModel(Element domElement);
 }

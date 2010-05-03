@@ -17,7 +17,7 @@
 package org.sonar.plugins.buildstability.ci.bamboo;
 
 import org.dom4j.Element;
-import org.sonar.plugins.buildstability.ci.Build;
+import org.sonar.plugins.buildstability.Build;
 import org.sonar.plugins.buildstability.ci.Unmarshaller;
 
 import java.text.ParseException;
@@ -27,7 +27,7 @@ import java.util.Date;
 /**
  * @author Evgeny Mandrikov
  */
-public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
+public class BambooBuildUnmarshaller implements Unmarshaller {
   private static final String SUCCESSFULL = "Successful";
   private static final String FAILED = "Failed";
 

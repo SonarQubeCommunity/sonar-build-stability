@@ -72,7 +72,7 @@ public abstract class AbstractServer {
 
   protected abstract String getLastBuildUrl();
 
-  protected abstract Unmarshaller<Build> getBuildUnmarshaller();
+  protected abstract Unmarshaller getBuildUnmarshaller();
 
   protected void doLogin(HttpClient client) throws IOException {
     if (!StringUtils.isBlank(getUsername()) && !StringUtils.isBlank(getPassword())) {

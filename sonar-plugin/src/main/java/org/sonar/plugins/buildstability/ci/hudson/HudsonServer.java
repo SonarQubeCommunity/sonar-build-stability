@@ -19,7 +19,6 @@ package org.sonar.plugins.buildstability.ci.hudson;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.lang.StringUtils;
 import org.sonar.plugins.buildstability.ci.AbstractServer;
-import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.Unmarshaller;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class HudsonServer extends AbstractServer {
   public static final String SYSTEM = "Hudson";
   public static final String PATTERN = "/job/";
 
-  private static final Unmarshaller<Build> BUILD_UNMARSHALLER = new HudsonBuildUnmarshaller();
+  private static final Unmarshaller BUILD_UNMARSHALLER = new HudsonBuildUnmarshaller();
 
   private boolean useJSecurityCheck;
 
@@ -48,7 +47,7 @@ public class HudsonServer extends AbstractServer {
   }
 
   @Override
-  protected Unmarshaller<Build> getBuildUnmarshaller() {
+  protected Unmarshaller getBuildUnmarshaller() {
     return BUILD_UNMARSHALLER;
   }
 

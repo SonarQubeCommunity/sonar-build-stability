@@ -12,8 +12,6 @@
   <name>Sonar Build Stability Plugin</name>
 
   <properties>
-    <sonar.version>2.2-SNAPSHOT</sonar.version>
-
     <sonarVersion>1.12</sonarVersion>
     <pluginArtifact>${project.build.directory}/${project.build.finalName}-shaded.jar</pluginArtifact>
   </properties>
@@ -46,6 +44,7 @@
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <artifactSet>
                 <includes>
+                  <include>${project.groupId}:sonar-build-stability-api</include>
                   <include>org.codehaus.sonar-plugins:sonar-build-stability-plugin</include>
                   <include>commons-httpclient:commons-httpclient</include>
                 </includes>
@@ -59,9 +58,13 @@
 
   <dependencies>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sonar-build-stability-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-plugin-api</artifactId>
-      <version>${sonar.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -75,27 +78,12 @@
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
-      <version>3.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- unit tests -->
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-testing-harness</artifactId>
-      <version>${sonar.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <!-- TODO Godin: Should be in sonar-testing-harness ? -->
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.8.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
