@@ -12,7 +12,7 @@
   <name>Sonar Build Stability Plugin</name>
 
   <properties>
-    <sonarVersion>1.12</sonarVersion>
+    <sonarVersion>2.2-SNAPSHOT</sonarVersion>
     <pluginArtifact>${project.build.directory}/${project.build.finalName}-shaded.jar</pluginArtifact>
   </properties>
 
