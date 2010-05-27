@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.codehaus.sonar-plugins</groupId>
     <artifactId>parent</artifactId>
-    <version>5</version>
+    <version>6-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -102,10 +102,8 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <!-- TODO Godin: update version in parent -->
           <groupId>com.mycila.maven-license-plugin</groupId>
           <artifactId>maven-license-plugin</artifactId>
-          <version>1.6.0</version>
           <configuration>
             <skip>true</skip>
           </configuration>

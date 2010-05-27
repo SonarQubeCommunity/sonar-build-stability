@@ -7,54 +7,13 @@
   </parent>
 
   <artifactId>sonar-build-stability-plugin</artifactId>
-  <!-- TODO Godin: Use sonar-dev-mojo -->
-  <packaging>jar</packaging>
+  <packaging>sonar-plugin</packaging>
   <name>Sonar Build Stability Plugin</name>
 
   <properties>
     <sonarVersion>2.2-SNAPSHOT</sonarVersion>
-    <pluginArtifact>${project.build.directory}/${project.build.finalName}-shaded.jar</pluginArtifact>
+    <sonar.pluginClass>org.sonar.plugins.buildstability.BuildStabilityPlugin</sonar.pluginClass>
   </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Plugin-Class>org.sonar.plugins.buildstability.BuildStabilityPlugin</Plugin-Class>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>1.3</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <artifactSet>
-                <includes>
-                  <include>${project.groupId}:sonar-build-stability-api</include>
-                  <include>org.codehaus.sonar-plugins:sonar-build-stability-plugin</include>
-                  <include>commons-httpclient:commons-httpclient</include>
-                </includes>
-              </artifactSet>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -73,11 +32,6 @@
       <artifactId>maven-project</artifactId>
       <version>2.0.9</version>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
     </dependency>
 
     <!-- unit tests -->
