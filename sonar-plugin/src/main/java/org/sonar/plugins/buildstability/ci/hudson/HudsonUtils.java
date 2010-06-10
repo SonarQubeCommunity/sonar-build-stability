@@ -16,16 +16,17 @@
 
 package org.sonar.plugins.buildstability.ci.hudson;
 
+import java.io.IOException;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-
-import java.io.IOException;
 
 /**
  * @author Evgeny Mandrikov
  */
 public final class HudsonUtils {
+
   /**
    * Hide utility-class constructor.
    */
@@ -33,9 +34,10 @@ public final class HudsonUtils {
   }
 
   public static void doLogin(HttpClient client, String hostName, String username, String password) throws IOException {
-    GetMethod loginLink = new GetMethod(hostName + "loginEntry");
+    String hudsonLoginEntryUrl = hostName + "loginEntry";
+    GetMethod loginLink = new GetMethod(hudsonLoginEntryUrl);
     client.executeMethod(loginLink);
-    checkResult(loginLink.getStatusCode());
+    checkResult(loginLink.getStatusCode(), hudsonLoginEntryUrl);
 
     String location = hostName + "j_security_check";
     while (true) {
@@ -50,14 +52,14 @@ public final class HudsonUtils {
         location = loginMethod.getResponseHeader("Location").getValue();
         continue;
       }
-      checkResult(loginMethod.getStatusCode());
+      checkResult(loginMethod.getStatusCode(), location);
       break;
     }
   }
 
-  private static void checkResult(int i) throws IOException {
-    if (i / 100 != 2) {
-      throw new IOException();
+  private static void checkResult(int httpStatusCode, String hudsonLoginEntryUrl) throws IOException {
+    if (httpStatusCode != 200) {
+      throw new IOException("Unable to access the Hudson page : " + hudsonLoginEntryUrl + ". HTTP status code : " + httpStatusCode);
     }
   }
 }
