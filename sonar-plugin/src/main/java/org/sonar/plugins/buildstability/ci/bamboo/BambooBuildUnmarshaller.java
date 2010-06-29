@@ -34,7 +34,7 @@ public class BambooBuildUnmarshaller implements Unmarshaller {
   /**
    * Bamboo date-time format. Example: 2010-01-04T11:02:17.114-0600
    */
-  private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+  private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
   public Build toModel(Element domElement) {
     Build build = new Build();
