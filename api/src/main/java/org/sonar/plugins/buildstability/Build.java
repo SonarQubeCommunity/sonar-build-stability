@@ -88,48 +88,54 @@ public class Build {
     return url;
   }
 
-  public void setUrl(String url) {
+  public Build setUrl(String url) {
     this.url = url;
+    return this;
   }
 
   public int getNumber() {
     return number;
   }
 
-  public void setNumber(int number) {
+  public Build setNumber(int number) {
     this.number = number;
+    return this;
   }
 
   public String getResult() {
     return result;
   }
 
-  public void setResult(String result) {
+  public Build setResult(String result) {
     this.result = result;
+    return this;
   }
 
   public boolean isSuccessful() {
     return successful;
   }
 
-  public void setSuccessful(boolean successful) {
+  public Build setSuccessful(boolean successful) {
     this.successful = successful;
+    return this;
   }
 
   public double getDuration() {
     return duration;
   }
 
-  public void setDuration(double duration) {
+  public Build setDuration(double duration) {
     this.duration = duration;
+    return this;
   }
 
   public long getDurationInSeconds() {
     return (long) (duration / 1000);
   }
 
-  public void setDurationInSeconds(long duration) {
+  public Build setDurationInSeconds(long duration) {
     setDuration(duration * 1000);
+    return this;
   }
 
   public long getTimestamp() {
@@ -140,18 +146,19 @@ public class Build {
     return new Date(timestamp);
   }
 
-  public void setTimestamp(long timestamp) {
+  public Build setTimestamp(long timestamp) {
     this.timestamp = timestamp;
+    return this;
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this).
-        append("number", number).
-        append("timestamp", timestamp).
-        append("result", result).
+        append(NUMBER_FIELD, number).
+        append(TIMESTAMP_FIELD, timestamp).
+        append(STATUS_FIELD, result).
         append("successful", successful).
-        append("duration", duration).
+        append(DURATION_FIELD, duration).
         toString();
   }
 
@@ -170,6 +177,7 @@ public class Build {
       } else if (DURATION_FIELD.equalsIgnoreCase(key)) {
         build.setDurationInSeconds(Long.parseLong(value));
       } else if (STATUS_FIELD.equalsIgnoreCase(key)) {
+        build.setResult(value);
         build.setSuccessful(Build.SUCCESSFUL_STATUS.equalsIgnoreCase(value));
       } else if (DEVELOPERS_FIELD.equalsIgnoreCase(key)) {
         // TODO
