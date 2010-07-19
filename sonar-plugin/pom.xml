@@ -11,7 +11,6 @@
   <name>Sonar Build Stability Plugin</name>
 
   <properties>
-    <sonarVersion>2.2-SNAPSHOT</sonarVersion>
     <sonar.pluginClass>org.sonar.plugins.buildstability.BuildStabilityPlugin</sonar.pluginClass>
   </properties>
 
