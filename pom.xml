@@ -1,71 +1,30 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus.sonar-plugins</groupId>
     <artifactId>parent</artifactId>
-    <version>13</version>
-    <relativePath>../parent</relativePath>
+    <version>6</version>
   </parent>
 
-  <groupId>org.codehaus.sonar-plugins.build-stability</groupId>
-  <artifactId>build-stability</artifactId>
-  <packaging>pom</packaging>
-  <version>1.2-SNAPSHOT</version>
-  <name>Build Stability</name>
+  <artifactId>sonar-build-stability-plugin</artifactId>
+  <version>1.1.2</version>
+  <packaging>sonar-plugin</packaging>
 
+  <name>Sonar Build Stability Plugin</name>
+  <description>Generates reports based on information about builds from Continuous Integration System.</description>
+  <url>http://docs.codehaus.org/display/SONAR/Build+Stability+Plugin</url>
   <inceptionYear>2010</inceptionYear>
-
   <organization>
-    <name>Evgeny Mandrikov</name>
-    <url>http://godin.net.ru/</url>
+    <name>SonarSource</name>
+    <url>http://www.sonarsource.com</url>
   </organization>
-
-  <properties>
-    <sonar.version>2.2</sonar.version>
-    <license.name>AL2</license.name>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>sonar-build-stability-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-plugin-api</artifactId>
-        <version>${sonar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-testing-harness</artifactId>
-        <version>${sonar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-ws-client</artifactId>
-        <version>${sonar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>3.1</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <modules>
-    <module>api</module>
-    <module>sonar-plugin</module>
-  </modules>
+  <licenses>
+    <license>
+      <name>GNU LGPL 3</name>
+      <url>http://www.gnu.org/licenses/lgpl.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <developers>
     <developer>
@@ -76,40 +35,57 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/trunk/build-stability</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/build-stability</developerConnection>
-    <url>http://svn.sonar-plugins.codehaus.org</url>
+    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.1.2</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.1.2</developerConnection>
+    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.1.2</url>
   </scm>
-
   <issueManagement>
     <system>JIRA</system>
     <url>http://jira.codehaus.org/browse/SONARPLUGINS/component/14312</url>
   </issueManagement>
-
   <ciManagement>
     <system>Bamboo</system>
     <url>http://ci.codehaus.org/browse/SONAR-BUILDSTABILITY</url>
   </ciManagement>
 
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+  <properties>
+    <sonar.pluginClass>org.sonar.plugins.buildstability.BuildStabilityPlugin</sonar.pluginClass>
+    <sonar.version>2.2</sonar.version>
+  </properties>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.mycila.maven-license-plugin</groupId>
-          <artifactId>maven-license-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>sonar-plugin-api</artifactId>
+      <version>${sonar.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-project</artifactId>
+      <version>2.0.9</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- unit tests -->
+    <dependency>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>sonar-testing-harness</artifactId>
+      <version>${sonar.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
