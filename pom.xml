@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.codehaus.sonar-plugins</groupId>
     <artifactId>parent</artifactId>
-    <version>6</version>
+    <version>14</version>
   </parent>
 
   <artifactId>sonar-build-stability-plugin</artifactId>
-  <version>1.1.2</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>sonar-plugin</packaging>
 
   <name>Sonar Build Stability Plugin</name>
@@ -35,9 +35,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.1.2</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.1.2</developerConnection>
-    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/tags/sonar-build-stability-plugin-1.1.2</url>
+    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/trunk/build-stability</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/build-stability</developerConnection>
+    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/build-stability</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
