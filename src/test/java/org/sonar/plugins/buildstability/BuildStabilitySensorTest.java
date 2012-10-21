@@ -19,13 +19,13 @@
  */
 package org.sonar.plugins.buildstability;
 
-import org.apache.commons.configuration.BaseConfiguration;
-import org.apache.commons.configuration.Configuration;
 import org.apache.maven.model.CiManagement;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.PropertyDefinitions;
+import org.sonar.api.config.Settings;
 import org.sonar.api.resources.Project;
 import org.sonar.api.test.IsMeasure;
 import org.sonar.plugins.buildstability.ci.Build;
@@ -35,53 +35,53 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Evgeny Mandrikov
  */
 public class BuildStabilitySensorTest {
   private BuildStabilitySensor sensor;
+  private MavenProject mavenProject;
+  private Settings settings = new Settings(new PropertyDefinitions(BuildStabilityPlugin.class));
 
   @Before
   public void setUp() throws Exception {
-    sensor = new BuildStabilitySensor();
+    mavenProject = new MavenProject();
+    sensor = new BuildStabilitySensor(settings, mavenProject);
   }
 
   @Test
   public void urlInConfigurationTakesPrecedence() throws Exception {
-    MavenProject mavenProject = new MavenProject();
     CiManagement ciManagement = new CiManagement();
     ciManagement.setSystem("Hudson");
     ciManagement.setUrl("pom");
     mavenProject.setCiManagement(ciManagement);
-    Configuration configuration = new BaseConfiguration();
-    configuration.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:conf");
-    Project project = mock(Project.class);
-    when(project.getPom()).thenReturn(mavenProject);
-    when(project.getConfiguration()).thenReturn(configuration);
+    settings.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:conf");
 
-    assertThat(sensor.getCiUrl(project), is("Hudson:conf"));
+    assertThat(sensor.getCiUrl(mock(Project.class)), is("Hudson:conf"));
   }
 
   @Test
   public void testShouldExecuteOnProject() throws Exception {
     Project project = mock(Project.class);
-    MavenProject mavenProject = mock(MavenProject.class);
+    when(project.isRoot()).thenReturn(true);
+    assertFalse(sensor.shouldExecuteOnProject(project));
+
+    settings.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:http://localhost");
+    assertTrue(sensor.shouldExecuteOnProject(project));
+
     CiManagement ciManagement = new CiManagement();
     ciManagement.setSystem("Hudson");
     ciManagement.setUrl("http://localhost");
-    Configuration configuration = mock(Configuration.class);
-    when(configuration.getString(BuildStabilitySensor.CI_URL_PROPERTY)).thenReturn(null, "Hudson:http://localhost");
-    when(project.isRoot()).thenReturn(true);
-    when(project.getConfiguration()).thenReturn(configuration);
-    when(mavenProject.getCiManagement()).thenReturn(null, null, ciManagement);
-    when(project.getPom()).thenReturn(mavenProject);
-
-    assertFalse(sensor.shouldExecuteOnProject(project));
-    assertTrue(sensor.shouldExecuteOnProject(project));
+    mavenProject.setCiManagement(ciManagement);
     assertTrue(sensor.shouldExecuteOnProject(project));
   }
 
@@ -93,7 +93,7 @@ public class BuildStabilitySensorTest {
         new Build(2, 1, "Fake", false, 4),
         new Build(3, 10, "Fake", true, 3),
         new Build(4, 20, "Fake", true, 5)
-    );
+        );
 
     sensor.analyseBuilds(builds, context);
 
@@ -120,7 +120,7 @@ public class BuildStabilitySensorTest {
     SensorContext context = mock(SensorContext.class);
     List<Build> builds = Arrays.asList(
         new Build(1, 0, "Fake", false, 10)
-    );
+        );
 
     sensor.analyseBuilds(builds, context);
 
@@ -147,7 +147,7 @@ public class BuildStabilitySensorTest {
     SensorContext context = mock(SensorContext.class);
     List<Build> builds = Arrays.asList(
         new Build(1, 0, "Fake", true, 10)
-    );
+        );
 
     sensor.analyseBuilds(builds, context);
 

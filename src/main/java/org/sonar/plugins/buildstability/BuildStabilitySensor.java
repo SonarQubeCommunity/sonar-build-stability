@@ -21,10 +21,12 @@ package org.sonar.plugins.buildstability;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.CiManagement;
+import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.PropertiesBuilder;
 import org.sonar.api.resources.Project;
@@ -32,7 +34,11 @@ import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.CiConnector;
 import org.sonar.plugins.buildstability.ci.CiFactory;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Evgeny Mandrikov
@@ -46,17 +52,25 @@ public class BuildStabilitySensor implements Sensor {
   public static final boolean USE_JSECURITYCHECK_DEFAULT_VALUE = false;
   public static final String CI_URL_PROPERTY = "sonar.build-stability.url";
 
+  private Settings settings;
+  private MavenProject mavenProject;
+
+  public BuildStabilitySensor(Settings settings, MavenProject mavenProject) {
+    this.settings = settings;
+    this.mavenProject = mavenProject;
+  }
+
   public boolean shouldExecuteOnProject(Project project) {
     return project.isRoot() &&
-        StringUtils.isNotEmpty(getCiUrl(project));
+      StringUtils.isNotEmpty(getCiUrl(project));
   }
 
   protected String getCiUrl(Project project) {
-    String url = project.getConfiguration().getString(CI_URL_PROPERTY);
+    String url = settings.getString(CI_URL_PROPERTY);
     if (StringUtils.isNotEmpty(url)) {
       return url;
     }
-    CiManagement ci = project.getPom().getCiManagement();
+    CiManagement ci = mavenProject.getCiManagement();
     if (ci != null && StringUtils.isNotEmpty(ci.getSystem()) && StringUtils.isNotEmpty(ci.getUrl())) {
       return ci.getSystem() + ":" + ci.getUrl();
     }
@@ -67,9 +81,9 @@ public class BuildStabilitySensor implements Sensor {
     Logger logger = LoggerFactory.getLogger(getClass());
     String ciUrl = getCiUrl(project);
     logger.info("CI URL: {}", ciUrl);
-    String username = project.getConfiguration().getString(USERNAME_PROPERTY);
-    String password = project.getConfiguration().getString(PASSWORD_PROPERTY);
-    boolean useJSecurityCheck = project.getConfiguration().getBoolean(USE_JSECURITYCHECK_PROPERTY, USE_JSECURITYCHECK_DEFAULT_VALUE);
+    String username = settings.getString(USERNAME_PROPERTY);
+    String password = settings.getString(PASSWORD_PROPERTY);
+    boolean useJSecurityCheck = settings.getBoolean(USE_JSECURITYCHECK_PROPERTY);
     List<Build> builds;
     try {
       CiConnector connector = CiFactory.create(ciUrl, username, password, useJSecurityCheck);
@@ -77,7 +91,7 @@ public class BuildStabilitySensor implements Sensor {
         logger.warn("Unknown CiManagement system or incorrect URL: {}", ciUrl);
         return;
       }
-      int daysToRetrieve = project.getConfiguration().getInt(DAYS_PROPERTY, DAYS_DEFAULT_VALUE);
+      int daysToRetrieve = settings.getInt(DAYS_PROPERTY);
       Calendar calendar = Calendar.getInstance();
       calendar.add(Calendar.DAY_OF_MONTH, -daysToRetrieve);
       Date date = calendar.getTime();

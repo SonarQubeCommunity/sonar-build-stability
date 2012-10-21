@@ -34,145 +34,122 @@ public class BuildStabilityMetrics implements Metrics {
   /**
    * Number of builds.
    */
-  public static final Metric BUILDS = new Metric(
-      "builds",
-      "Builds",
-      "Number of builds",
-      Metric.ValueType.INT,
-      Metric.DIRECTION_NONE,
-      false,
-      DOMAIN_BUILD
-  );
+  public static final Metric BUILDS = new Metric.Builder("builds", "Builds", Metric.ValueType.INT)
+      .setDescription("Number of builds")
+      .setDirection(Metric.DIRECTION_NONE)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * Number of failed builds.
    */
-  public static final Metric FAILED = new Metric(
-      "build_failures",
-      "Failed Builds",
-      "Number of failed builds",
-      Metric.ValueType.INT,
-      Metric.DIRECTION_WORST,
-      false,
-      DOMAIN_BUILD
-  );
+  public static final Metric FAILED = new Metric.Builder("build_failures", "Failed Builds", Metric.ValueType.INT)
+      .setDescription("Number of failed builds")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * Ratio of successful builds. Measured as percentage of successful builds out of all last builds.
    */
-  public static final Metric SUCCESS_RATE = new Metric(
-      "build_success_density",
-      "Success Rate (%)",
-      "Ratio of successful builds",
-      Metric.ValueType.PERCENT,
-      Metric.DIRECTION_BETTER,
-      false,
-      DOMAIN_BUILD
-  );
+  public static final Metric SUCCESS_RATE = new Metric.Builder("build_success_density", "Success Rate (%)",
+      Metric.ValueType.PERCENT)
+      .setDescription("Ratio of successful builds")
+      .setDirection(Metric.DIRECTION_BETTER)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * Build average duration. Includes only duration of successful builds.
    */
-  public static final Metric AVG_DURATION = new Metric(
-      "build_average_duration",
-      "Average Duration",
-      "Average Duration",
-      Metric.ValueType.MILLISEC,
-      Metric.DIRECTION_WORST,
-      false,
-      DOMAIN_BUILD
-  );
+  public static final Metric AVG_DURATION = new Metric.Builder("build_average_duration", "Average Duration",
+      Metric.ValueType.MILLISEC)
+      .setDescription("Average Duration")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * Duration of longest successful build.
    */
-  public static final Metric LONGEST_DURATION = new Metric(
-      "build_longest_duration",
-      "Longest duration",
-      "Duration of longest successful build",
-      Metric.ValueType.MILLISEC,
-      Metric.DIRECTION_WORST,
-      false,
-      DOMAIN_BUILD
-  );
+  public static final Metric LONGEST_DURATION = new Metric.Builder("build_longest_duration", "Longest duration",
+      Metric.ValueType.MILLISEC)
+      .setDescription("Duration of longest successful build")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * Duration of shortest successful build.
    */
-  public static final Metric SHORTEST_DURATION = new Metric(
-      "build_shortest_duration",
-      "Shortest duration",
-      "Duration of shortest successful build",
-      Metric.ValueType.MILLISEC,
-      Metric.DIRECTION_WORST,
-      false,
-      DOMAIN_BUILD
-  );
+  public static final Metric SHORTEST_DURATION = new Metric.Builder("build_shortest_duration", "Shortest duration",
+      Metric.ValueType.MILLISEC)
+      .setDescription("Duration of shortest successful build")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * Average time to fix a failure.
    */
-  public static final Metric AVG_TIME_TO_FIX = new Metric(
-      "build_average_time_to_fix_failure",
+  public static final Metric AVG_TIME_TO_FIX = new Metric.Builder("build_average_time_to_fix_failure",
       "Average time to fix a failure",
-      "Average time to fix a failure",
-      Metric.ValueType.MILLISEC,
-      Metric.DIRECTION_WORST,
-      false,
-      DOMAIN_BUILD
-  );
+      Metric.ValueType.MILLISEC)
+      .setDescription("Average time to fix a failure")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * Longest time to fix a failure.
    */
-  public static final Metric LONGEST_TIME_TO_FIX = new Metric(
-      "build_longest_time_to_fix_failure",
+  public static final Metric LONGEST_TIME_TO_FIX = new Metric.Builder("build_longest_time_to_fix_failure",
       "Longest time to fix a failure",
-      "Longest time to fix a failure",
-      Metric.ValueType.MILLISEC,
-      Metric.DIRECTION_WORST,
-      false,
-      DOMAIN_BUILD
-  );
+      Metric.ValueType.MILLISEC)
+      .setDescription("Longest time to fix a failure")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * Average number of builds between fixes.
    */
-  public static final Metric AVG_BUILDS_TO_FIX = new Metric(
-      "build_average_builds_to_fix_failure",
+  public static final Metric AVG_BUILDS_TO_FIX = new Metric.Builder("build_average_builds_to_fix_failure",
       "Average number of builds between fixes",
-      "Average number of builds between fixes",
-      Metric.ValueType.INT,
-      Metric.DIRECTION_WORST,
-      false,
-      DOMAIN_BUILD
-  );
+      Metric.ValueType.INT)
+      .setDescription("Average number of builds between fixes")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * TODO comment me (seconds)
    */
-  public static final Metric DURATIONS = new Metric(
-      "build_durations",
-      "Durations",
-      "Durations",
-      Metric.ValueType.DATA,
-      Metric.DIRECTION_NONE,
-      false,
-      DOMAIN_BUILD
-  );
+  public static final Metric DURATIONS = new Metric.Builder("build_durations", "Durations", Metric.ValueType.DATA)
+      .setDescription("Durations")
+      .setDirection(Metric.DIRECTION_NONE)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   /**
    * TODO comment me
    */
-  public static final Metric RESULTS = new Metric(
-      "build_results",
-      "Results",
-      "Results",
-      Metric.ValueType.DATA,
-      Metric.DIRECTION_NONE,
-      false,
-      DOMAIN_BUILD
-  );
+  public static final Metric RESULTS = new Metric.Builder("build_results", "Results", Metric.ValueType.DATA)
+      .setDescription("Results")
+      .setDirection(Metric.DIRECTION_NONE)
+      .setQualitative(false)
+      .setDomain(DOMAIN_BUILD)
+      .create();
 
   public List<Metric> getMetrics() {
     return Arrays.asList(
@@ -190,6 +167,6 @@ public class BuildStabilityMetrics implements Metrics {
 
         DURATIONS,
         RESULTS
-    );
+        );
   }
 }
