@@ -51,7 +51,7 @@ public final class CiFactory {
     if (BambooServer.SYSTEM.equalsIgnoreCase(system)) {
       server = new BambooServer();
       pattern = BambooServer.PATTERN;
-    } else if (HudsonServer.SYSTEM.equalsIgnoreCase(system)) {
+    } else if (HudsonServer.SYSTEM.equalsIgnoreCase(system) || HudsonServer.SYSTEM_JENKINS.equalsIgnoreCase(system)) {
       server = new HudsonServer();
       ((HudsonServer) server).setUseJSecurityCheck(useJSecurityCheck);
       pattern = HudsonServer.PATTERN;

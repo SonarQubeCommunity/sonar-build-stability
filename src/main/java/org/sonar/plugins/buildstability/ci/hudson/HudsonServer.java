@@ -34,6 +34,7 @@ import java.io.IOException;
  */
 public class HudsonServer extends AbstractServer {
   public static final String SYSTEM = "Hudson";
+  public static final String SYSTEM_JENKINS = "Jenkins";
   public static final String PATTERN = "/job/";
 
   private static final Unmarshaller<Build> BUILD_UNMARSHALLER = new HudsonBuildUnmarshaller();
