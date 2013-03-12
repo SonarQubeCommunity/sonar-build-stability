@@ -19,11 +19,10 @@
  */
 package org.sonar.plugins.buildstability.ci;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 
@@ -77,11 +76,11 @@ public abstract class AbstractServer {
 
   protected abstract Unmarshaller<Build> getBuildUnmarshaller();
 
-  protected void doLogin(HttpClient client) throws IOException {
-    if (!StringUtils.isBlank(getUsername()) && !StringUtils.isBlank(getPassword())) {
-      client.getParams().setAuthenticationPreemptive(true);
-      Credentials defaultcreds = new UsernamePasswordCredentials(getUsername(), getPassword());
-      client.getState().setCredentials(AuthScope.ANY, defaultcreds);
+  protected void doLogin(DefaultHttpClient client) throws IOException {
+    if (StringUtils.isNotBlank(getUsername()) && StringUtils.isNotBlank(getPassword())) {
+      client.getCredentialsProvider().setCredentials(
+          AuthScope.ANY,
+          new UsernamePasswordCredentials(getUsername(), getPassword()));
     }
   }
 }

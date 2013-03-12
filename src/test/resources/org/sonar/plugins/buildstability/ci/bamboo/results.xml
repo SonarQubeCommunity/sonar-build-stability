@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<results expand="results">
+  <results expand="result" size="10" max-result="10" start-index="0">
+    <result restartable="false" continuable="false" id="312705578" number="83" lifeCycleState="Finished" state="Successful"
+      key="SONAR-BUILDSTABILITY-83" expand="vcsRevisions,artifacts,comments,labels,jiraIssues,stages">
+      <link rel="self" href="https://bamboo-ci.codehaus.org/rest/api/latest/result/SONAR-BUILDSTABILITY-83" />
+      <planName>BUILDSTABILITY</planName>
+      <projectName>Sonar</projectName>
+      <buildStartedTime>2013-03-12T05:47:01.013-05:00</buildStartedTime>
+      <prettyBuildStartedTime>Tue, 12 Mar, 05:47 AM</prettyBuildStartedTime>
+      <buildCompletedTime>2013-03-12T05:47:14.546-05:00</buildCompletedTime>
+      <prettyBuildCompletedTime>Tue, 12 Mar, 05:47 AM</prettyBuildCompletedTime>
+      <buildDurationInSeconds>13</buildDurationInSeconds>
+      <buildDuration>13533</buildDuration>
+      <buildDurationDescription>13 seconds</buildDurationDescription>
+      <buildRelativeTime>2 hours ago</buildRelativeTime>
+      <vcsRevisionKey>6254</vcsRevisionKey>
+      <vcsRevisions size="1" max-result="1" start-index="0" />
+      <buildTestSummary>No tests found</buildTestSummary>
+      <successfulTestCount>0</successfulTestCount>
+      <failedTestCount>0</failedTestCount>
+      <quarantinedTestCount>0</quarantinedTestCount>
+      <buildReason>&lt;a href="http://bamboo.ci.codehaus.org/browse/SONAR-BUILDSTABILITY-83/commit"&gt;Updated by
+        henryju&lt;/a&gt;</buildReason>
+      <artifacts size="0" max-result="0" start-index="0" />
+      <comments size="0" max-result="0" start-index="0" />
+      <labels size="0" max-result="0" start-index="0" />
+      <jiraIssues size="1" max-result="1" start-index="0" />
+      <stages size="1" max-result="1" start-index="0" />
+    </result>
+  </results>
+  <link rel="self" href="https://bamboo-ci.codehaus.org/rest/api/latest/result/SONAR-BUILDSTABILITY" />
+</results>

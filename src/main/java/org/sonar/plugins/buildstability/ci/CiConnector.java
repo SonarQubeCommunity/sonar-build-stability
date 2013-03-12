@@ -19,11 +19,16 @@
  */
 package org.sonar.plugins.buildstability.ci;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.util.EntityUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.sonar.api.utils.SonarException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,19 +41,20 @@ import java.util.regex.Pattern;
  * @author Evgeny Mandrikov
  */
 public class CiConnector {
+
   private static final int TIMEOUT = 30 * 1000;
 
-  private HttpClient client;
+  private DefaultHttpClient client;
   private AbstractServer server;
 
   protected CiConnector(AbstractServer server) {
     this.server = server;
-    client = new HttpClient();
-    client.getParams().setSoTimeout(TIMEOUT);
+    client = new DefaultHttpClient();
+    HttpConnectionParams.setSoTimeout(client.getParams(), TIMEOUT);
   }
 
   protected Build getLastBuild() throws IOException {
-    Document dom = executeGetMethod(server.getLastBuildUrl());
+    Document dom = executeGet(server.getLastBuildUrl());
     if (dom == null) {
       return null;
     }
@@ -56,7 +62,7 @@ public class CiConnector {
   }
 
   protected Build getBuild(String number) throws IOException {
-    Document dom = executeGetMethod(server.getBuildUrl(number));
+    Document dom = executeGet(server.getBuildUrl(number));
     if (dom == null) {
       return null;
     }
@@ -96,38 +102,46 @@ public class CiConnector {
     return builds;
   }
 
-  protected Document executeGetMethod(String url) throws IOException {
-    return executeMethod(new GetMethod(url));
+  protected Document executeGet(String url) throws IOException {
+    return execute(new HttpGet(url));
   }
 
-  protected Document executeMethod(GetMethod method) throws IOException {
-    client.executeMethod(method);
-    if (method.getStatusCode() == 404) {
-      return null;
-    }
-    if (method.getStatusCode() != 200) {
-      throw new IOException("Unexpected status code: " + method.getStatusCode());
-    }
+  protected Document execute(HttpGet httpGet) throws IOException {
+    HttpResponse httpResponse = client.execute(httpGet);
     try {
+      int statusCode = httpResponse.getStatusLine().getStatusCode();
+      if (statusCode == 404) {
+        return null;
+      }
+      if (statusCode != 200) {
+        throw new IOException("Unexpected status code: " + statusCode);
+      }
+      String response = EntityUtils.toString(httpResponse.getEntity());
+      String encoding = discoverEncoding(httpResponse, response);
       SAXReader reader = new SAXReader();
-      String response = method.getResponseBodyAsString();
-      Pattern pattern = Pattern.compile("<\\?xml(?: \\w*=\".*\") encoding=\"([^ ]*)\".*");
-      Matcher matcher = pattern.matcher(response);
-      String encoding = "UTF-8";
+      reader.setEncoding(encoding);
+      return reader.read(IOUtils.toInputStream(response));
+    } catch (DocumentException e) {
+      throw new SonarException("Unable to parse response", e);
+    } finally {
+      httpGet.releaseConnection();
+    }
+  }
+
+  private String discoverEncoding(HttpResponse httpResponse, String response) {
+    Pattern pattern = Pattern.compile("<\\?xml(?: \\w*=\".*\") encoding=\"([^ ]*)\".*");
+    Matcher matcher = pattern.matcher(response);
+    String encoding = "UTF-8";
+    if (matcher.matches()) {
+      encoding = matcher.group(1);
+    } else {
+      String contentType = httpResponse.getLastHeader("Content-Type").getValue();
+      pattern = Pattern.compile(".*charset=([^;]*).*");
+      matcher = pattern.matcher(contentType);
       if (matcher.matches()) {
         encoding = matcher.group(1);
-      } else {
-        String contentType = method.getResponseHeader("Content-Type").getValue();
-        pattern = Pattern.compile(".*charset=([^;]*).*");
-        matcher = pattern.matcher(contentType);
-        if (matcher.matches()) {
-          encoding = matcher.group(1);
-        }
       }
-      reader.setEncoding(encoding);
-      return reader.read(method.getResponseBodyAsStream());
-    } catch (DocumentException e) {
-      throw new RuntimeException(e);
     }
+    return encoding;
   }
 }

@@ -19,8 +19,8 @@
  */
 package org.sonar.plugins.buildstability.ci.hudson;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.sonar.plugins.buildstability.ci.AbstractServer;
 import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.Unmarshaller;
@@ -56,7 +56,7 @@ public class HudsonServer extends AbstractServer {
   }
 
   @Override
-  protected void doLogin(HttpClient client) throws IOException {
+  protected void doLogin(DefaultHttpClient client) throws IOException {
     if (!isUseJSecurityCheck()) {
       super.doLogin(client);
       return;

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<result restartable="false" continuable="false" id="312705576" number="82" lifeCycleState="Finished" state="Successful"
+  key="SONAR-BUILDSTABILITY-82" expand="changes,metadata,vcsRevisions,artifacts,comments,labels,jiraIssues,stages">
+  <link rel="self" href="https://bamboo-ci.codehaus.org/rest/api/latest/result/SONAR-BUILDSTABILITY-82" />
+  <planName>BUILDSTABILITY</planName>
+  <projectName>Sonar</projectName>
+  <buildStartedTime>2013-03-12T05:37:01.029-05:00</buildStartedTime>
+  <prettyBuildStartedTime>Tue, 12 Mar, 05:37 AM</prettyBuildStartedTime>
+  <buildCompletedTime>2013-03-12T05:37:13.962-05:00</buildCompletedTime>
+  <prettyBuildCompletedTime>Tue, 12 Mar, 05:37 AM</prettyBuildCompletedTime>
+  <buildDurationInSeconds>12</buildDurationInSeconds>
+  <buildDuration>12933</buildDuration>
+  <buildDurationDescription>12 seconds</buildDurationDescription>
+  <buildRelativeTime>5 hours ago</buildRelativeTime>
+  <vcsRevisionKey>6253</vcsRevisionKey>
+  <vcsRevisions size="1" max-result="1" start-index="0" />
+  <buildTestSummary>No tests found</buildTestSummary>
+  <successfulTestCount>0</successfulTestCount>
+  <failedTestCount>0</failedTestCount>
+  <quarantinedTestCount>0</quarantinedTestCount>
+  <buildReason>&lt;a href=&quot;http://bamboo.ci.codehaus.org/browse/SONAR-BUILDSTABILITY-82/commit&quot;&gt;Updated by
+    henryju&lt;/a&gt;</buildReason>
+  <artifacts size="0" max-result="0" start-index="0" />
+  <comments size="0" max-result="0" start-index="0" />
+  <labels size="0" max-result="0" start-index="0" />
+  <jiraIssues size="1" max-result="1" start-index="0" />
+  <stages size="1" max-result="1" start-index="0" />
+  <changes size="1" max-result="1" start-index="0" />
+  <metadata size="0" max-result="0" start-index="0" />
+</result>

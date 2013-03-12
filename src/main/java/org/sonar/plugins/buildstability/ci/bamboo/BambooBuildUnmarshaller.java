@@ -37,23 +37,40 @@ public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
   /**
    * Bamboo date-time format. Example: 2010-01-04T11:02:17.114-0600
    */
-  private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+  private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
-  public Build toModel(Element domElement) {
+  public Build toModel(Element rootElement) {
     Build build = new Build();
 
-    String state = domElement.attributeValue("state");
-    build.setNumber(Integer.parseInt(domElement.attributeValue("number")));
+    Element result;
+    Element results = rootElement.element("results");
+    if (results != null) {
+      result = results.element("result");
+    }
+    else {
+      result = rootElement;
+    }
+    if (result == null) {
+      return null;
+    }
+
+    String state = result.attributeValue("state");
+    build.setNumber(Integer.parseInt(result.attributeValue("number")));
     build.setResult(state);
 
     SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
-    String buildStartedTime = domElement.elementText("buildStartedTime");
+    String buildStartedTime = result.elementText("buildStartedTime");
+    // Remove ':' in the timezone because it is not was the Java format expect
+    int timezoneColonSeparatorIndex = buildStartedTime.length() - 3;
+    if (buildStartedTime.charAt(timezoneColonSeparatorIndex) == ':') {
+      buildStartedTime = buildStartedTime.substring(0, timezoneColonSeparatorIndex) + buildStartedTime.substring(timezoneColonSeparatorIndex + 1);
+    }
     try {
       Date date = sdf.parse(buildStartedTime);
       build.setTimestamp(date.getTime());
     } catch (ParseException ignored) {
     }
-    build.setDuration(Double.parseDouble(domElement.elementText("buildDurationInSeconds")) * 1000);
+    build.setDuration(Double.parseDouble(result.elementText("buildDurationInSeconds")) * 1000);
     build.setSuccessful(SUCCESSFULL.equalsIgnoreCase(state));
 
     return build;

@@ -19,11 +19,17 @@
  */
 package org.sonar.plugins.buildstability.ci.hudson;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Evgeny Mandrikov
@@ -35,27 +41,35 @@ public final class HudsonUtils {
   private HudsonUtils() {
   }
 
-  public static void doLogin(HttpClient client, String hostName, String username, String password) throws IOException {
+  public static void doLogin(DefaultHttpClient client, String hostName, String username, String password) throws IOException {
     String hudsonLoginEntryUrl = hostName + "loginEntry";
-    GetMethod loginLink = new GetMethod(hudsonLoginEntryUrl);
-    client.executeMethod(loginLink);
-    checkResult(loginLink.getStatusCode(), hudsonLoginEntryUrl);
+    HttpGet loginLink = new HttpGet(hudsonLoginEntryUrl);
+    HttpResponse response = client.execute(loginLink);
+    checkResult(response.getStatusLine().getStatusCode(), hudsonLoginEntryUrl);
 
     String location = hostName + "j_security_check";
-    while (true) {
-      PostMethod loginMethod = new PostMethod(location);
-      loginMethod.addParameter("j_username", username);
-      loginMethod.addParameter("j_password", password);
-      loginMethod.addParameter("action", "login");
-      client.executeMethod(loginMethod);
-      if (loginMethod.getStatusCode() / 100 == 3) {
-        // Commons HTTP client refuses to handle redirects for POST
-        // so we have to do it manually.
-        location = loginMethod.getResponseHeader("Location").getValue();
-        continue;
+    boolean loggedIn = false;
+    while (!loggedIn) {
+      HttpPost loginMethod = new HttpPost(location);
+      List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+      nvps.add(new BasicNameValuePair("j_username", username));
+      nvps.add(new BasicNameValuePair("j_password", password));
+      nvps.add(new BasicNameValuePair("action", "login"));
+      loginMethod.setEntity(new UrlEncodedFormEntity(nvps));
+      try {
+        HttpResponse response2 = client.execute(loginMethod);
+        if (response2.getStatusLine().getStatusCode() / 100 == 3) {
+          // Commons HTTP client refuses to handle redirects for POST
+          // so we have to do it manually.
+          location = response2.getFirstHeader("Location").getValue();
+        }
+        else {
+          checkResult(response2.getStatusLine().getStatusCode(), location);
+          loggedIn = true;
+        }
+      } finally {
+        loginMethod.releaseConnection();
       }
-      checkResult(loginMethod.getStatusCode(), location);
-      break;
     }
   }
 
