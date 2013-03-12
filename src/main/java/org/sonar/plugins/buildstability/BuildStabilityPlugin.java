@@ -43,10 +43,10 @@ import java.util.List;
   @Property(
     key = BuildStabilitySensor.CI_URL_PROPERTY,
     defaultValue = "",
-    name = "CiManagement",
-    description = "Continuous Integration Server. Leave blank to take this value from <i>pom.xml</i>. Example:" +
-      "\"Hudson:http://hudson.glassfish.org/job/hudson/\"" +
-      "or \"Bamboo:http://ci.codehaus.org/browse/SONAR\".",
+    name = "Continuous Integration Server URL",
+    description = "URL of the project on the CI server. Leave blank to take this value from <i>pom.xml</i>. Examples: <ul>" +
+      "<li>\"Jenkins:https://ci.jenkins-ci.org/job/jenkins_main_trunk/\"</li>" +
+      "<li>\"Bamboo:http://ci.codehaus.org/browse/SONAR\"</li></ul>",
     global = false,
     project = true,
     module = false
@@ -73,7 +73,7 @@ import java.util.List;
     key = BuildStabilitySensor.USE_JSECURITYCHECK_PROPERTY,
     defaultValue = BuildStabilitySensor.USE_JSECURITYCHECK_DEFAULT_VALUE + "",
     name = "Use j_security_check",
-    description = "Set this property to true, if your Hudson delegates security to servlet container.",
+    description = "Set this property to true, if your CI Server delegates security to servlet container.",
     global = true,
     project = true,
     module = false
