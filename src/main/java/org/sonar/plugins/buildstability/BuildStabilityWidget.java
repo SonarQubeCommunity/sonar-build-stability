@@ -30,7 +30,7 @@ import org.sonar.api.web.UserRole;
  */
 @NavigationSection(NavigationSection.RESOURCE)
 @UserRole(UserRole.USER)
-@Description("Build Stability")
+@Description("Display build stability stats from your CI server")
 public class BuildStabilityWidget extends AbstractRubyTemplate implements RubyRailsWidget {
   public String getId() {
     return "buildstability-widget";
