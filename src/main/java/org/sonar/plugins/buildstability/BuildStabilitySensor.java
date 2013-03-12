@@ -20,8 +20,6 @@
 package org.sonar.plugins.buildstability;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.model.CiManagement;
-import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
@@ -33,6 +31,7 @@ import org.sonar.api.resources.Project;
 import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.CiConnector;
 import org.sonar.plugins.buildstability.ci.CiFactory;
+import org.sonar.plugins.buildstability.ci.MavenCiConfiguration;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -53,19 +52,18 @@ public class BuildStabilitySensor implements Sensor {
   public static final String CI_URL_PROPERTY = "sonar.build-stability.url";
 
   private final Settings settings;
-  private final MavenProject mavenProject;
+  private final MavenCiConfiguration mavenCiConfiguration;
 
-  public BuildStabilitySensor(Settings settings, MavenProject mavenProject) {
+  public BuildStabilitySensor(Settings settings, MavenCiConfiguration mavenCiConfiguration) {
     this.settings = settings;
-    this.mavenProject = mavenProject;
+    this.mavenCiConfiguration = mavenCiConfiguration;
   }
 
   /**
    * In case we are not in a Maven build this constructor will be called
    */
   public BuildStabilitySensor(Settings settings) {
-    this.settings = settings;
-    this.mavenProject = null;
+    this(settings, null /* Not in a Maven build */);
   }
 
   public boolean shouldExecuteOnProject(Project project) {
@@ -78,10 +76,9 @@ public class BuildStabilitySensor implements Sensor {
     if (StringUtils.isNotEmpty(url)) {
       return url;
     }
-    if (mavenProject != null) {
-      CiManagement ci = mavenProject.getCiManagement();
-      if (ci != null && StringUtils.isNotEmpty(ci.getSystem()) && StringUtils.isNotEmpty(ci.getUrl())) {
-        return ci.getSystem() + ":" + ci.getUrl();
+    if (mavenCiConfiguration != null) {
+      if (StringUtils.isNotEmpty(mavenCiConfiguration.getSystem()) && StringUtils.isNotEmpty(mavenCiConfiguration.getUrl())) {
+        return mavenCiConfiguration.getSystem() + ":" + mavenCiConfiguration.getUrl();
       }
     }
     return null;

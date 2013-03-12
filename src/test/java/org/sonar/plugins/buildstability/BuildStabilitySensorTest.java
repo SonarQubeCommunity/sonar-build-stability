@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.buildstability;
 
-import org.apache.maven.model.CiManagement;
-import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
@@ -29,6 +27,7 @@ import org.sonar.api.config.Settings;
 import org.sonar.api.resources.Project;
 import org.sonar.api.test.IsMeasure;
 import org.sonar.plugins.buildstability.ci.Build;
+import org.sonar.plugins.buildstability.ci.MavenCiConfiguration;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,21 +48,19 @@ import static org.mockito.Mockito.when;
  */
 public class BuildStabilitySensorTest {
   private BuildStabilitySensor sensor;
-  private MavenProject mavenProject;
+  private MavenCiConfiguration mavenCiConfig;
   private Settings settings = new Settings(new PropertyDefinitions(BuildStabilityPlugin.class));
 
   @Before
   public void setUp() throws Exception {
-    mavenProject = new MavenProject();
-    sensor = new BuildStabilitySensor(settings, mavenProject);
+    mavenCiConfig = mock(MavenCiConfiguration.class);
+    sensor = new BuildStabilitySensor(settings, mavenCiConfig);
   }
 
   @Test
   public void urlInConfigurationTakesPrecedence() throws Exception {
-    CiManagement ciManagement = new CiManagement();
-    ciManagement.setSystem("Hudson");
-    ciManagement.setUrl("pom");
-    mavenProject.setCiManagement(ciManagement);
+    when(mavenCiConfig.getSystem()).thenReturn("Hudson");
+    when(mavenCiConfig.getUrl()).thenReturn("pom");
     settings.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:conf");
 
     assertThat(sensor.getCiUrl(mock(Project.class)), is("Hudson:conf"));
@@ -82,10 +79,8 @@ public class BuildStabilitySensorTest {
     settings.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:http://localhost");
     assertTrue(sensor.shouldExecuteOnProject(project));
 
-    CiManagement ciManagement = new CiManagement();
-    ciManagement.setSystem("Hudson");
-    ciManagement.setUrl("http://localhost");
-    mavenProject.setCiManagement(ciManagement);
+    when(mavenCiConfig.getSystem()).thenReturn("Hudson");
+    when(mavenCiConfig.getUrl()).thenReturn("http://localhost");
     assertTrue(sensor.shouldExecuteOnProject(project));
   }
 
