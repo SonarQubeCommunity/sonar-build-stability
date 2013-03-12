@@ -75,6 +75,10 @@ public class BuildStabilitySensorTest {
     when(project.isRoot()).thenReturn(true);
     assertFalse(sensor.shouldExecuteOnProject(project));
 
+    // SONARPLUGINS-1603
+    BuildStabilitySensor sensorNoMaven = new BuildStabilitySensor(settings);
+    assertFalse(sensorNoMaven.shouldExecuteOnProject(project));
+
     settings.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:http://localhost");
     assertTrue(sensor.shouldExecuteOnProject(project));
 

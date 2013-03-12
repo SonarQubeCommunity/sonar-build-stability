@@ -52,12 +52,20 @@ public class BuildStabilitySensor implements Sensor {
   public static final boolean USE_JSECURITYCHECK_DEFAULT_VALUE = false;
   public static final String CI_URL_PROPERTY = "sonar.build-stability.url";
 
-  private Settings settings;
-  private MavenProject mavenProject;
+  private final Settings settings;
+  private final MavenProject mavenProject;
 
   public BuildStabilitySensor(Settings settings, MavenProject mavenProject) {
     this.settings = settings;
     this.mavenProject = mavenProject;
+  }
+
+  /**
+   * In case we are not in a Maven build this constructor will be called
+   */
+  public BuildStabilitySensor(Settings settings) {
+    this.settings = settings;
+    this.mavenProject = null;
   }
 
   public boolean shouldExecuteOnProject(Project project) {
@@ -70,9 +78,11 @@ public class BuildStabilitySensor implements Sensor {
     if (StringUtils.isNotEmpty(url)) {
       return url;
     }
-    CiManagement ci = mavenProject.getCiManagement();
-    if (ci != null && StringUtils.isNotEmpty(ci.getSystem()) && StringUtils.isNotEmpty(ci.getUrl())) {
-      return ci.getSystem() + ":" + ci.getUrl();
+    if (mavenProject != null) {
+      CiManagement ci = mavenProject.getCiManagement();
+      if (ci != null && StringUtils.isNotEmpty(ci.getSystem()) && StringUtils.isNotEmpty(ci.getUrl())) {
+        return ci.getSystem() + ":" + ci.getUrl();
+      }
     }
     return null;
   }
