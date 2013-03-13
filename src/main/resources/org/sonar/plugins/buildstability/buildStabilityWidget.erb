@@ -15,7 +15,7 @@
    results_measure = measure('build_results')
 
    if builds_measure
-     if builds_measure == 0
+     if builds_measure.typed_value == 0
 %>
   <p>No recent build found on your CI Server.</p>
 <%   else %>
