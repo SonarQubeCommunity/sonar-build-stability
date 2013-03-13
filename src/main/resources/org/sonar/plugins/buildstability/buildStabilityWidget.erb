@@ -15,7 +15,10 @@
    results_measure = measure('build_results')
 
    if builds_measure
+     if builds_measure == 0
 %>
+  <p>No recent build found on your CI Server.</p>
+<%   else %>
   <div class="yui-gd">
     <div class="yui-u first">
       <div class="dashbox">
@@ -72,4 +75,5 @@
       </div>
     <% end %>
   </div>
-<% end %>
+<%   end
+   end %>

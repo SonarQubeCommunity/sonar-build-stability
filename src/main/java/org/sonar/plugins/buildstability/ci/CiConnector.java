@@ -88,8 +88,10 @@ public class CiConnector {
     server.doLogin(client);
     List<Build> builds = new ArrayList<Build>();
     Build current = getLastBuild();
-    builds.add(current);
     Build last = current;
+    if (date.before(last.getDate())) {
+      builds.add(current);
+    }
     int number = last.getNumber();
     while (date.before(last.getDate()) && number > 0) {
       number--;
