@@ -35,9 +35,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/sonar-plugins/trunk/build-stability</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/build-stability</developerConnection>
-    <url>scm:svn:https://svn.codehaus.org/sonar-plugins/trunk/build-stability</url>
+    <connection>scm:git:git@github.com:SonarCommunity/sonar-build-stability.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-build-stability.git</developerConnection>
+    <url>https://github.com/SonarCommunity/sonar-build-stability</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
