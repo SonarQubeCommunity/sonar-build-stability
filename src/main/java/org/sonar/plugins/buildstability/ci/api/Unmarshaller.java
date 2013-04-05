@@ -17,27 +17,13 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci.hudson;
+package org.sonar.plugins.buildstability.ci.api;
 
-import org.sonar.plugins.buildstability.ci.api.Build;
-
-import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 import org.dom4j.Element;
 
 /**
  * @author Evgeny Mandrikov
  */
-public class HudsonBuildUnmarshaller implements Unmarshaller<Build> {
-  public Build toModel(Element domElement) {
-    Build build = new Build();
-
-    String result = domElement.elementText("result");
-    build.setNumber(Integer.parseInt(domElement.elementText("number")));
-    build.setTimestamp(Long.parseLong(domElement.elementText("timestamp")));
-    build.setResult(result);
-    build.setDuration(Long.parseLong(domElement.elementText("duration")));
-    build.setSuccessful("SUCCESS".equalsIgnoreCase(result));
-
-    return build;
-  }
+public interface Unmarshaller<MODEL extends Model> {
+  MODEL toModel(Element domElement);
 }

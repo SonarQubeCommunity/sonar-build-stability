@@ -131,9 +131,6 @@ public class BuildStabilityMetrics implements Metrics {
       .setDomain(DOMAIN_BUILD)
       .create();
 
-  /**
-   * TODO comment me (seconds)
-   */
   public static final Metric DURATIONS = new Metric.Builder("build_durations", "Durations", Metric.ValueType.DATA)
       .setDescription("Durations")
       .setDirection(Metric.DIRECTION_NONE)
@@ -141,9 +138,6 @@ public class BuildStabilityMetrics implements Metrics {
       .setDomain(DOMAIN_BUILD)
       .create();
 
-  /**
-   * TODO comment me
-   */
   public static final Metric RESULTS = new Metric.Builder("build_results", "Results", Metric.ValueType.DATA)
       .setDescription("Results")
       .setDirection(Metric.DIRECTION_NONE)
@@ -166,7 +160,6 @@ public class BuildStabilityMetrics implements Metrics {
         AVG_BUILDS_TO_FIX,
 
         DURATIONS,
-        RESULTS
-        );
+        RESULTS);
   }
 }

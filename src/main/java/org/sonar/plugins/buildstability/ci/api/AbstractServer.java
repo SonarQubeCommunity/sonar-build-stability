@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci;
+package org.sonar.plugins.buildstability.ci.api;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.auth.AuthScope;
@@ -70,13 +70,13 @@ public abstract class AbstractServer {
     this.key = key;
   }
 
-  protected abstract String getBuildUrl(String number);
+  public abstract String getBuildUrl(String number);
 
-  protected abstract String getLastBuildUrl();
+  public abstract String getLastBuildUrl();
 
-  protected abstract Unmarshaller<Build> getBuildUnmarshaller();
+  public abstract Unmarshaller<Build> getBuildUnmarshaller();
 
-  protected void doLogin(DefaultHttpClient client) throws IOException {
+  public void doLogin(DefaultHttpClient client) throws IOException {
     if (StringUtils.isNotBlank(getUsername()) && StringUtils.isNotBlank(getPassword())) {
       client.getCredentialsProvider().setCredentials(
           AuthScope.ANY,

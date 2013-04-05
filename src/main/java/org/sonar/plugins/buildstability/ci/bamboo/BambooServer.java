@@ -19,10 +19,11 @@
  */
 package org.sonar.plugins.buildstability.ci.bamboo;
 
+import org.sonar.plugins.buildstability.ci.api.Build;
+
 import org.sonar.api.utils.SonarException;
-import org.sonar.plugins.buildstability.ci.AbstractServer;
-import org.sonar.plugins.buildstability.ci.Build;
-import org.sonar.plugins.buildstability.ci.Unmarshaller;
+import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -37,7 +38,7 @@ public class BambooServer extends AbstractServer {
   public static final String PATTERN = "/browse/";
   private static final Unmarshaller<Build> BUILD_UNMARSHALLER = new BambooBuildUnmarshaller();
 
-  protected String getBuildUrl(String number) {
+  public String getBuildUrl(String number) {
     StringBuilder sb = new StringBuilder(getHost())
         .append("/rest/api/latest/result/").append(getKey()).append("/").append(number)
         .append("?os_authType=basic")
@@ -46,7 +47,7 @@ public class BambooServer extends AbstractServer {
   }
 
   @Override
-  protected String getLastBuildUrl() {
+  public String getLastBuildUrl() {
     try {
       StringBuilder sb = new StringBuilder(getHost())
           .append("/rest/api/latest/result/").append(getKey())
@@ -59,7 +60,7 @@ public class BambooServer extends AbstractServer {
   }
 
   @Override
-  protected Unmarshaller<Build> getBuildUnmarshaller() {
+  public Unmarshaller<Build> getBuildUnmarshaller() {
     return BUILD_UNMARSHALLER;
   }
 }

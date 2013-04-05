@@ -29,7 +29,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.sonar.api.charts.AbstractChart;
 import org.sonar.api.charts.ChartParameters;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -40,7 +42,6 @@ public class BuildStabilityChart extends AbstractChart {
   private static final String FONT_NAME = "SansSerif";
   private static final String PARAM_VALUES = "v";
   private static final String PARAM_COLORS = "c";
-//  private static final String PARAM_DAYS = "d";
   private static final String PARAM_FONT_SIZE = "fs";
 
   public String getKey() {
@@ -56,7 +57,7 @@ public class BuildStabilityChart extends AbstractChart {
     return plot;
   }
 
-  class ColoredBarRenderer extends BarRenderer {
+  static class ColoredBarRenderer extends BarRenderer {
     private Paint[] colors;
 
     public void setColors(Paint[] colors) {
@@ -76,9 +77,7 @@ public class BuildStabilityChart extends AbstractChart {
     CategoryPlot plot = new CategoryPlot();
 
     Font font = getFont(params.getValue(PARAM_FONT_SIZE));
-    // TODO see SONARPLUGINS-379
-//    configureDomainAxis(plot, params.getValue(PARAM_DAYS));
-    configureDomainAxis(plot, "");
+    configureDomainAxis(plot);
     configureRangeAxis(plot, "s", font);
     configureRenderer(plot, params.getValue(PARAM_COLORS, "", true));
     configureValues(dataset, params.getValue(PARAM_VALUES, "", true));
@@ -118,11 +117,8 @@ public class BuildStabilityChart extends AbstractChart {
     plot.setRenderer(renderer);
   }
 
-  private void configureDomainAxis(CategoryPlot plot, String days) {
+  private void configureDomainAxis(CategoryPlot plot) {
     CategoryAxis categoryAxis = new CategoryAxis();
-    if (!StringUtils.isBlank(days)) {
-      categoryAxis.setLabel("Last " + days + " days");
-    }
     categoryAxis.setTickLabelsVisible(false);
     plot.setDomainAxis(categoryAxis);
     plot.setDomainGridlinesVisible(false);

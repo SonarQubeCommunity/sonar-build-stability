@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.buildstability;
 
+import org.sonar.plugins.buildstability.ci.api.Build;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
@@ -26,7 +28,6 @@ import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.resources.Project;
 import org.sonar.api.test.IsMeasure;
-import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.MavenCiConfiguration;
 
 import java.util.Arrays;

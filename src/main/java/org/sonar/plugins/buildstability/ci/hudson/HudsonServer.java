@@ -19,11 +19,12 @@
  */
 package org.sonar.plugins.buildstability.ci.hudson;
 
+import org.sonar.plugins.buildstability.ci.api.Build;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.sonar.plugins.buildstability.ci.AbstractServer;
-import org.sonar.plugins.buildstability.ci.Build;
-import org.sonar.plugins.buildstability.ci.Unmarshaller;
+import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.io.IOException;
 
@@ -42,22 +43,22 @@ public class HudsonServer extends AbstractServer {
   private boolean useJSecurityCheck;
 
   @Override
-  protected String getBuildUrl(String number) {
+  public String getBuildUrl(String number) {
     return getHost() + "/job/" + getKey() + "/" + number + "/api/xml/";
   }
 
   @Override
-  protected String getLastBuildUrl() {
+  public String getLastBuildUrl() {
     return getBuildUrl("lastBuild");
   }
 
   @Override
-  protected Unmarshaller<Build> getBuildUnmarshaller() {
+  public Unmarshaller<Build> getBuildUnmarshaller() {
     return BUILD_UNMARSHALLER;
   }
 
   @Override
-  protected void doLogin(DefaultHttpClient client) throws IOException {
+  public void doLogin(DefaultHttpClient client) throws IOException {
     if (!isUseJSecurityCheck()) {
       super.doLogin(client);
       return;

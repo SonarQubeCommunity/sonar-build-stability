@@ -19,9 +19,12 @@
  */
 package org.sonar.plugins.buildstability.ci.bamboo;
 
+import org.sonar.plugins.buildstability.ci.api.Build;
+
+import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 import org.dom4j.Element;
-import org.sonar.plugins.buildstability.ci.Build;
-import org.sonar.plugins.buildstability.ci.Unmarshaller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,7 +35,7 @@ import java.util.Date;
  */
 public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
   private static final String SUCCESSFULL = "Successful";
-  private static final String FAILED = "Failed";
+  private static final Logger LOG = LoggerFactory.getLogger(BambooBuildUnmarshaller.class);
 
   /**
    * Bamboo date-time format. Example: 2010-01-04T11:02:17.114-0600
@@ -69,6 +72,7 @@ public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
       Date date = sdf.parse(buildStartedTime);
       build.setTimestamp(date.getTime());
     } catch (ParseException ignored) {
+      LOG.warn("Unable to parse date {}. Expected format is {}", buildStartedTime, DATE_TIME_FORMAT);
     }
     build.setDuration(Double.parseDouble(result.elementText("buildDurationInSeconds")) * 1000);
     build.setSuccessful(SUCCESSFULL.equalsIgnoreCase(state));

@@ -17,13 +17,10 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci;
-
-import org.dom4j.Element;
+package org.sonar.plugins.buildstability.ci.api;
 
 /**
  * @author Evgeny Mandrikov
  */
-public interface Unmarshaller<MODEL extends Model> {
-  MODEL toModel(Element domElement);
+public interface Model {
 }

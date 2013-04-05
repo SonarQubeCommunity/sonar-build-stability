@@ -85,7 +85,6 @@ public class BuildStabilityPlugin extends SonarPlugin {
         BuildStabilityMetrics.class,
         BuildStabilitySensor.class,
         BuildStabilityWidget.class,
-        BuildStabilityChart.class
-        );
+        BuildStabilityChart.class);
   }
 }

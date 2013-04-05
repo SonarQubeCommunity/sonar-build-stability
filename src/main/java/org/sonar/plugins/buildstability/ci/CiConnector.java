@@ -19,6 +19,9 @@
  */
 package org.sonar.plugins.buildstability.ci;
 
+import org.sonar.plugins.buildstability.ci.api.Build;
+
+import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -28,6 +31,8 @@ import org.apache.http.util.EntityUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.utils.SonarException;
 
 import java.io.IOException;
@@ -42,6 +47,7 @@ import java.util.regex.Pattern;
  */
 public class CiConnector {
 
+  private static final Logger LOG = LoggerFactory.getLogger(CiConnector.class);
   private static final int TIMEOUT = 30 * 1000;
 
   private DefaultHttpClient client;
@@ -77,9 +83,14 @@ public class CiConnector {
     server.doLogin(client);
     List<Build> builds = new ArrayList<Build>();
     Build last = getLastBuild();
-    builds.add(last);
-    for (int i = 1; i <= count; i++) {
-      builds.add(getBuild(last.getNumber() - i));
+    if (last != null) {
+      builds.add(last);
+      for (int i = 1; i < count; i++) {
+        Build previous = getBuild(last.getNumber() - i);
+        if (previous != null) {
+          builds.add(previous);
+        }
+      }
     }
     return builds;
   }
@@ -88,17 +99,13 @@ public class CiConnector {
     server.doLogin(client);
     List<Build> builds = new ArrayList<Build>();
     Build current = getLastBuild();
-    Build last = current;
-    if (date.before(last.getDate())) {
-      builds.add(current);
-    }
-    int number = last.getNumber();
-    while (date.before(last.getDate()) && number > 0) {
-      number--;
-      current = getBuild(number);
+    int number = current != null ? current.getNumber() : 0;
+    while (number > 0 && (current == null || date.before(current.getDate()))) {
       if (current != null) {
         builds.add(current);
-        last = current;
+      }
+      if (--number > 0) {
+        current = getBuild(number);
       }
     }
     return builds;
@@ -113,10 +120,11 @@ public class CiConnector {
     try {
       int statusCode = httpResponse.getStatusLine().getStatusCode();
       if (statusCode == 404) {
+        LOG.warn("Received 404 when trying to access {}", httpGet.getURI());
         return null;
       }
       if (statusCode != 200) {
-        throw new IOException("Unexpected status code: " + statusCode);
+        throw new SonarException("Received " + statusCode + " when trying to access " + httpGet.getURI());
       }
       String response = EntityUtils.toString(httpResponse.getEntity());
       String encoding = discoverEncoding(httpResponse, response);

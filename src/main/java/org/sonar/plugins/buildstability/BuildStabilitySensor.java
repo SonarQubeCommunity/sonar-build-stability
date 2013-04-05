@@ -28,10 +28,10 @@ import org.sonar.api.config.Settings;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.PropertiesBuilder;
 import org.sonar.api.resources.Project;
-import org.sonar.plugins.buildstability.ci.Build;
 import org.sonar.plugins.buildstability.ci.CiConnector;
 import org.sonar.plugins.buildstability.ci.CiFactory;
 import org.sonar.plugins.buildstability.ci.MavenCiConfiguration;
+import org.sonar.plugins.buildstability.ci.api.Build;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -76,10 +76,10 @@ public class BuildStabilitySensor implements Sensor {
     if (StringUtils.isNotEmpty(url)) {
       return url;
     }
-    if (mavenCiConfiguration != null) {
-      if (StringUtils.isNotEmpty(mavenCiConfiguration.getSystem()) && StringUtils.isNotEmpty(mavenCiConfiguration.getUrl())) {
-        return mavenCiConfiguration.getSystem() + ":" + mavenCiConfiguration.getUrl();
-      }
+    if (mavenCiConfiguration != null
+      && StringUtils.isNotEmpty(mavenCiConfiguration.getSystem())
+      && StringUtils.isNotEmpty(mavenCiConfiguration.getUrl())) {
+      return mavenCiConfiguration.getSystem() + ":" + mavenCiConfiguration.getUrl();
     }
     return null;
   }
@@ -180,7 +180,7 @@ public class BuildStabilitySensor implements Sensor {
     context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, normalize(longestTimeToFix)));
     context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, divide(totalBuildsToFix, fixes)));
 
-    if (builds.size() > 0) {
+    if (!builds.isEmpty()) {
       context.saveMeasure(durationsBuilder.build());
       context.saveMeasure(resultsBuilder.build());
     }

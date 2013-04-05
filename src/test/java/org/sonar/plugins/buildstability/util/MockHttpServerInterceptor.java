@@ -17,10 +17,34 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci;
+package org.sonar.plugins.buildstability.util;
 
-/**
- * @author Evgeny Mandrikov
- */
-public interface Model {
+import org.junit.rules.ExternalResource;
+
+public final class MockHttpServerInterceptor extends ExternalResource {
+
+  private MockHttpServer server;
+
+  @Override
+  protected final void before() throws Throwable {
+    server = new MockHttpServer();
+    server.start();
+  }
+
+  @Override
+  protected void after() {
+    server.stop();
+  }
+
+  public void addMockResponseData(String data) {
+    server.addMockResponseData(data);
+  }
+
+  public void addMockResponseStatusAndData(int status, String data) {
+    server.addMockResponseStatusAndData(status, data);
+  }
+
+  public int getPort() {
+    return server.getPort();
+  }
 }

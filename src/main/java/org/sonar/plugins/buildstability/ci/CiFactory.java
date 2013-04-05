@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.buildstability.ci;
 
+import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+
 import org.apache.commons.lang.StringUtils;
 import org.sonar.plugins.buildstability.ci.bamboo.BambooServer;
 import org.sonar.plugins.buildstability.ci.hudson.HudsonServer;
