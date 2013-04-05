@@ -21,11 +21,12 @@ package org.sonar.plugins.buildstability.ci.hudson;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.sonar.api.utils.SonarException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public final class HudsonUtils {
   private HudsonUtils() {
   }
 
-  public static void doLogin(DefaultHttpClient client, String hostName, String username, String password) throws IOException {
+  public static void doLogin(HttpClient client, String hostName, String username, String password) throws IOException {
     String hudsonLoginEntryUrl = hostName + "loginEntry";
     HttpGet loginLink = new HttpGet(hudsonLoginEntryUrl);
     HttpResponse response = client.execute(loginLink);
@@ -75,7 +76,7 @@ public final class HudsonUtils {
 
   private static void checkResult(int httpStatusCode, String hudsonLoginEntryUrl) throws IOException {
     if (httpStatusCode != 200) {
-      throw new IOException("Unable to access the Hudson page : " + hudsonLoginEntryUrl + ". HTTP status code : " + httpStatusCode);
+      throw new SonarException("Unable to access the Hudson page : " + hudsonLoginEntryUrl + ". HTTP status code: " + httpStatusCode);
     }
   }
 }

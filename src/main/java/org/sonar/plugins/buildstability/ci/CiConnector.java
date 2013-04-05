@@ -19,9 +19,7 @@
  */
 package org.sonar.plugins.buildstability.ci;
 
-import org.sonar.plugins.buildstability.ci.api.Build;
-
-import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -34,6 +32,8 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.utils.SonarException;
+import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+import org.sonar.plugins.buildstability.ci.api.Build;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +57,11 @@ public class CiConnector {
     this.server = server;
     client = new DefaultHttpClient();
     HttpConnectionParams.setSoTimeout(client.getParams(), TIMEOUT);
+  }
+
+  @VisibleForTesting
+  AbstractServer getServer() {
+    return server;
   }
 
   protected Build getLastBuild() throws IOException {
