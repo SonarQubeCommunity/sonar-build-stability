@@ -7,7 +7,7 @@
   </parent>
 
   <artifactId>sonar-build-stability-plugin</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <packaging>sonar-plugin</packaging>
 
   <name>Sonar Build Stability Plugin</name>
@@ -43,6 +43,7 @@
     <connection>scm:git:git@github.com:SonarCommunity/sonar-build-stability.git</connection>
     <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-build-stability.git</developerConnection>
     <url>https://github.com/SonarCommunity/sonar-build-stability</url>
+    <tag>1.2</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
