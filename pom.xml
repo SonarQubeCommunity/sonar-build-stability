@@ -58,7 +58,29 @@
     <sonar.pluginName>Build Stability</sonar.pluginName>
     <sonar.pluginClass>org.sonar.plugins.buildstability.BuildStabilityPlugin</sonar.pluginClass>
     <sonar.version>3.0</sonar.version>
+
+    <!-- WORKAROUND for SONARPLUGINS-2896 -->
+    <!-- default value must be set, even if empty -->
+    <surefire.argLine />   
+    <!-- END WORKAROUND for SONARPLUGINS-2896 -->
   </properties>
+  
+  <!-- WORKAROUND for SONARPLUGINS-2896 -->
+  <build>
+    <pluginManagement>
+      <plugins>
+  		  <plugin>
+  		    <groupId>org.apache.maven.plugins</groupId>
+  		    <artifactId>maven-surefire-plugin</artifactId>
+  		    <configuration>
+  		      <runOrder>random</runOrder>
+  		      <argLine>${surefire.argLine}</argLine>
+  		    </configuration>
+  		  </plugin>
+  		</plugins>
+  	</pluginManagement>
+	</build>
+  <!-- END WORKAROUND for SONARPLUGINS-2896 -->
 
   <dependencies>
     <dependency>
