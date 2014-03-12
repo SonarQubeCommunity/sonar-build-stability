@@ -43,12 +43,12 @@ public final class HudsonUtils {
   }
 
   public static void doLogin(HttpClient client, String hostName, String username, String password) throws IOException {
-    String hudsonLoginEntryUrl = hostName + "loginEntry";
+    String hudsonLoginEntryUrl = hostName + "/loginEntry";
     HttpGet loginLink = new HttpGet(hudsonLoginEntryUrl);
     HttpResponse response = client.execute(loginLink);
     checkResult(response.getStatusLine().getStatusCode(), hudsonLoginEntryUrl);
 
-    String location = hostName + "j_security_check";
+    String location = hostName + "/j_security_check";
     boolean loggedIn = false;
     while (!loggedIn) {
       HttpPost loginMethod = new HttpPost(location);
