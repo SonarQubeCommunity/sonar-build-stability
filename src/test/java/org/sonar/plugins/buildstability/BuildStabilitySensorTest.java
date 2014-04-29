@@ -23,7 +23,6 @@ import org.sonar.plugins.buildstability.ci.api.Build;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
@@ -48,7 +47,6 @@ import static org.mockito.Mockito.when;
 /**
  * @author Evgeny Mandrikov
  */
-@Ignore
 public class BuildStabilitySensorTest {
   private BuildStabilitySensor sensor;
   private MavenCiConfiguration mavenCiConfig;
@@ -87,7 +85,7 @@ public class BuildStabilitySensorTest {
     assertTrue(sensor.shouldExecuteOnProject(project));
   }
 
-  //@Test
+  @Test
   public void testAnalyzeBuilds() throws Exception {
     SensorContext context = mock(SensorContext.class);
     List<Build> builds = Arrays.asList(
