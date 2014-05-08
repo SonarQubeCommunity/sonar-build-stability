@@ -26,6 +26,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.sonar.api.utils.SonarException;
 
 import java.io.IOException;
@@ -43,12 +44,13 @@ public final class HudsonUtils {
   }
 
   public static void doLogin(HttpClient client, String hostName, String username, String password) throws IOException {
-    String hudsonLoginEntryUrl = hostName + "loginEntry";
+    String hudsonLoginEntryUrl = hostName + "/login";
     HttpGet loginLink = new HttpGet(hudsonLoginEntryUrl);
     HttpResponse response = client.execute(loginLink);
     checkResult(response.getStatusLine().getStatusCode(), hudsonLoginEntryUrl);
+    EntityUtils.consume(response.getEntity());
 
-    String location = hostName + "j_security_check";
+    String location = hostName + "/j_acegi_security_check";
     boolean loggedIn = false;
     while (!loggedIn) {
       HttpPost loginMethod = new HttpPost(location);
@@ -68,6 +70,7 @@ public final class HudsonUtils {
           checkResult(response2.getStatusLine().getStatusCode(), location);
           loggedIn = true;
         }
+        EntityUtils.consume(response2.getEntity());
       } finally {
         loginMethod.releaseConnection();
       }
