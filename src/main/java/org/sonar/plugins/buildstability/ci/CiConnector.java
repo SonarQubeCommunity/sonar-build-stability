@@ -135,7 +135,7 @@ public class CiConnector {
       String encoding = discoverEncoding(httpResponse, response);
       SAXReader reader = new SAXReader();
       reader.setEncoding(encoding);
-      return reader.read(IOUtils.toInputStream(response));
+      return reader.read(IOUtils.toInputStream(response, encoding));
     } catch (DocumentException e) {
       throw new SonarException("Unable to parse response", e);
     } finally {

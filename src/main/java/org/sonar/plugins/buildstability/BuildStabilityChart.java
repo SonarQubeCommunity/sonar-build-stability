@@ -45,15 +45,20 @@ public class BuildStabilityChart extends AbstractChart {
   private static final String PARAM_FONT_SIZE = "fs";
 
   public String getKey() {
+
     return "buildsbar";
   }
 
   @Override
   protected Plot getPlot(ChartParameters params) {
+
     CategoryPlot plot = generateJFreeChart(params);
     plot.setOutlinePaint(OUTLINE_COLOR);
+
     plot.setDomainGridlinePaint(GRID_COLOR);
+
     plot.setRangeGridlinePaint(GRID_COLOR);
+
     return plot;
   }
 
@@ -73,10 +78,13 @@ public class BuildStabilityChart extends AbstractChart {
   }
 
   private CategoryPlot generateJFreeChart(ChartParameters params) {
+
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
     CategoryPlot plot = new CategoryPlot();
 
     Font font = getFont(params.getValue(PARAM_FONT_SIZE));
+
     configureDomainAxis(plot);
     configureRangeAxis(plot, "s", font);
     configureRenderer(plot, params.getValue(PARAM_COLORS, "", true));

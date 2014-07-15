@@ -19,15 +19,14 @@
  */
 package org.sonar.plugins.buildstability.ci;
 
-import org.sonar.plugins.buildstability.ci.api.Build;
-
-import org.sonar.plugins.buildstability.ci.api.AbstractServer;
-import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 import org.dom4j.Element;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.sonar.api.utils.SonarException;
+import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 import org.sonar.plugins.buildstability.util.MockHttpServerInterceptor;
 
 import java.text.SimpleDateFormat;
@@ -63,7 +62,7 @@ public class CiConnectorTest {
 
   @Test
   public void testGetEncodingFromHttpHeader() throws Exception {
-    httpServer.addMockResponseData("<?xml version=\"1.0\" standalone=\"yes\"?><foo></foo>");
+    httpServer.addMockResponseData("<?xml version=\"1.0\" standalone=\"yes\"?><foo>éàç</foo>");
     when(unmarshaller.toModel(any(Element.class))).thenReturn(lastBuild);
 
     assertThat(connector.getBuilds(1)).hasSize(1);
@@ -136,7 +135,7 @@ public class CiConnectorTest {
     when(olderBuild.getDate()).thenReturn(sdf.parse("03/04/2013"));
 
     when(unmarshaller.toModel(any(Element.class)))
-        .thenReturn(lastBuild, otherBuild, otherBuild, olderBuild);
+      .thenReturn(lastBuild, otherBuild, otherBuild, olderBuild);
 
     assertThat(connector.getBuildsSince(sdf.parse("03/04/2013"))).hasSize(3);
   }
@@ -154,7 +153,7 @@ public class CiConnectorTest {
     when(otherBuild.getDate()).thenReturn(sdf.parse("04/04/2013"));
 
     when(unmarshaller.toModel(any(Element.class)))
-        .thenReturn(lastBuild, otherBuild);
+      .thenReturn(lastBuild, otherBuild);
 
     assertThat(connector.getBuildsSince(sdf.parse("01/04/2013"))).hasSize(2);
   }
