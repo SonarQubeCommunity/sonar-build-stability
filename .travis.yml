@@ -9,7 +9,8 @@ install: true
 
 after_success:
   - mvn sonar:sonar -Dsonar.host.url=http://nemo.sonarqube.org -Dsonar.analysis.mode=preview
-  - "./github-pull-request-updater.sh ${TRAVIS_PULL_REQUEST}"
+  - wget https://drive.google.com/file/d/0B-fS5IyruhUSZEFEQ2doVllzVkU/view?usp=sharing -O sq-github.jar
+  - java -jar sq-github.jar henryju-test/sonar-build-stability target/sonar/sonar-report.json "${TRAVIS_PULL_REQUEST}"
 
 sudo: false
 
