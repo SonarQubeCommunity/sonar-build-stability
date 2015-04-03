@@ -17,6 +17,8 @@ sudo: false
 cache:
   directories:
     - '$HOME/.m2/repository'
+before_cache:
+    - find ~/.m2 -name *SNAPSHOT -type d | xargs rm -rf
 
 notifications:
   email: false
