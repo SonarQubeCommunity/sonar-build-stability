@@ -1,0 +1,21 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -e -B
+
+install: true
+
+after_success:
+  - mvn sonar:sonar -Dsonar.host.url=http://nemo.sonarqube.org
+  - "./github-pull-request-updater.sh ${TRAVIS_PULL_REQUEST}"
+
+sudo: false
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+
+notifications:
+  email: false
