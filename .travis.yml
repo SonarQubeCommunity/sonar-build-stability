@@ -8,7 +8,7 @@ script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -e -B
 install: true
 
 after_success:
-  - mvn sonar:sonar -Dsonar.host.url=http://nemo.sonarqube.org
+  - mvn sonar:sonar -Dsonar.host.url=http://nemo.sonarqube.org -Dsonar.analysis.mode=preview
   - "./github-pull-request-updater.sh ${TRAVIS_PULL_REQUEST}"
 
 sudo: false
