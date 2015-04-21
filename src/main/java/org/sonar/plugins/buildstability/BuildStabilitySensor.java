@@ -33,16 +33,16 @@ import org.sonar.plugins.buildstability.ci.CiFactory;
 import org.sonar.plugins.buildstability.ci.MavenCiConfiguration;
 import org.sonar.plugins.buildstability.ci.api.Build;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import javax.annotation.Nullable;
+
+import java.util.*;
 
 /**
  * @author Evgeny Mandrikov
  */
 public class BuildStabilitySensor implements Sensor {
+  private static final Logger LOG = LoggerFactory.getLogger(BuildStabilitySensor.class);
+
   public static final String DAYS_PROPERTY = "sonar.build-stability.days";
   public static final int DAYS_DEFAULT_VALUE = 30;
   public static final String USERNAME_PROPERTY = "sonar.build-stability.username.secured";
@@ -54,7 +54,7 @@ public class BuildStabilitySensor implements Sensor {
   private final Settings settings;
   private final MavenCiConfiguration mavenCiConfiguration;
 
-  public BuildStabilitySensor(Settings settings, MavenCiConfiguration mavenCiConfiguration) {
+  public BuildStabilitySensor(Settings settings, @Nullable MavenCiConfiguration mavenCiConfiguration) {
     this.settings = settings;
     this.mavenCiConfiguration = mavenCiConfiguration;
   }
@@ -66,6 +66,7 @@ public class BuildStabilitySensor implements Sensor {
     this(settings, null /* Not in a Maven build */);
   }
 
+  @Override
   public boolean shouldExecuteOnProject(Project project) {
     return project.isRoot() &&
       StringUtils.isNotEmpty(getCiUrl(project));
@@ -84,10 +85,10 @@ public class BuildStabilitySensor implements Sensor {
     return null;
   }
 
+  @Override
   public void analyse(Project project, SensorContext context) {
-    Logger logger = LoggerFactory.getLogger(getClass());
     String ciUrl = getCiUrl(project);
-    logger.info("CI URL: {}", ciUrl);
+    LOG.info("CI URL: {}", ciUrl);
     String username = settings.getString(USERNAME_PROPERTY);
     String password = settings.getString(PASSWORD_PROPERTY);
     boolean useJSecurityCheck = settings.getBoolean(USE_JSECURITYCHECK_PROPERTY);
@@ -95,7 +96,7 @@ public class BuildStabilitySensor implements Sensor {
     try {
       CiConnector connector = CiFactory.create(ciUrl, username, password, useJSecurityCheck);
       if (connector == null) {
-        logger.warn("Unknown CiManagement system or incorrect URL: {}", ciUrl);
+        LOG.warn("Unknown CiManagement system or incorrect URL: {}", ciUrl);
         return;
       }
       int daysToRetrieve = settings.getInt(DAYS_PROPERTY);
@@ -103,18 +104,17 @@ public class BuildStabilitySensor implements Sensor {
       calendar.add(Calendar.DAY_OF_MONTH, -daysToRetrieve);
       Date date = calendar.getTime();
       builds = connector.getBuildsSince(date);
-      logger.info("Retrieved {} builds since {}", builds.size(), date);
+      LOG.info("Retrieved {} builds since {}", builds.size(), date);
     } catch (Exception e) {
-      logger.error(e.getMessage(), e);
+      LOG.error(e.getMessage(), e);
       return;
     }
     analyseBuilds(builds, context);
   }
 
   protected void analyseBuilds(List<Build> builds, SensorContext context) {
-    Logger logger = LoggerFactory.getLogger(getClass());
-
     Collections.sort(builds, new Comparator<Build>() {
+      @Override
       public int compare(Build o1, Build o2) {
         return o1.getNumber() - o2.getNumber();
       }
@@ -136,7 +136,7 @@ public class BuildStabilitySensor implements Sensor {
     Build firstFailed = null;
 
     for (Build build : builds) {
-      logger.debug(build.toString());
+      LOG.debug(build.toString());
 
       int buildNumber = build.getNumber();
       double buildDuration = build.getDuration();
@@ -149,7 +149,7 @@ public class BuildStabilitySensor implements Sensor {
         longest = Math.max(longest, buildDuration);
         if (firstFailed != null) {
           // Build fixed
-          long buildsToFix = build.getNumber() - firstFailed.getNumber();
+          long buildsToFix = ((long) build.getNumber()) - firstFailed.getNumber();
           totalBuildsToFix += buildsToFix;
           double timeToFix = build.getTimestamp() - firstFailed.getTimestamp();
           totalTimeToFix += timeToFix;
@@ -191,6 +191,11 @@ public class BuildStabilitySensor implements Sensor {
   }
 
   private double divide(double v1, double v2) {
-    return v2 == 0 ? 0 : v1 / v2;
+    return Double.doubleToRawLongBits(v2) == 0 ? 0 : v1 / v2;
+  }
+
+  @Override
+  public String toString() {
+    return "Build Stability";
   }
 }

@@ -19,12 +19,11 @@
  */
 package org.sonar.plugins.buildstability.ci.bamboo;
 
-import org.sonar.plugins.buildstability.ci.api.Build;
-
-import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +41,7 @@ public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
    */
   private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
+  @Override
   public Build toModel(Element rootElement) {
     Build build = new Build();
 
@@ -49,8 +49,7 @@ public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
     Element results = rootElement.element("results");
     if (results != null) {
       result = results.element("result");
-    }
-    else {
+    } else {
       result = rootElement;
     }
     if (result == null) {

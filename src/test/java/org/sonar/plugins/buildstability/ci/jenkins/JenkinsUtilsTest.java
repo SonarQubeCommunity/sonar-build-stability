@@ -19,14 +19,11 @@
  */
 package org.sonar.plugins.buildstability.ci.jenkins;
 
-import org.sonar.plugins.buildstability.ci.jenkins.JenkinsUtils;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Test;
-import org.sonar.api.charts.AbstractChartTest;
-import org.sonar.api.utils.SonarException;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
@@ -35,7 +32,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Julien HENRY
  */
-public class JenkinsUtilsTest extends AbstractChartTest {
+public class JenkinsUtilsTest {
 
   @Test
   public void testDoLogin() throws Exception {
@@ -58,7 +55,7 @@ public class JenkinsUtilsTest extends AbstractChartTest {
     JenkinsUtils.doLogin(client, "http://jenkins.sonarsource.com/", "admin", "pwd");
   }
 
-  @Test(expected = SonarException.class)
+  @Test(expected = IllegalStateException.class)
   public void testDoLoginFailed() throws Exception {
     HttpClient client = mock(HttpClient.class);
     HttpResponse response1 = mock(HttpResponse.class, RETURNS_DEEP_STUBS);

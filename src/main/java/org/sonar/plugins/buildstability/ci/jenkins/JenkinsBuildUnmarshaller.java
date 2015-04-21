@@ -19,15 +19,16 @@
  */
 package org.sonar.plugins.buildstability.ci.jenkins;
 
-import org.sonar.plugins.buildstability.ci.api.Build;
-
-import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 import org.dom4j.Element;
+import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 /**
  * @author Evgeny Mandrikov
  */
 public class JenkinsBuildUnmarshaller implements Unmarshaller<Build> {
+
+  @Override
   public Build toModel(Element domElement) {
     Build build = new Build();
 

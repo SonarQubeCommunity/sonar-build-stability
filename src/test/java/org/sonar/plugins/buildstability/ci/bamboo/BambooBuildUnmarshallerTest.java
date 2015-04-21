@@ -19,13 +19,11 @@
  */
 package org.sonar.plugins.buildstability.ci.bamboo;
 
-import org.sonar.plugins.buildstability.ci.api.Build;
-
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.charts.AbstractChartTest;
+import org.sonar.plugins.buildstability.ci.api.Build;
 
 import java.io.InputStream;
 
@@ -34,7 +32,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * @author Julien HENRY
  */
-public class BambooBuildUnmarshallerTest extends AbstractChartTest {
+public class BambooBuildUnmarshallerTest {
   private BambooBuildUnmarshaller unmarshaller;
 
   @Before

@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.sonar-plugins</groupId>
     <artifactId>parent</artifactId>
-    <version>16</version>
+    <version>19</version>
   </parent>
 
   <artifactId>sonar-build-stability-plugin</artifactId>
@@ -43,7 +43,6 @@
     <connection>scm:git:git@github.com:SonarCommunity/sonar-build-stability.git</connection>
     <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-build-stability.git</developerConnection>
     <url>https://github.com/SonarCommunity/sonar-build-stability</url>
-    <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -57,29 +56,19 @@
   <properties>
     <sonar.pluginName>Build Stability</sonar.pluginName>
     <sonar.pluginClass>org.sonar.plugins.buildstability.BuildStabilityPlugin</sonar.pluginClass>
-    <sonar.version>3.0</sonar.version>
-    
-    <argLine>-Djava.awt.headless=true</argLine>
+    <sonar.version>4.5.2</sonar.version>
   </properties>
   
-  <build>
-    <pluginManagement>
-      <plugins>
-  		  <plugin>
-  		    <groupId>org.apache.maven.plugins</groupId>
-  		    <artifactId>maven-surefire-plugin</artifactId>
-  		    <configuration>
-  		      <runOrder>random</runOrder>
-  		    </configuration>
-  		  </plugin>
-  		</plugins>
-  	</pluginManagement>
-	</build>
-
   <dependencies>
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-plugin-api</artifactId>
+      <version>${sonar.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>sonar-deprecated</artifactId>
       <version>${sonar.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -106,14 +95,15 @@
     <!-- unit tests -->
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
-      <artifactId>sonar-testing-harness</artifactId>
+      <artifactId>sonar-plugin-api</artifactId>
       <version>${sonar.version}</version>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert</artifactId>
-      <version>1.4</version>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>sonar-testing-harness</artifactId>
+      <version>${sonar.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

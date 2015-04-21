@@ -21,14 +21,13 @@ package org.sonar.plugins.buildstability.ci.teamcity;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.charts.AbstractChartTest;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Alexei Guevara <alguevara@kijiji.ca>
  */
-public class TeamCityServerTest extends AbstractChartTest {
+public class TeamCityServerTest {
   private TeamCityServer server;
 
   @Before

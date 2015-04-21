@@ -19,17 +19,15 @@
  */
 package org.sonar.plugins.buildstability.ci.jenkins;
 
-import org.sonar.plugins.buildstability.ci.jenkins.JenkinsServer;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.charts.AbstractChartTest;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Julien HENRY
  */
-public class JenkinsServerTest extends AbstractChartTest {
+public class JenkinsServerTest {
   private JenkinsServer server;
 
   @Before

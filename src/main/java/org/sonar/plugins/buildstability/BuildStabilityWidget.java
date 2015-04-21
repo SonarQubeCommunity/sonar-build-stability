@@ -19,11 +19,7 @@
  */
 package org.sonar.plugins.buildstability;
 
-import org.sonar.api.web.AbstractRubyTemplate;
-import org.sonar.api.web.Description;
-import org.sonar.api.web.NavigationSection;
-import org.sonar.api.web.RubyRailsWidget;
-import org.sonar.api.web.UserRole;
+import org.sonar.api.web.*;
 
 /**
  * @author Evgeny Mandrikov
@@ -32,10 +28,12 @@ import org.sonar.api.web.UserRole;
 @UserRole(UserRole.USER)
 @Description("Display build stability stats from your CI server")
 public class BuildStabilityWidget extends AbstractRubyTemplate implements RubyRailsWidget {
+  @Override
   public String getId() {
     return "buildstability-widget";
   }
 
+  @Override
   public String getTitle() {
     return "Build Stability";
   }

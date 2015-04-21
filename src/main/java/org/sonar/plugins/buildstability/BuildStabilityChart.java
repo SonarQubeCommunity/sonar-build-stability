@@ -34,6 +34,7 @@ import java.awt.Font;
 import java.awt.Paint;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Evgeny Mandrikov
@@ -44,8 +45,8 @@ public class BuildStabilityChart extends AbstractChart {
   private static final String PARAM_COLORS = "c";
   private static final String PARAM_FONT_SIZE = "fs";
 
+  @Override
   public String getKey() {
-
     return "buildsbar";
   }
 
@@ -69,6 +70,7 @@ public class BuildStabilityChart extends AbstractChart {
       this.colors = colors;
     }
 
+    @Override
     public Paint getItemPaint(final int row, final int column) {
       if (colors.length == 0) {
         return Color.GRAY;
@@ -112,7 +114,7 @@ public class BuildStabilityChart extends AbstractChart {
     ColoredBarRenderer renderer = new ColoredBarRenderer();
 
     String[] pairs = StringUtils.split(colors, ";");
-    ArrayList<Paint> paints = new ArrayList<Paint>();
+    List<Paint> paints = new ArrayList<Paint>();
     for (String pair : pairs) {
       String[] keyValue = StringUtils.split(pair, "=");
       paints.add("r".equals(keyValue[1]) ? Color.RED : Color.GREEN);

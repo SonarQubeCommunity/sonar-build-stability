@@ -19,34 +19,34 @@
  */
 package org.sonar.plugins.buildstability.ci.teamcity;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
-import org.sonar.plugins.buildstability.ci.bamboo.BambooBuildUnmarshaller;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Alexei Guevara <alguevara@kijiji.ca>
  */
 public class TeamCityBuildUnmarshaller implements Unmarshaller<Build> {
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(TeamCityBuildUnmarshaller.class);
-  
+
   /**
    * TeamCity date-time format. Example: 20131124T053500+0000
    */
   private static final String DATE_TIME_FORMAT = "yyyyMMdd'T'HHmmssZ";
-  
+
+  @Override
   public Build toModel(Element domElement) {
     Build build = new Build();
 
     String result = domElement.attributeValue("status");
-    
+
     build.setNumber(Integer.parseInt(domElement.attributeValue("number")));
     build.setTimestamp(getTimeStamp(domElement.elementText("startDate")));
     build.setResult(result);
@@ -58,20 +58,20 @@ public class TeamCityBuildUnmarshaller implements Unmarshaller<Build> {
 
   private long getTimeStamp(String startDate) {
     Date start = parseDate(startDate);
-    return start==null ? 0 : start.getTime();
+    return start == null ? 0 : start.getTime();
   }
 
   private double calculateDuration(String startDate, String endDate) {
     Date start = parseDate(startDate);
     Date end = parseDate(endDate);
-    
+
     if (start == null || end == null) {
       return 0;
     } else {
       return end.getTime() - start.getTime();
     }
   }
-  
+
   private Date parseDate(String date) {
     SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
     try {
@@ -81,7 +81,5 @@ public class TeamCityBuildUnmarshaller implements Unmarshaller<Build> {
       return null;
     }
   }
-  
-  
-  
+
 }

@@ -31,7 +31,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.utils.SonarException;
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.sonar.plugins.buildstability.ci.api.Build;
 
@@ -109,7 +108,8 @@ public class CiConnector {
       if (current != null) {
         builds.add(current);
       }
-      if (--number > 0) {
+      number--;
+      if (number > 0) {
         current = getBuild(number);
       }
     }
@@ -129,7 +129,7 @@ public class CiConnector {
         return null;
       }
       if (statusCode != 200) {
-        throw new SonarException("Received " + statusCode + " when trying to access " + httpGet.getURI());
+        throw new IllegalStateException("Received " + statusCode + " when trying to access " + httpGet.getURI());
       }
       String response = EntityUtils.toString(httpResponse.getEntity());
       String encoding = discoverEncoding(httpResponse, response);
@@ -137,7 +137,7 @@ public class CiConnector {
       reader.setEncoding(encoding);
       return reader.read(IOUtils.toInputStream(response, encoding));
     } catch (DocumentException e) {
-      throw new SonarException("Unable to parse response", e);
+      throw new IllegalStateException("Unable to parse response", e);
     } finally {
       httpGet.releaseConnection();
     }

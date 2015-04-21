@@ -19,10 +19,8 @@
  */
 package org.sonar.plugins.buildstability.ci.bamboo;
 
-import org.sonar.plugins.buildstability.ci.api.Build;
-
-import org.sonar.api.utils.SonarException;
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.io.UnsupportedEncodingException;
@@ -38,11 +36,12 @@ public class BambooServer extends AbstractServer {
   public static final String PATTERN = "/browse/";
   private static final Unmarshaller<Build> BUILD_UNMARSHALLER = new BambooBuildUnmarshaller();
 
+  @Override
   public String getBuildUrl(String number) {
     StringBuilder sb = new StringBuilder(getHost())
-        .append("/rest/api/latest/result/").append(getKey()).append("/").append(number)
-        .append("?os_authType=basic")
-        .append("&expand=results.result");
+      .append("/rest/api/latest/result/").append(getKey()).append("/").append(number)
+      .append("?os_authType=basic")
+      .append("&expand=results.result");
     return sb.toString();
   }
 
@@ -50,12 +49,12 @@ public class BambooServer extends AbstractServer {
   public String getLastBuildUrl() {
     try {
       StringBuilder sb = new StringBuilder(getHost())
-          .append("/rest/api/latest/result/").append(getKey())
-          .append("?os_authType=basic")
-          .append("&expand=results").append(URLEncoder.encode("[0]", "UTF-8")).append(".result");
+        .append("/rest/api/latest/result/").append(getKey())
+        .append("?os_authType=basic")
+        .append("&expand=results").append(URLEncoder.encode("[0]", "UTF-8")).append(".result");
       return sb.toString();
     } catch (UnsupportedEncodingException e) {
-      throw new SonarException(e);
+      throw new IllegalStateException(e);
     }
   }
 

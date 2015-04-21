@@ -23,7 +23,6 @@ import org.dom4j.Element;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.sonar.api.utils.SonarException;
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
@@ -102,7 +101,7 @@ public class CiConnectorTest {
     assertThat(connector.getBuilds(5)).hasSize(0);
   }
 
-  @Test(expected = SonarException.class)
+  @Test(expected = IllegalStateException.class)
   public void testHttpError() throws Exception {
     httpServer.addMockResponseStatusAndData(500, "");
     when(unmarshaller.toModel(any(Element.class))).thenReturn(lastBuild);
@@ -110,7 +109,7 @@ public class CiConnectorTest {
     connector.getBuilds(5);
   }
 
-  @Test(expected = SonarException.class)
+  @Test(expected = IllegalStateException.class)
   public void testInvalidXmlResponse() throws Exception {
     httpServer.addMockResponseData("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><invalid></foo>");
     when(unmarshaller.toModel(any(Element.class))).thenReturn(lastBuild);

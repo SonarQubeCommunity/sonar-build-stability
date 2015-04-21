@@ -17,33 +17,8 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci.bamboo;
+@ParametersAreNonnullByDefault
+package org.sonar.plugins.buildstability;
 
-import org.junit.Before;
-import org.junit.Test;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-/**
- * @author Julien HENRY
- */
-public class BambooServerTest {
-  private BambooServer server;
-
-  @Before
-  public void setUp() throws Exception {
-    server = new BambooServer();
-    server.setHost("http://bamboo");
-    server.setKey("KEY");
-  }
-
-  @Test
-  public void testLastBuildURL() throws Exception {
-    assertThat(server.getLastBuildUrl()).isEqualTo("http://bamboo/rest/api/latest/result/KEY?os_authType=basic&expand=results%5B0%5D.result");
-  }
-
-  @Test
-  public void testGetBuildURLByNumber() throws Exception {
-    assertThat(server.getBuildUrl("1")).isEqualTo("http://bamboo/rest/api/latest/result/KEY/1?os_authType=basic&expand=results.result");
-  }
-}

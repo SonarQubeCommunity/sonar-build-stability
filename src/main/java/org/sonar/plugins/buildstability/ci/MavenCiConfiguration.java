@@ -34,11 +34,11 @@ public class MavenCiConfiguration implements BatchExtension {
 
   public String getSystem() {
     CiManagement ci = pom.getCiManagement();
-    return (ci != null ? ci.getSystem() : null);
+    return ci != null ? ci.getSystem() : null;
   }
 
   public String getUrl() {
     CiManagement ci = pom.getCiManagement();
-    return (ci != null ? ci.getUrl() : null);
+    return ci != null ? ci.getUrl() : null;
   }
 }

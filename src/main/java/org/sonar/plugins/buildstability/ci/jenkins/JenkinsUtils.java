@@ -27,7 +27,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.sonar.api.utils.SonarException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,8 +64,7 @@ public final class JenkinsUtils {
           // Commons HTTP client refuses to handle redirects for POST
           // so we have to do it manually.
           location = response2.getFirstHeader("Location").getValue();
-        }
-        else {
+        } else {
           checkResult(response2.getStatusLine().getStatusCode(), location);
           loggedIn = true;
         }
@@ -79,7 +77,7 @@ public final class JenkinsUtils {
 
   private static void checkResult(int httpStatusCode, String hudsonLoginEntryUrl) throws IOException {
     if (httpStatusCode != 200) {
-      throw new SonarException("Unable to access the Hudson page : " + hudsonLoginEntryUrl + ". HTTP status code: " + httpStatusCode);
+      throw new IllegalStateException("Unable to access the Hudson page : " + hudsonLoginEntryUrl + ". HTTP status code: " + httpStatusCode);
     }
   }
 }

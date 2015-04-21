@@ -21,8 +21,8 @@ package org.sonar.plugins.buildstability;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.charts.AbstractChartTest;
 import org.sonar.api.charts.ChartParameters;
+import org.sonar.plugins.buildstability.util.AbstractChartTest;
 
 import java.awt.image.BufferedImage;
 import java.io.UnsupportedEncodingException;
@@ -49,13 +49,13 @@ public class BuildStabilityChartTest extends AbstractChartTest {
   @Test
   public void simple() throws Exception {
     BufferedImage image = chart.generateImage(new ChartParameters("w=350&h=200" +
-        encode("&v=", "11=5.0;12=10.0;13=10.0;14=20.0") +
-        encode("&c=", "11=r;12=g;13=g")
-    ));
+      encode("&v=", "11=5.0;12=10.0;13=10.0;14=20.0") +
+      encode("&c=", "11=r;12=g;13=g")
+      ));
     assertChartSizeGreaterThan(image, 1000);
     saveChart(image, "BuildStabilityChartTest/simple.png");
-//    displayTestPanel(image);
-//    Thread.sleep(1000 * 30);
+    // displayTestPanel(image);
+    // Thread.sleep(1000 * 30);
   }
 
   private String encode(String prefix, String val) throws UnsupportedEncodingException {

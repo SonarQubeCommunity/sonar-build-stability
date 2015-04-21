@@ -23,14 +23,11 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.sonar.plugins.buildstability.ci.api.Build;
-import org.sonar.api.utils.SonarException;
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 /**
  * See <a href="http://confluence.jetbrains.com/display/TW/REST+API+Plugin#RESTAPIPlugin-Usage">TeamCity REST APIs</a>.
@@ -43,9 +40,9 @@ public class TeamCityServer extends AbstractServer {
   private static final Unmarshaller<Build> BUILD_UNMARSHALLER = new TeamCityBuildUnmarshaller();
 
   @Override
-public String getBuildUrl(String number) {
+  public String getBuildUrl(String number) {
     StringBuilder sb = new StringBuilder(getHost())
-        .append("/httpAuth/app/rest/buildTypes/id:").append(getKey()).append("/builds/number:").append(number);
+      .append("/httpAuth/app/rest/buildTypes/id:").append(getKey()).append("/builds/number:").append(number);
     return sb.toString();
   }
 
@@ -60,10 +57,10 @@ public String getBuildUrl(String number) {
   public Unmarshaller<Build> getBuildUnmarshaller() {
     return BUILD_UNMARSHALLER;
   }
-  
+
   @Override
-    public void doLogin(DefaultHttpClient client) throws IOException {
-      Credentials credentials = new UsernamePasswordCredentials(getUsername(), getPassword());
-      client.getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
-    }
+  public void doLogin(DefaultHttpClient client) throws IOException {
+    Credentials credentials = new UsernamePasswordCredentials(getUsername(), getPassword());
+    client.getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
+  }
 }
