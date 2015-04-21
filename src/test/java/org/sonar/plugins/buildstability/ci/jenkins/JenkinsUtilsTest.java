@@ -17,7 +17,9 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci.hudson;
+package org.sonar.plugins.buildstability.ci.jenkins;
+
+import org.sonar.plugins.buildstability.ci.jenkins.JenkinsUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,7 +27,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Test;
 import org.sonar.api.charts.AbstractChartTest;
 import org.sonar.api.utils.SonarException;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Julien HENRY
  */
-public class HudsonUtilsTest extends AbstractChartTest {
+public class JenkinsUtilsTest extends AbstractChartTest {
 
   @Test
   public void testDoLogin() throws Exception {
@@ -42,7 +43,7 @@ public class HudsonUtilsTest extends AbstractChartTest {
     HttpResponse response1 = mock(HttpResponse.class, RETURNS_DEEP_STUBS);
     when(client.execute(any(HttpUriRequest.class))).thenReturn(response1);
     when(response1.getStatusLine().getStatusCode()).thenReturn(200);
-    HudsonUtils.doLogin(client, "http://jenkins.sonarsource.com/", "admin", "pwd");
+    JenkinsUtils.doLogin(client, "http://jenkins.sonarsource.com/", "admin", "pwd");
   }
 
   @Test
@@ -54,7 +55,7 @@ public class HudsonUtilsTest extends AbstractChartTest {
     when(client.execute(any(HttpUriRequest.class))).thenReturn(response1, response2, response1);
     when(response1.getStatusLine().getStatusCode()).thenReturn(200);
     when(response2.getStatusLine().getStatusCode()).thenReturn(302);
-    HudsonUtils.doLogin(client, "http://jenkins.sonarsource.com/", "admin", "pwd");
+    JenkinsUtils.doLogin(client, "http://jenkins.sonarsource.com/", "admin", "pwd");
   }
 
   @Test(expected = SonarException.class)
@@ -63,6 +64,6 @@ public class HudsonUtilsTest extends AbstractChartTest {
     HttpResponse response1 = mock(HttpResponse.class, RETURNS_DEEP_STUBS);
     when(client.execute(any(HttpUriRequest.class))).thenReturn(response1);
     when(response1.getStatusLine().getStatusCode()).thenReturn(404);
-    HudsonUtils.doLogin(client, "http://jenkins.sonarsource.com/", "admin", "pwd");
+    JenkinsUtils.doLogin(client, "http://jenkins.sonarsource.com/", "admin", "pwd");
   }
 }

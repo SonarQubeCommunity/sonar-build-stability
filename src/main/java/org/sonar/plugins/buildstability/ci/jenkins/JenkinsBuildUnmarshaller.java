@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci.hudson;
+package org.sonar.plugins.buildstability.ci.jenkins;
 
 import org.sonar.plugins.buildstability.ci.api.Build;
 
@@ -27,7 +27,7 @@ import org.dom4j.Element;
 /**
  * @author Evgeny Mandrikov
  */
-public class HudsonBuildUnmarshaller implements Unmarshaller<Build> {
+public class JenkinsBuildUnmarshaller implements Unmarshaller<Build> {
   public Build toModel(Element domElement) {
     Build build = new Build();
 

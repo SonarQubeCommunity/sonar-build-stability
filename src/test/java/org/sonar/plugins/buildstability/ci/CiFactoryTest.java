@@ -21,7 +21,7 @@ package org.sonar.plugins.buildstability.ci;
 
 import org.junit.Test;
 import org.sonar.plugins.buildstability.ci.bamboo.BambooServer;
-import org.sonar.plugins.buildstability.ci.hudson.HudsonServer;
+import org.sonar.plugins.buildstability.ci.jenkins.JenkinsServer;
 import org.sonar.plugins.buildstability.ci.teamcity.TeamCityServer;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -42,29 +42,19 @@ public class CiFactoryTest {
   }
 
   @Test
-  public void testCreateHudson() {
-    CiConnector connector = CiFactory.create("Hudson", "http://hudson/job/", "user", "pwd", false);
-
-    assertThat(connector.getServer().getUsername()).isEqualTo("user");
-    assertThat(connector.getServer().getPassword()).isEqualTo("pwd");
-    assertThat(connector.getServer().getHost()).isEqualTo("http://hudson");
-    assertThat(connector.getServer()).isInstanceOf(HudsonServer.class);
-  }
-
-  @Test
   public void testCreateJenkins() {
     CiConnector connector = CiFactory.create("Jenkins", "http://jenkins/job/", "user", "pwd", false);
 
     assertThat(connector.getServer().getUsername()).isEqualTo("user");
     assertThat(connector.getServer().getPassword()).isEqualTo("pwd");
     assertThat(connector.getServer().getHost()).isEqualTo("http://jenkins");
-    assertThat(connector.getServer()).isInstanceOf(HudsonServer.class);
+    assertThat(connector.getServer()).isInstanceOf(JenkinsServer.class);
   }
-  
+
   @Test
   public void testCreateTeamCity() {
     CiConnector connector = CiFactory.create("TeamCity", "http://teamcity:port/viewType.html?buildTypeId=SonarBuildStability_Install", "user", "pwd", false);
-    
+
     assertThat(connector.getServer().getUsername()).isEqualTo("user");
     assertThat(connector.getServer().getPassword()).isEqualTo("pwd");
     assertThat(connector.getServer().getHost()).isEqualTo("http://teamcity:port");

@@ -17,28 +17,26 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci.hudson;
-
-import org.sonar.plugins.buildstability.ci.api.Build;
+package org.sonar.plugins.buildstability.ci.jenkins;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
+import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.io.IOException;
 
 /**
- * See <a href="http://wiki.hudson-ci.org/display/HUDSON/Remote+access+API">Hudson Remote access API</a>.
+ * See <a href="https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API">Jenkins Remote access API</a>.
  *
  * @author Evgeny Mandrikov
  */
-public class HudsonServer extends AbstractServer {
-  public static final String SYSTEM = "Hudson";
-  public static final String SYSTEM_JENKINS = "Jenkins";
+public class JenkinsServer extends AbstractServer {
+  public static final String SYSTEM = "Jenkins";
   public static final String PATTERN = "/job/";
 
-  private static final Unmarshaller<Build> BUILD_UNMARSHALLER = new HudsonBuildUnmarshaller();
+  private static final Unmarshaller<Build> BUILD_UNMARSHALLER = new JenkinsBuildUnmarshaller();
 
   private boolean useJSecurityCheck;
 
@@ -64,7 +62,7 @@ public class HudsonServer extends AbstractServer {
       return;
     }
     if (!StringUtils.isBlank(getUsername()) && !StringUtils.isBlank(getPassword())) {
-      HudsonUtils.doLogin(client, getHost(), getUsername(), getPassword());
+      JenkinsUtils.doLogin(client, getHost(), getUsername(), getPassword());
     }
   }
 

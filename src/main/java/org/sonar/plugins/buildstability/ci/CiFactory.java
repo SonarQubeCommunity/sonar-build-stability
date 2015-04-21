@@ -19,10 +19,10 @@
  */
 package org.sonar.plugins.buildstability.ci;
 
-import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.apache.commons.lang.StringUtils;
+import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.sonar.plugins.buildstability.ci.bamboo.BambooServer;
-import org.sonar.plugins.buildstability.ci.hudson.HudsonServer;
+import org.sonar.plugins.buildstability.ci.jenkins.JenkinsServer;
 import org.sonar.plugins.buildstability.ci.teamcity.TeamCityServer;
 
 /**
@@ -53,13 +53,13 @@ public final class CiFactory {
     if (BambooServer.SYSTEM.equalsIgnoreCase(system)) {
       server = new BambooServer();
       pattern = BambooServer.PATTERN;
-    } else if (HudsonServer.SYSTEM.equalsIgnoreCase(system) || HudsonServer.SYSTEM_JENKINS.equalsIgnoreCase(system)) {
-      server = new HudsonServer();
-      ((HudsonServer) server).setUseJSecurityCheck(useJSecurityCheck);
-      pattern = HudsonServer.PATTERN;
+    } else if (JenkinsServer.SYSTEM.equalsIgnoreCase(system)) {
+      server = new JenkinsServer();
+      ((JenkinsServer) server).setUseJSecurityCheck(useJSecurityCheck);
+      pattern = JenkinsServer.PATTERN;
     } else if (TeamCityServer.SYSTEM.equalsIgnoreCase(system)) {
-    	server = new TeamCityServer();
-    	pattern = TeamCityServer.PATTERN;
+      server = new TeamCityServer();
+      pattern = TeamCityServer.PATTERN;
     } else {
       return null;
     }

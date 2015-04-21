@@ -17,23 +17,24 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability.ci.hudson;
+package org.sonar.plugins.buildstability.ci.jenkins;
+
+import org.sonar.plugins.buildstability.ci.jenkins.JenkinsServer;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.charts.AbstractChartTest;
-
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Julien HENRY
  */
-public class HudsonServerTest extends AbstractChartTest {
-  private HudsonServer server;
+public class JenkinsServerTest extends AbstractChartTest {
+  private JenkinsServer server;
 
   @Before
   public void setUp() throws Exception {
-    server = new HudsonServer();
+    server = new JenkinsServer();
     server.setHost("http://jenkins");
     server.setKey("project");
   }
