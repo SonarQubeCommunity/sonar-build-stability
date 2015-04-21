@@ -45,7 +45,7 @@ import java.util.List;
     defaultValue = "",
     name = "Continuous Integration Server URL",
     description = "URL of the project on the CI server. Leave blank to take this value from <i>pom.xml</i>. Examples: <ul>" +
-      "<li>\"Jenkins:https://ci.jenkins-ci.org/job/jenkins_main_trunk/\"</li>" +
+      "<li>\"Jenkins:https://ci.jenkins-ci.org/job/jenkins_main_trunk\"</li>" +
       "<li>\"Bamboo:http://ci.codehaus.org/browse/SONAR\"</li></ul>",
     global = false,
     project = true,
