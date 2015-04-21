@@ -20,10 +20,10 @@
 package org.sonar.plugins.buildstability.ci;
 
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
-
 import org.apache.commons.lang.StringUtils;
 import org.sonar.plugins.buildstability.ci.bamboo.BambooServer;
 import org.sonar.plugins.buildstability.ci.hudson.HudsonServer;
+import org.sonar.plugins.buildstability.ci.teamcity.TeamCityServer;
 
 /**
  * @author Evgeny Mandrikov
@@ -57,6 +57,9 @@ public final class CiFactory {
       server = new HudsonServer();
       ((HudsonServer) server).setUseJSecurityCheck(useJSecurityCheck);
       pattern = HudsonServer.PATTERN;
+    } else if (TeamCityServer.SYSTEM.equalsIgnoreCase(system)) {
+    	server = new TeamCityServer();
+    	pattern = TeamCityServer.PATTERN;
     } else {
       return null;
     }
