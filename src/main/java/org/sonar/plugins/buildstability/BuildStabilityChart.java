@@ -43,9 +43,9 @@ import java.util.List;
  * @author Evgeny Mandrikov
  */
 public class BuildStabilityChart extends AbstractChart {
-  private static final Color RED = COLORS[1];
-  private static final Color ORANGE = COLORS[2];
-  private static final Color GREEN = COLORS[4];
+  private static final Color RED = new Color(212,51,63);
+  private static final Color ORANGE = new Color(255,153,0);
+  private static final Color GREEN = new Color(0,174,0);
   private static final String FONT_NAME = "SansSerif";
   private static final String PARAM_VALUES = "v";
   private static final String PARAM_COLORS = "c";
