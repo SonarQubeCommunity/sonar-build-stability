@@ -37,8 +37,8 @@ public class JenkinsBuildUnmarshaller implements Unmarshaller<Build> {
     build.setTimestamp(Long.parseLong(domElement.elementText("timestamp")));
     build.setResult(result);
     build.setDuration(Long.parseLong(domElement.elementText("duration")));
-    build.setSuccessful("SUCCESS".equalsIgnoreCase(result));
-
+    build.setUnstable("UNSTABLE".equalsIgnoreCase(result));
+    build.setSuccessful(build.isUnstable() || "SUCCESS".equalsIgnoreCase(result));
     return build;
   }
 }

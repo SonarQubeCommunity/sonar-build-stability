@@ -20,11 +20,13 @@
 package org.sonar.plugins.buildstability;
 
 import org.apache.commons.lang.StringUtils;
+import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.sonar.api.charts.AbstractChart;
 import org.sonar.api.charts.ChartParameters;
@@ -32,6 +34,7 @@ import org.sonar.api.charts.ChartParameters;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,9 @@ import java.util.List;
  * @author Evgeny Mandrikov
  */
 public class BuildStabilityChart extends AbstractChart {
+  private static final Color RED = COLORS[1];
+  private static final Color ORANGE = COLORS[2];
+  private static final Color GREEN = COLORS[4];
   private static final String FONT_NAME = "SansSerif";
   private static final String PARAM_VALUES = "v";
   private static final String PARAM_COLORS = "c";
@@ -55,9 +61,7 @@ public class BuildStabilityChart extends AbstractChart {
 
     CategoryPlot plot = generateJFreeChart(params);
     plot.setOutlinePaint(OUTLINE_COLOR);
-
     plot.setDomainGridlinePaint(GRID_COLOR);
-
     plot.setRangeGridlinePaint(GRID_COLOR);
 
     return plot;
@@ -117,7 +121,7 @@ public class BuildStabilityChart extends AbstractChart {
     List<Paint> paints = new ArrayList<Paint>();
     for (String pair : pairs) {
       String[] keyValue = StringUtils.split(pair, "=");
-      paints.add("r".equals(keyValue[1]) ? Color.RED : Color.GREEN);
+      paints.add("r".equals(keyValue[1]) ? RED : "o".equals(keyValue[1]) ? ORANGE : GREEN);
     }
 
     renderer.setColors(paints.toArray(new Paint[paints.size()]));

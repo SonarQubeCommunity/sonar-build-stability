@@ -43,6 +43,11 @@ public class Build implements Model {
   private boolean successful;
 
   /**
+   * True, if build unstable.
+   */
+  private boolean unstable;
+
+  /**
    * Build duration in millisec.
    */
   private double duration;
@@ -53,10 +58,15 @@ public class Build implements Model {
   private long timestamp;
 
   public Build(int number, long timestamp, String result, boolean successful, double duration) {
+    this(number ,timestamp,result,successful,false,duration);
+  }
+
+  public Build(int number, long timestamp, String result, boolean successful, boolean unstable, double duration) {
     this.number = number;
     this.timestamp = timestamp;
     this.result = result;
     this.successful = successful;
+    this.unstable = unstable;
     this.duration = duration;
   }
 
@@ -83,8 +93,16 @@ public class Build implements Model {
     return successful;
   }
 
+  public boolean isUnstable() {
+    return unstable;
+  }
+
   public void setSuccessful(boolean successful) {
     this.successful = successful;
+  }
+
+  public void setUnstable(boolean unstable) {
+    this.unstable = unstable;
   }
 
   public double getDuration() {

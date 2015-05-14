@@ -140,7 +140,7 @@ public class BuildStabilitySensor implements Sensor {
 
       int buildNumber = build.getNumber();
       double buildDuration = build.getDuration();
-      resultsBuilder.add(buildNumber, build.isSuccessful() ? "g" : "r");
+      resultsBuilder.add(buildNumber, build.isSuccessful() ?  build.isUnstable()?"o" : "g" : "r");
       durationsBuilder.add(buildNumber, buildDuration / 1000);
       if (build.isSuccessful()) {
         successful++;
