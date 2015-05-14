@@ -91,7 +91,7 @@ public class BuildStabilitySensorTest {
       new Build(1, 0, "Fake", true, 10),
       new Build(2, 1, "Fake", false, 4),
       new Build(3, 10, "Fake", true, 3),
-      new Build(4, 20, "Fake", true, 5)
+      new Build(4, 20, "Fake", true, true, 5)
       );
 
     sensor.analyseBuilds(builds, context);
@@ -109,7 +109,7 @@ public class BuildStabilitySensorTest {
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, 1.0)));
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.DURATIONS, "1=0.01;2=0.004;3=0.003;4=0.005")));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.RESULTS, "1=g;2=r;3=g;4=g")));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.RESULTS, "1=g;2=r;3=g;4=o")));
 
     verifyNoMoreInteractions(context);
   }
@@ -189,4 +189,5 @@ public class BuildStabilitySensorTest {
 
     verifyNoMoreInteractions(context);
   }
+
 }

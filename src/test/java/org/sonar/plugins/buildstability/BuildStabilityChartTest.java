@@ -50,7 +50,7 @@ public class BuildStabilityChartTest extends AbstractChartTest {
   public void simple() throws Exception {
     BufferedImage image = chart.generateImage(new ChartParameters("w=350&h=200" +
       encode("&v=", "11=5.0;12=10.0;13=10.0;14=20.0") +
-      encode("&c=", "11=r;12=g;13=g")
+      encode("&c=", "11=r;12=o;13=g")
       ));
     assertChartSizeGreaterThan(image, 1000);
     saveChart(image, "BuildStabilityChartTest/simple.png");
