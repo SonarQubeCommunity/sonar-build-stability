@@ -19,12 +19,16 @@
  */
 package org.sonar.plugins.buildstability.ci.jenkins;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
+ * Test class of {@link JenkinsServer}
+ * 
  * @author Julien HENRY
  */
 public class JenkinsServerTest {
@@ -45,5 +49,16 @@ public class JenkinsServerTest {
   @Test
   public void testGetBuildURLByNumber() throws Exception {
     assertThat(server.getBuildUrl("1")).isEqualTo("http://jenkins/job/project/1/api/xml/");
+  }
+
+  @Test
+  public void testGetBuildsURLByDate() throws Exception {
+    Date now = new Date();
+    assertThat(server.getBuildsSinceUrl(now)).isEqualTo("http://jenkins/job/project/api/xml?tree=builds[number,result,timestamp,duration]&xpath=//build[timestamp >= " + now.getTime() + "]&wrapper=builds");
+  }
+
+  @Test
+  public void testGetBuildsURLByCount() throws Exception {
+    assertThat(server.getBuildsUrl(5)).isEqualTo("http://jenkins/job/project/api/xml?tree=builds[number,result,timestamp,duration]&xpath=//build[position() <=5]&wrapper=builds");
   }
 }

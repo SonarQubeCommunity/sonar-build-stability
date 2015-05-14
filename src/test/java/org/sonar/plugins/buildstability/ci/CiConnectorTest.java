@@ -26,9 +26,12 @@ import org.junit.Test;
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
+import org.sonar.plugins.buildstability.ci.api.UnmarshallerBatch;
 import org.sonar.plugins.buildstability.util.MockHttpServerInterceptor;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -37,6 +40,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
+ * Test class of {@link CiConnector}
+ * 
  * @author Julien HENRY
  */
 public class CiConnectorTest {
@@ -78,6 +83,28 @@ public class CiConnectorTest {
     when(unmarshaller.toModel(any(Element.class))).thenReturn(lastBuild);
 
     assertThat(connector.getBuilds(5)).hasSize(5);
+  }
+
+  @Test
+  public void testGetBuildsCountBatch() throws Exception {
+    unmarshaller = mock(UnmarshallerBatch.class);
+    when(server.getBuildUnmarshaller()).thenReturn(unmarshaller);
+    httpServer.addMockResponseData("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><foo></foo>");
+    when(server.getBuildsUrl(any(int.class))).thenReturn("http://localhost:" + httpServer.getPort());
+    httpServer.addMockResponseData("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><builds></builds>");
+    when(((UnmarshallerBatch<Build>) unmarshaller).toModels(any(Element.class))).thenReturn(Arrays.asList(new Build[5]));
+    assertThat(connector.getBuilds(5)).hasSize(5);
+  }
+
+  @Test
+  public void testGetBuildsSinceBatch() throws Exception {
+    unmarshaller = mock(UnmarshallerBatch.class);
+    when(server.getBuildUnmarshaller()).thenReturn(unmarshaller);
+    httpServer.addMockResponseData("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><foo></foo>");
+    when(server.getBuildsSinceUrl(any(Date.class))).thenReturn("http://localhost:" + httpServer.getPort());
+    httpServer.addMockResponseData("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><builds></builds>");
+    when(((UnmarshallerBatch<Build>) unmarshaller).toModels(any(Element.class))).thenReturn(Arrays.asList(new Build[5]));
+    assertThat(connector.getBuildsSince(new Date())).hasSize(5);
   }
 
   @Test

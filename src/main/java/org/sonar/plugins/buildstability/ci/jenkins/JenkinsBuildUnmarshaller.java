@@ -19,14 +19,17 @@
  */
 package org.sonar.plugins.buildstability.ci.jenkins;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dom4j.Element;
 import org.sonar.plugins.buildstability.ci.api.Build;
-import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
+import org.sonar.plugins.buildstability.ci.api.UnmarshallerBatch;
 
 /**
  * @author Evgeny Mandrikov
  */
-public class JenkinsBuildUnmarshaller implements Unmarshaller<Build> {
+public class JenkinsBuildUnmarshaller implements UnmarshallerBatch<Build> {
 
   @Override
   public Build toModel(Element domElement) {
@@ -40,5 +43,14 @@ public class JenkinsBuildUnmarshaller implements Unmarshaller<Build> {
     build.setUnstable("UNSTABLE".equalsIgnoreCase(result));
     build.setSuccessful(build.isUnstable() || "SUCCESS".equalsIgnoreCase(result));
     return build;
+  }
+
+  @Override
+  public List<Build> toModels(final Element domElement) {
+    final List<Build> result = new ArrayList<Build>(); 
+    for (final Object element : domElement.elements("build")) {
+      result.add(toModel((Element)element));
+    }
+    return result;
   }
 }

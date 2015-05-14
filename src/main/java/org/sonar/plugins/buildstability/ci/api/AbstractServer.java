@@ -25,6 +25,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author Evgeny Mandrikov
@@ -75,6 +76,32 @@ public abstract class AbstractServer {
   public abstract String getLastBuildUrl();
 
   public abstract Unmarshaller<Build> getBuildUnmarshaller();
+
+  /**
+   * Return a non <code>null</code> URL when this servers supports to retrieve
+   * all builds after the given date.
+   * 
+   * @param date
+   *          the minimal date.
+   * @return <code>null</code> when unsupported, and a valid URL otherwise.
+   */
+  public String getBuildsSinceUrl(final Date date) {
+    // As default, this is not supported
+    return null;
+  }
+
+  /**
+   * Return a non <code>null</code> URL when this servers supports to retrieve
+   * the last builds with a given limit.
+   * 
+   * @param count
+   *          the maximal amount of builds to return.
+   * @return <code>null</code> when unsupported, and a valid URL otherwise.
+   */
+  public String getBuildsUrl(final int count) {
+    // As default, this is not supported
+    return null;
+  }
 
   public void doLogin(DefaultHttpClient client) throws IOException {
     if (StringUtils.isNotBlank(getUsername()) && StringUtils.isNotBlank(getPassword())) {

@@ -26,6 +26,7 @@ import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * See <a href="https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API">Jenkins Remote access API</a>.
@@ -43,6 +44,18 @@ public class JenkinsServer extends AbstractServer {
   @Override
   public String getBuildUrl(String number) {
     return getHost() + "/job/" + getKey() + "/" + number + "/api/xml/";
+  }
+
+  @Override
+  public String getBuildsSinceUrl(final Date date) {
+    // This query gets the minimal data
+    return getHost() + "/job/" + getKey() + "/api/xml?tree=builds[number,result,timestamp,duration]&xpath=//build[timestamp%20%3E%3D%20" + date.getTime() + "]&wrapper=builds";
+  }
+
+  @Override
+  public String getBuildsUrl(final int count) {
+    // This query gets the minimal data
+    return getHost() + "/job/" + getKey() + "/api/xml?tree=builds[number,result,timestamp,duration]&xpath=//build[position()%20%3C%3D%20" + count + "]&wrapper=builds";
   }
 
   @Override

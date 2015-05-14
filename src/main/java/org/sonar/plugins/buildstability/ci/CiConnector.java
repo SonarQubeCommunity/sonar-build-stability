@@ -19,7 +19,13 @@
  */
 package org.sonar.plugins.buildstability.ci;
 
-import com.google.common.annotations.VisibleForTesting;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -33,13 +39,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.UnmarshallerBatch;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * @author Evgeny Mandrikov
@@ -85,35 +87,60 @@ public class CiConnector {
 
   public List<Build> getBuilds(int count) throws IOException {
     server.doLogin(client);
-    List<Build> builds = new ArrayList<Build>();
-    Build last = getLastBuild();
-    if (last != null) {
-      builds.add(last);
-      for (int i = 1; i < count; i++) {
-        Build previous = getBuild(last.getNumber() - i);
-        if (previous != null) {
-          builds.add(previous);
+    final String batchAllUrl = server.getBuildsUrl(count);
+    final List<Build> builds;
+    if (batchAllUrl == null) {
+      // Iterate over builds until the desired count. 404 errors may occur
+      builds = new ArrayList<Build>();
+      Build last = getLastBuild();
+      if (last != null) {
+        builds.add(last);
+        for (int i = 1; i < count; i++) {
+          Build previous = getBuild(last.getNumber() - i);
+          if (previous != null) {
+            builds.add(previous);
+          }
         }
       }
+    } else {
+      builds = getAllBuilds(batchAllUrl);
     }
     return builds;
   }
 
   public List<Build> getBuildsSince(Date date) throws IOException {
     server.doLogin(client);
-    List<Build> builds = new ArrayList<Build>();
-    Build current = getLastBuild();
-    int number = current != null ? current.getNumber() : 0;
-    while (number > 0 && (current == null || date.before(current.getDate()))) {
-      if (current != null) {
-        builds.add(current);
+    final String batchAllUrl = server.getBuildsSinceUrl(date);
+    final List<Build> builds;
+    if (batchAllUrl == null) {
+      // Iterate over all builds, maybe hundreds, and 404 errors may occur
+      builds = new ArrayList<Build>();
+      Build current = getLastBuild();
+      int number = current != null ? current.getNumber() : 0;
+      while (number > 0 && (current == null || date.before(current.getDate()))) {
+        if (current != null) {
+          builds.add(current);
+        }
+        number--;
+        if (number > 0) {
+          current = getBuild(number);
+        }
       }
-      number--;
-      if (number > 0) {
-        current = getBuild(number);
-      }
+    } else {
+      builds = getAllBuilds(batchAllUrl);
     }
     return builds;
+  }
+
+  /**
+   * Return all builds from the given URL.
+   */
+  protected List<Build> getAllBuilds(final String batchAllUrl) throws IOException {
+    Document dom = executeGet(batchAllUrl);
+    if (dom == null) {
+      return null;
+    }
+    return ((UnmarshallerBatch<Build>) server.getBuildUnmarshaller()).toModels(dom.getRootElement());
   }
 
   protected Document executeGet(String url) throws IOException {
