@@ -78,8 +78,7 @@ public abstract class AbstractServer {
   public abstract Unmarshaller<Build> getBuildUnmarshaller();
 
   /**
-   * Return a non <code>null</code> URL when this servers supports to retrieve
-   * all builds after the given date.
+   * Return a non <code>null</code> URL when this servers supports to retrieve all builds after the given date.
    * 
    * @param date
    *          the minimal date.
@@ -91,8 +90,7 @@ public abstract class AbstractServer {
   }
 
   /**
-   * Return a non <code>null</code> URL when this servers supports to retrieve
-   * the last builds with a given limit.
+   * Return a non <code>null</code> URL when this servers supports to retrieve the last builds with a given limit.
    * 
    * @param count
    *          the maximal amount of builds to return.
@@ -103,11 +101,25 @@ public abstract class AbstractServer {
     return null;
   }
 
+  /**
+   * Proceed to login.
+   * 
+   * @param client
+   *          HTTP client used to proceed the login.
+   */
   public void doLogin(DefaultHttpClient client) throws IOException {
-    if (StringUtils.isNotBlank(getUsername()) && StringUtils.isNotBlank(getPassword())) {
-      client.getCredentialsProvider().setCredentials(
-          AuthScope.ANY,
-          new UsernamePasswordCredentials(getUsername(), getPassword()));
+    if (isAuthenticatedLogin()) {
+      client.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(getUsername(), getPassword()));
     }
   }
+
+  /**
+   * Indicate the authentication information is provided.
+   * 
+   * @return <code>true</code> when user and password are provided.
+   */
+  public boolean isAuthenticatedLogin() {
+    return StringUtils.isNotBlank(getUsername()) && StringUtils.isNotBlank(getPassword());
+  }
+
 }

@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -49,7 +50,7 @@ import com.google.common.annotations.VisibleForTesting;
 public class CiConnector {
 
   private static final Logger LOG = LoggerFactory.getLogger(CiConnector.class);
-  private static final int TIMEOUT = 30 * 1000;
+  private static final int TIMEOUT = 30 * (int)DateUtils.MILLIS_PER_SECOND;
 
   private DefaultHttpClient client;
   private AbstractServer server;

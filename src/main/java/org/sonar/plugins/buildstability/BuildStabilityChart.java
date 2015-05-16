@@ -19,37 +19,45 @@
  */
 package org.sonar.plugins.buildstability;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
-import org.jfree.chart.JFreeChart;
+import org.apache.commons.lang.time.DateUtils;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.sonar.api.charts.AbstractChart;
 import org.sonar.api.charts.ChartParameters;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.image.BufferedImage;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Status;
 
 /**
  * @author Evgeny Mandrikov
  */
 public class BuildStabilityChart extends AbstractChart {
-  private static final Color RED = new Color(212,51,63);
-  private static final Color ORANGE = new Color(255,153,0);
-  private static final Color GREEN = new Color(0,174,0);
+  private static final int RESPONSIVE_THRESHOLD = 25;
   private static final String FONT_NAME = "SansSerif";
   private static final String PARAM_VALUES = "v";
-  private static final String PARAM_COLORS = "c";
   private static final String PARAM_FONT_SIZE = "fs";
+  private final BuildAsString buildMetric = new BuildAsString();
+
+  // Cache the mapping from Status to Color
+  private static final EnumMap<Status, Color> STATUS_TO_COLOR = new EnumMap<Status, Color>(Status.class);
+  static {
+    STATUS_TO_COLOR.put(Status.success, new Color(0, 174, 0));
+    STATUS_TO_COLOR.put(Status.unstable, new Color(255, 153, 0));
+    STATUS_TO_COLOR.put(Status.failed, new Color(212, 51, 63));
+  }
 
   @Override
   public String getKey() {
@@ -67,95 +75,82 @@ public class BuildStabilityChart extends AbstractChart {
     return plot;
   }
 
-  static class ColoredBarRenderer extends BarRenderer {
-    private Paint[] colors;
-
-    public void setColors(Paint[] colors) {
-      this.colors = colors;
-    }
-
-    @Override
-    public Paint getItemPaint(final int row, final int column) {
-      if (colors.length == 0) {
-        return Color.GRAY;
-      }
-      return colors[column % colors.length];
-    }
-  }
-
   private CategoryPlot generateJFreeChart(ChartParameters params) {
 
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
     CategoryPlot plot = new CategoryPlot();
-
     Font font = getFont(params.getValue(PARAM_FONT_SIZE));
 
-    configureDomainAxis(plot);
+    final Collection<Build> builds = buildMetric.toBuilds(params.getValue(PARAM_VALUES, "", true)).values();
+    configureDomainAxis(plot, builds);
     configureRangeAxis(plot, "s", font);
-    configureRenderer(plot, params.getValue(PARAM_COLORS, "", true));
-    configureValues(dataset, params.getValue(PARAM_VALUES, "", true));
+    configureRenderer(plot, builds);
+    configureValues(dataset, builds);
 
     plot.setDataset(dataset);
 
     return plot;
   }
 
-  private void configureValues(DefaultCategoryDataset dataset, String values) {
-    String[] pairs = StringUtils.split(values, ";");
-    if (pairs.length == 0) {
+  private void configureValues(DefaultCategoryDataset dataset, final Collection<Build> builds) {
+    if (builds.isEmpty()) {
       dataset.addValue((Number) 0.0, 0, "0");
     } else {
-      for (String pair : pairs) {
-        String[] keyValue = StringUtils.split(pair, "=");
-        double val = Double.parseDouble(keyValue[1]);
-        dataset.addValue((Number) val, 0, keyValue[0]);
+      for (final Build build : builds) {
+        dataset.addValue((Number) (build.getDuration() / DateUtils.MILLIS_PER_SECOND), 0, build.getNumber());
       }
     }
   }
 
-  private void configureRenderer(CategoryPlot plot, String colors) {
-    ColoredBarRenderer renderer = new ColoredBarRenderer();
+  private void configureRenderer(CategoryPlot plot, final Collection<Build> builds) {
 
-    String[] pairs = StringUtils.split(colors, ";");
-    List<Paint> paints = new ArrayList<Paint>();
-    for (String pair : pairs) {
-      String[] keyValue = StringUtils.split(pair, "=");
-      paints.add("r".equals(keyValue[1]) ? RED : "o".equals(keyValue[1]) ? ORANGE : GREEN);
+    final List<Paint> paints = new ArrayList<Paint>();
+    for (final Build build : builds) {
+      paints.add(STATUS_TO_COLOR.get(build.getStatus()));
     }
 
-    renderer.setColors(paints.toArray(new Paint[paints.size()]));
-    renderer.setDrawBarOutline(true);
+    final BarRenderer renderer = new  BarRenderer() {
+
+      @Override
+      public Paint getItemPaint(final int row, final int column) {
+        if (paints.isEmpty()) {
+          return Color.GRAY;
+        }
+        return paints.get(column % paints.size());
+      }
+    };
+
+    renderer.setDrawBarOutline(!isCompact(builds.size()));
     renderer.setSeriesItemLabelsVisible(0, true);
-    renderer.setItemMargin(0);
+    renderer.setItemMargin(0.0f);
     plot.setRenderer(renderer);
   }
 
-  private void configureDomainAxis(CategoryPlot plot) {
+  private boolean isCompact(int nBuilds) {
+    return nBuilds > RESPONSIVE_THRESHOLD;
+  }
+
+  private void configureDomainAxis(CategoryPlot plot, final Collection<Build> builds) {
     CategoryAxis categoryAxis = new CategoryAxis();
     categoryAxis.setTickLabelsVisible(false);
+    categoryAxis.setUpperMargin(isCompact(builds.size()) ? 0 : 0.03);
+    categoryAxis.setLowerMargin(isCompact(builds.size()) ? 0 : 0.03);
+    categoryAxis.setCategoryMargin(isCompact(builds.size()) ? 0 : 0.2);
     plot.setDomainAxis(categoryAxis);
     plot.setDomainGridlinesVisible(false);
   }
 
   private Font getFont(String fontSize) {
-    int size = FONT_SIZE;
-    if (!StringUtils.isBlank(fontSize)) {
-      size = Integer.parseInt(fontSize);
-    }
+    final int size = StringUtils.isBlank(fontSize) ? FONT_SIZE : Integer.parseInt(fontSize);
     return new Font(FONT_NAME, Font.PLAIN, size);
   }
 
   private void configureRangeAxis(CategoryPlot plot, String valueLabelSuffix, Font font) {
     NumberAxis numberAxis = new NumberAxis();
-    numberAxis.setUpperMargin(0.3);
+    numberAxis.setUpperMargin(0.1);
     numberAxis.setTickLabelFont(font);
     numberAxis.setTickLabelPaint(OUTLINE_COLOR);
-    String suffix = "";
-    if (valueLabelSuffix != null && !"".equals(valueLabelSuffix)) {
-      suffix = new StringBuilder().append("'").append(valueLabelSuffix).append("'").toString();
-    }
-    numberAxis.setNumberFormatOverride(new DecimalFormat("0" + suffix));
+    numberAxis.setNumberFormatOverride(new DecimalFormat("0'" + valueLabelSuffix + "'"));
     numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
     plot.setRangeAxis(numberAxis);
   }

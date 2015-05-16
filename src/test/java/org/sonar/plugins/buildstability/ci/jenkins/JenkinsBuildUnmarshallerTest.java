@@ -29,6 +29,7 @@ import org.dom4j.io.SAXReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Status;
 
 /**
  * Test class of {@link JenkinsBuildUnmarshaller}
@@ -51,8 +52,7 @@ public class JenkinsBuildUnmarshallerTest {
     final Document doc = reader.read(result);
     final Build build = unmarshaller.toModel(doc.getRootElement());
     assertThat(build.getNumber()).isEqualTo(32);
-    assertThat(build.isSuccessful()).isTrue();
-    assertThat(build.isUnstable()).isFalse();
+    assertThat(build.getStatus()).isEqualTo(Status.success);
     assertThat(build.getTimestamp()).isGreaterThan(0);
     assertThat(build.getDuration()).isGreaterThan(0);
   }
@@ -67,15 +67,13 @@ public class JenkinsBuildUnmarshallerTest {
     assertThat(builds.size()).isEqualTo(3);
     final Build build = builds.get(0);
     assertThat(build.getNumber()).isEqualTo(230);
-    assertThat(build.isSuccessful()).isTrue();
-    assertThat(build.isUnstable()).isTrue();
+    assertThat(build.getStatus()).isEqualTo(Status.unstable);
     assertThat(build.getTimestamp()).isGreaterThan(0);
     assertThat(build.getDuration()).isGreaterThan(0);
 
     final Build build2 = builds.get(2);
     assertThat(build2.getNumber()).isEqualTo(33);
-    assertThat(build2.isSuccessful()).isFalse();
-    assertThat(build2.isUnstable()).isFalse();
+    assertThat(build2.getStatus()).isEqualTo(Status.failed);
     assertThat(build2.getTimestamp()).isGreaterThan(0);
     assertThat(build2.getDuration()).isGreaterThan(0);
 }

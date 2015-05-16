@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.dom4j.Element;
 import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Status;
 import org.sonar.plugins.buildstability.ci.api.UnmarshallerBatch;
 
 /**
@@ -38,18 +39,16 @@ public class JenkinsBuildUnmarshaller implements UnmarshallerBatch<Build> {
     String result = domElement.elementText("result");
     build.setNumber(Integer.parseInt(domElement.elementText("number")));
     build.setTimestamp(Long.parseLong(domElement.elementText("timestamp")));
-    build.setResult(result);
     build.setDuration(Long.parseLong(domElement.elementText("duration")));
-    build.setUnstable("UNSTABLE".equalsIgnoreCase(result));
-    build.setSuccessful(build.isUnstable() || "SUCCESS".equalsIgnoreCase(result));
+    build.setStatus("SUCCESS".equalsIgnoreCase(result)?Status.success:"UNSTABLE".equalsIgnoreCase(result)?Status.unstable:Status.failed);
     return build;
   }
 
   @Override
   public List<Build> toModels(final Element domElement) {
-    final List<Build> result = new ArrayList<Build>(); 
+    final List<Build> result = new ArrayList<Build>();
     for (final Object element : domElement.elements("build")) {
-      result.add(toModel((Element)element));
+      result.add(toModel((Element) element));
     }
     return result;
   }

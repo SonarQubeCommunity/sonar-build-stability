@@ -48,12 +48,42 @@ public class BuildStabilityChartTest extends AbstractChartTest {
 
   @Test
   public void simple() throws Exception {
-    BufferedImage image = chart.generateImage(new ChartParameters("w=350&h=200" +
-      encode("&v=", "11=5.0;12=10.0;13=10.0;14=20.0") +
-      encode("&c=", "11=r;12=o;13=g")
-      ));
+    generate(0, "simple.png");
+  }
+
+  @Test
+  public void simpleResponsive() throws Exception {
+    generate(100, "simple-responsive.png");
+  }
+
+  @Test
+  public void simpleResponsiveFontSize() throws Exception {
+    generate(100, "simple-fs.png","&fs=10");
+  }
+
+  @Test
+  public void empty() throws Exception {
+    BufferedImage image = chart.generateImage(new ChartParameters("w=350&h=200"));
     assertChartSizeGreaterThan(image, 1000);
-    saveChart(image, "BuildStabilityChartTest/simple.png");
+    saveChart(image, "BuildStabilityChartTest/empty.png");
+  }
+
+  protected void generate(int more, final String fileName) throws Exception {
+    generate(more, fileName, "");
+  }
+
+  protected void generate(int more, final String fileName, final String args) throws Exception {
+    final StringBuilder builder = new StringBuilder();
+    builder.append("1,0,2,10000;2,1,0,4000;3,10,2,3000;4,8,1,5000;");
+    for (int i = 5; i < more; i++) {
+      builder.append("" + i);
+      builder.append(",0,2," + (i % 10 + 1) + "000;");
+    }
+    builder.append("500,0,2,10000");
+
+    BufferedImage image = chart.generateImage(new ChartParameters("w=350&h=200" + encode("&v=", builder.toString()) + args));
+    assertChartSizeGreaterThan(image, 1000);
+    saveChart(image, "BuildStabilityChartTest/" + fileName);
     // displayTestPanel(image);
     // Thread.sleep(1000 * 30);
   }

@@ -34,7 +34,7 @@ import java.util.List;
     key = BuildStabilitySensor.DAYS_PROPERTY,
     defaultValue = BuildStabilitySensor.DAYS_DEFAULT_VALUE + "",
     name = "Days",
-    description = "Number of days to analyze.",
+    description = "Number of days to keep results.",
     global = true,
     project = true,
     module = false

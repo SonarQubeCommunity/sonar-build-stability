@@ -33,40 +33,24 @@ public class Build implements Model {
   private int number;
 
   /**
-   * Build result.
-   */
-  private String result;
-
-  /**
-   * True, if build successfull.
-   */
-  private boolean successful;
-
-  /**
    * True, if build unstable.
    */
-  private boolean unstable;
+  private Status status;
 
   /**
-   * Build duration in millisec.
+   * Build duration in milliseconds.
    */
-  private double duration;
+  private long duration;
 
   /**
    * Build timestamp.
    */
   private long timestamp;
 
-  public Build(int number, long timestamp, String result, boolean successful, double duration) {
-    this(number ,timestamp,result,successful,false,duration);
-  }
-
-  public Build(int number, long timestamp, String result, boolean successful, boolean unstable, double duration) {
+  public Build(int number, long timestamp, Status status, long duration) {
     this.number = number;
     this.timestamp = timestamp;
-    this.result = result;
-    this.successful = successful;
-    this.unstable = unstable;
+    this.status = status;
     this.duration = duration;
   }
 
@@ -81,35 +65,19 @@ public class Build implements Model {
     this.number = number;
   }
 
-  public String getResult() {
-    return result;
+  public void setStatus(Status status) {
+    this.status = status;
   }
 
-  public void setResult(String result) {
-    this.result = result;
+  public Status getStatus() {
+    return status;
   }
 
-  public boolean isSuccessful() {
-    return successful;
-  }
-
-  public boolean isUnstable() {
-    return unstable;
-  }
-
-  public void setSuccessful(boolean successful) {
-    this.successful = successful;
-  }
-
-  public void setUnstable(boolean unstable) {
-    this.unstable = unstable;
-  }
-
-  public double getDuration() {
+  public long getDuration() {
     return duration;
   }
 
-  public void setDuration(double duration) {
+  public void setDuration(long duration) {
     this.duration = duration;
   }
 
@@ -130,8 +98,7 @@ public class Build implements Model {
     return new ToStringBuilder(this).
         append("number", number).
         append("timestamp", timestamp).
-        append("result", result).
-        append("successful", successful).
+        append("status", status).
         append("duration", duration).
         toString();
   }

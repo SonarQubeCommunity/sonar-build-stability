@@ -17,23 +17,16 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability;
+package org.sonar.plugins.buildstability.ci.api;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 /**
- * @author Evgeny Mandrikov
+ * Build statuses
+ * @author Fabrice Daugan
  */
-public class BuildStabilityWidgetTest {
-  @Test
-  public void testApi() {
-    BuildStabilityWidget widget = new BuildStabilityWidget();
-    String path = widget.getTemplatePath();
-    assertThat(getClass().getResource(path), notNullValue());
-    assertThat(widget.getId(), notNullValue());
-    assertThat(widget.getTitle(), notNullValue());
-  }
+public enum Status {
+  
+  failed,
+  unstable,
+  success
 }

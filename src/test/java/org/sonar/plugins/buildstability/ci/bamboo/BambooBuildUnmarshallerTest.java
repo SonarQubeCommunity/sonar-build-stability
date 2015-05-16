@@ -24,6 +24,7 @@ import org.dom4j.io.SAXReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Status;
 
 import java.io.InputStream;
 
@@ -48,7 +49,7 @@ public class BambooBuildUnmarshallerTest {
     Document doc = reader.read(result);
     Build b = unmarshaller.toModel(doc.getRootElement());
     assertThat(b.getNumber()).isEqualTo(83);
-    assertThat(b.isSuccessful()).isTrue();
+    assertThat(b.getStatus()).isEqualTo(Status.success);
     assertThat(b.getTimestamp()).isGreaterThan(0);
   }
 
@@ -60,7 +61,7 @@ public class BambooBuildUnmarshallerTest {
     Document doc = reader.read(result);
     Build b = unmarshaller.toModel(doc.getRootElement());
     assertThat(b.getNumber()).isEqualTo(82);
-    assertThat(b.isSuccessful()).isTrue();
+    assertThat(b.getStatus()).isEqualTo(Status.success);
     assertThat(b.getTimestamp()).isGreaterThan(0);
   }
 }

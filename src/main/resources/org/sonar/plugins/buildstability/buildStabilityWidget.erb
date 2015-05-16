@@ -11,8 +11,7 @@
    longest_time_to_fix_measure = measure('build_longest_time_to_fix_failure')
    average_builds_to_fix_measure = measure('build_average_builds_to_fix_failure')
 
-   durations_measure = measure('build_durations')
-   results_measure = measure('build_results')
+   build_details = measure('build_details')
 
    if builds_measure
      if builds_measure.typed_value == 0
@@ -69,9 +68,9 @@
         </p>
       </div>
     </div>
-    <% if durations_measure && results_measure %>
+    <% if build_details %>
       <div>
-        <%= chart('ck=buildsbar&w=350&h=200&v=' + durations_measure.data + '&c=' + results_measure.data) %>
+        <%= chart('ck=buildsbar&w=350&h=200&v=' + build_details.data) %>
       </div>
     <% end %>
   </div>
