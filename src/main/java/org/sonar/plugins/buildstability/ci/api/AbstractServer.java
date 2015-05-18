@@ -19,13 +19,14 @@
  */
 package org.sonar.plugins.buildstability.ci.api;
 
+import java.io.IOException;
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.IOException;
-import java.util.Date;
+import org.apache.http.client.HttpClient;
 
 /**
  * @author Evgeny Mandrikov
@@ -107,9 +108,9 @@ public abstract class AbstractServer {
    * @param client
    *          HTTP client used to proceed the login.
    */
-  public void doLogin(DefaultHttpClient client) throws IOException {
+  public void doLogin(HttpClient client) throws IOException {
     if (isAuthenticatedLogin()) {
-      client.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(getUsername(), getPassword()));
+      ((DefaultHttpClient)client).getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(getUsername(), getPassword()));
     }
   }
 

@@ -23,9 +23,6 @@ import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 /**
  * See <a href="http://confluence.atlassian.com/display/BAMBOO/Bamboo+REST+APIs">Bamboo REST APIs</a>.
  *
@@ -47,15 +44,11 @@ public class BambooServer extends AbstractServer {
 
   @Override
   public String getLastBuildUrl() {
-    try {
-      StringBuilder sb = new StringBuilder(getHost())
-        .append("/rest/api/latest/result/").append(getKey())
-        .append("?os_authType=basic")
-        .append("&expand=results").append(URLEncoder.encode("[0]", "UTF-8")).append(".result");
-      return sb.toString();
-    } catch (UnsupportedEncodingException e) {
-      throw new IllegalStateException(e);
-    }
+    StringBuilder sb = new StringBuilder(getHost())
+      .append("/rest/api/latest/result/").append(getKey())
+      .append("?os_authType=basic")
+      .append("&expand=results%5B0%5D.result");
+    return sb.toString();
   }
 
   @Override

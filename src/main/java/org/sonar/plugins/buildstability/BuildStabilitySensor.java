@@ -152,7 +152,7 @@ public class BuildStabilitySensor implements Sensor {
       buildsAsString = "";
       LOG.info("First analysis");
     } else {
-      LOG.info("Merge with previous builds : {} " + measures);
+      LOG.info("Merge with previous builds : {} ", measures.size());
       buildsAsString = (String) measures.get(0).getData();
     }
 
@@ -221,20 +221,20 @@ public class BuildStabilitySensor implements Sensor {
 
     double count = successful + failed;
 
-    context.saveMeasure(new Measure(BuildStabilityMetrics.BUILDS, count));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.FAILED, failed));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.SUCCESS_RATE, divide(successful, count) * 100));
+    context.saveMeasure(new Measure<Integer>(BuildStabilityMetrics.BUILDS, count));
+    context.saveMeasure(new Measure<Integer>(BuildStabilityMetrics.FAILED, failed));
+    context.saveMeasure(new Measure<Double>(BuildStabilityMetrics.SUCCESS_RATE, divide(successful, count) * 100));
 
-    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_DURATION, divide(duration, successful)));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_DURATION, normalize(longest)));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.SHORTEST_DURATION, normalize(shortest)));
+    context.saveMeasure(new Measure<Integer>(BuildStabilityMetrics.AVG_DURATION, divide(duration, successful)));
+    context.saveMeasure(new Measure<Integer>(BuildStabilityMetrics.LONGEST_DURATION, normalize(longest)));
+    context.saveMeasure(new Measure<Integer>(BuildStabilityMetrics.SHORTEST_DURATION, normalize(shortest)));
 
-    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_TIME_TO_FIX, divide(totalTimeToFix, fixes)));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, normalize(longestTimeToFix)));
-    context.saveMeasure(new Measure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, divide(totalBuildsToFix, fixes)));
+    context.saveMeasure(new Measure<Integer>(BuildStabilityMetrics.AVG_TIME_TO_FIX, divide(totalTimeToFix, fixes)));
+    context.saveMeasure(new Measure<Integer>(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, normalize(longestTimeToFix)));
+    context.saveMeasure(new Measure<Integer>(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, divide(totalBuildsToFix, fixes)));
 
     if (!builds.isEmpty()) {
-      context.saveMeasure(new Measure(BuildStabilityMetrics.BUILDS_DETAILS, buildMetric.toString(builds)));
+      context.saveMeasure(new Measure<String>(BuildStabilityMetrics.BUILDS_DETAILS, buildMetric.toString(builds)));
     }
   }
 

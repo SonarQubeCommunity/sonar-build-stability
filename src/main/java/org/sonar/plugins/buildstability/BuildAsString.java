@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Status;
 
@@ -55,7 +56,8 @@ public class BuildAsString {
   }
 
   /**
-   * Return {@link Build} from the input string. Using {@value #PROPERTY_SEPARATOR} as property separator.
+   * Return {@link Build} from the input string. Using {@value #PROPERTY_SEPARATOR} as property separator. Timestamp and
+   * duration are truncated to save memory.
    * 
    * @param buildAsString
    *          String representation of a a build.
@@ -65,9 +67,9 @@ public class BuildAsString {
     final Build build = new Build();
     final String[] properties = StringUtils.split(buildAsString, PROPERTY_SEPARATOR);
     build.setNumber(Integer.parseInt(properties[0]));
-    build.setTimestamp(Long.parseLong(properties[1]));
+    build.setTimestamp(Long.parseLong(properties[1]) * DateUtils.MILLIS_PER_SECOND);
     build.setStatus(Status.values()[Integer.parseInt(properties[2])]);
-    build.setDuration(Long.parseLong(properties[3]));
+    build.setDuration(Long.parseLong(properties[3]) * DateUtils.MILLIS_PER_SECOND);
     return build;
   }
 
@@ -94,8 +96,8 @@ public class BuildAsString {
    */
   protected StringBuilder append(final Build build, final StringBuilder result) {
     result.append(build.getNumber()).append(PROPERTY_SEPARATOR);
-    result.append(build.getTimestamp()).append(PROPERTY_SEPARATOR);
+    result.append(build.getTimestamp() / DateUtils.MILLIS_PER_SECOND).append(PROPERTY_SEPARATOR);
     result.append(build.getStatus().ordinal()).append(PROPERTY_SEPARATOR);
-    return result.append(build.getDuration());
+    return result.append(build.getDuration() / DateUtils.MILLIS_PER_SECOND);
   }
 }

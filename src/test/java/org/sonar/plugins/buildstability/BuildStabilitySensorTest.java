@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,8 +79,10 @@ public class BuildStabilitySensorTest {
         return connector;
       }
     };
-    when(timeMachine.getMeasures(any(TimeMachineQuery.class))).thenReturn(new ArrayList<Measure>());
-    
+    @SuppressWarnings("rawtypes")
+    final List<Measure> previousMeasures = new ArrayList<Measure>();
+    when(timeMachine.getMeasures(any(TimeMachineQuery.class))).thenReturn(previousMeasures);
+
     // For coverage only
     Status.valueOf(Status.success.name());
   }
@@ -91,14 +94,12 @@ public class BuildStabilitySensorTest {
     settings.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:conf");
 
     assertThat(sensor.getCiUrl(mock(Project.class)), is("Hudson:conf"));
-    
- 
+
   }
 
   @Test
   public void testGetConnector() throws Exception {
-    Assert.assertNotNull(new BuildStabilitySensor(settings, timeMachine, mavenCiConfig)
-        .getConnector("Jenkins:any/job/any"));
+    Assert.assertNotNull(new BuildStabilitySensor(settings, timeMachine, mavenCiConfig).getConnector("Jenkins:any/job/any"));
   }
 
   @Test
@@ -139,8 +140,8 @@ public class BuildStabilitySensorTest {
   @Test
   public void testAnalyzeBuilds() throws Exception {
     SensorContext context = mock(SensorContext.class);
-    List<Build> builds = Arrays.asList(new Build(1, 0, Status.success, 10), new Build(2, 1, Status.failed, 4),
-        new Build(3, 10, Status.success, 3), new Build(4, 20, Status.unstable, 5));
+    List<Build> builds = Arrays.asList(new Build(1, 0, Status.success, 10000), new Build(2, 1000, Status.failed, 4000), new Build(3, 10000, Status.success, 3000), new Build(4,
+        20000, Status.unstable, 5000));
 
     sensor.analyseBuilds(builds, context);
 
@@ -148,16 +149,15 @@ public class BuildStabilitySensorTest {
     verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.FAILED, 1.0))));
     verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.SUCCESS_RATE, 75.0))));
 
-    verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 6.0))));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 3.0)));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
+    verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 6000.0))));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 3000.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10000.0)));
 
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 9.0)));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 9.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 9000.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 9000.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, 1.0)));
 
-    verify(context).saveMeasure(
-        argThat(new IsMeasure(BuildStabilityMetrics.BUILDS_DETAILS, "1,0,2,10;2,1,0,4;3,10,2,3;4,20,1,5")));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.BUILDS_DETAILS, "1,0,2,10;2,1,0,4;3,10,2,3;4,20,1,5")));
 
     verifyNoMoreInteractions(context);
   }
@@ -188,27 +188,29 @@ public class BuildStabilitySensorTest {
 
     // Check the context is untouched
     verify(context, Mockito.never()).saveMeasure(any(Measure.class));
-    
+
     Assert.assertNotNull(sensor.toString());
   }
 
   @Test
   public void testAnalyzeWithHistory() throws Exception {
     final long time = System.currentTimeMillis();
+    final long timeAsSeconds = time / DateUtils.MILLIS_PER_SECOND;
 
     // Add history
+    @SuppressWarnings("rawtypes")
     final List<Measure> previousMeasures = new ArrayList<Measure>();
     final Measure<String> previousMeasure = new Measure<String>(BuildStabilityMetrics.BUILDS_DETAILS);
     previousMeasures.add(previousMeasure);
     final List<Build> previousBuilds = new ArrayList<Build>();
-    previousBuilds.add(new Build(0, 0, Status.failed, 5));
-    previousBuilds.add(new Build(1, time - 20, Status.success, 10));
+    previousBuilds.add(new Build(0, 0, Status.failed, 5000));
+    previousBuilds.add(new Build(1, time - 20000, Status.success, 10000));
     previousMeasure.setData(buildMetric.toString(previousBuilds));
     when(timeMachine.getMeasures(any(TimeMachineQuery.class))).thenReturn(previousMeasures);
 
     final SensorContext context = mock(SensorContext.class);
-    final List<Build> builds = Arrays.asList(new Build(2, time - 19, Status.failed, 4), new Build(3, time - 10,
-        Status.success, 3), new Build(4, time, Status.unstable, 5));
+    final List<Build> builds = Arrays.asList(new Build(2, time - 19000, Status.failed, 4000), new Build(3, time - 10000, Status.success, 3000), new Build(4, time, Status.unstable,
+        5000));
     when(connector.getBuildsSince(any(Date.class))).thenReturn(builds);
     settings.setProperty(BuildStabilitySensor.CI_URL_PROPERTY, "Hudson:http://localhost");
 
@@ -218,31 +220,30 @@ public class BuildStabilitySensorTest {
     verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.FAILED, 1.0))));
     verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.SUCCESS_RATE, 75.0))));
 
-    verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 6.0))));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 3.0)));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
+    verify(context).saveMeasure(argThat((new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 6000.0))));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 3000.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10000.0)));
 
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 9.0)));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 9.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 9000.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 9000.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_BUILDS_TO_FIX, 1.0)));
 
     verify(context).saveMeasure(
-        argThat(new IsMeasure(BuildStabilityMetrics.BUILDS_DETAILS, "1," + (time - 20) + ",2,10;2," + (time - 19)
-            + ",0,4;3," + (time - 10) + ",2,3;4," + time + ",1,5")));
+        argThat(new IsMeasure(BuildStabilityMetrics.BUILDS_DETAILS, "1," + (timeAsSeconds - 20) + ",2,10;2," + (timeAsSeconds - 19) + ",0,4;3," + (timeAsSeconds - 10) + ",2,3;4,"
+            + (timeAsSeconds) + ",1,5")));
 
     verifyNoMoreInteractions(context);
   }
-
 
   @Test
   public void testCompleteAndPurgeBuildsNoHistory() throws Exception {
     final long time = System.currentTimeMillis();
 
+    @SuppressWarnings("rawtypes")
     final List<Measure> previousMeasures = new ArrayList<Measure>();
     when(timeMachine.getMeasures(any(TimeMachineQuery.class))).thenReturn(previousMeasures);
 
-    final List<Build> builds = Arrays.asList(new Build(2, time - 19, Status.failed, 4), new Build(3, time - 10,
-        Status.success, 3), new Build(4, time, Status.unstable, 5));
+    final List<Build> builds = Arrays.asList(new Build(2, time - 19, Status.failed, 4), new Build(3, time - 10, Status.success, 3), new Build(4, time, Status.unstable, 5));
     when(connector.getBuildsSince(any(Date.class))).thenReturn(builds);
     sensor.completeAndPurgeBuilds(builds, new Date(), null);
   }
@@ -250,7 +251,7 @@ public class BuildStabilitySensorTest {
   @Test
   public void testNoSuccessfulBuilds() throws Exception {
     SensorContext context = mock(SensorContext.class);
-    List<Build> builds = Arrays.asList(new Build(1, 0, Status.failed, 10),new Build(2, 0, Status.failed, 10));
+    List<Build> builds = Arrays.asList(new Build(1, 0, Status.failed, 10000), new Build(2, 0, Status.failed, 10000));
 
     sensor.analyseBuilds(builds, context);
 
@@ -274,7 +275,7 @@ public class BuildStabilitySensorTest {
   @Test
   public void testNoFailedBuilds() throws Exception {
     SensorContext context = mock(SensorContext.class);
-    List<Build> builds = Arrays.asList(new Build(1, 0, Status.success, 10));
+    List<Build> builds = Arrays.asList(new Build(1, 0, Status.success, 10000));
 
     sensor.analyseBuilds(builds, context);
 
@@ -282,9 +283,9 @@ public class BuildStabilitySensorTest {
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.FAILED, 0.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SUCCESS_RATE, 100.0)));
 
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 10.0)));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 10.0)));
-    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_DURATION, 10000.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.SHORTEST_DURATION, 10000.0)));
+    verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_DURATION, 10000.0)));
 
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.AVG_TIME_TO_FIX, 0.0)));
     verify(context).saveMeasure(argThat(new IsMeasure(BuildStabilityMetrics.LONGEST_TIME_TO_FIX, 0.0)));

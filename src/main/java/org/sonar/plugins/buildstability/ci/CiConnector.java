@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.util.EntityUtils;
@@ -50,7 +51,7 @@ import com.google.common.annotations.VisibleForTesting;
 public class CiConnector {
 
   private static final Logger LOG = LoggerFactory.getLogger(CiConnector.class);
-  private static final int TIMEOUT = 30 * (int)DateUtils.MILLIS_PER_SECOND;
+  private static final int TIMEOUT = 30 * (int) DateUtils.MILLIS_PER_SECOND;
 
   private DefaultHttpClient client;
   private AbstractServer server;
@@ -117,7 +118,7 @@ public class CiConnector {
       // Iterate over all builds, maybe hundreds, and 404 errors may occur
       builds = new ArrayList<Build>();
       Build current = getLastBuild();
-      int number = current != null ? current.getNumber() : 0;
+      int number = current == null ? 0 : current.getNumber();
       while (number > 0 && (current == null || date.before(current.getDate()))) {
         if (current != null) {
           builds.add(current);
@@ -178,11 +179,9 @@ public class CiConnector {
     if (matcher.matches()) {
       encoding = matcher.group(1);
     } else {
-      String contentType = httpResponse.getLastHeader("Content-Type").getValue();
-      pattern = Pattern.compile(".*charset=([^;]*).*");
-      matcher = pattern.matcher(contentType);
-      if (matcher.matches()) {
-        encoding = matcher.group(1);
+      final ContentType contentType = ContentType.get(httpResponse.getEntity());
+      if (contentType != null && contentType.getCharset() != null) {
+        encoding = contentType.getCharset().name();
       }
     }
     return encoding;

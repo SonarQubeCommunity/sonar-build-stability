@@ -19,11 +19,12 @@
  */
 package org.sonar.plugins.buildstability;
 
+import org.sonar.api.Extension;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.api.SonarPlugin;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,12 +80,13 @@ import java.util.List;
   )
 })
 public class BuildStabilityPlugin extends SonarPlugin {
+  
   @Override
-  public List getExtensions() {
-    return Arrays.asList(
-      BuildStabilityMetrics.class,
-      BuildStabilitySensor.class,
-      BuildStabilityWidget.class,
-      BuildStabilityChart.class);
+  public List<Class<? extends Extension>> getExtensions() {
+    final List<Class<? extends Extension>> extensions = new ArrayList<Class<? extends Extension>>();
+    extensions.add(BuildStabilityMetrics.class);
+    extensions.add(BuildStabilitySensor.class);
+    extensions.add(BuildStabilityWidget.class);
+    return extensions;
   }
 }

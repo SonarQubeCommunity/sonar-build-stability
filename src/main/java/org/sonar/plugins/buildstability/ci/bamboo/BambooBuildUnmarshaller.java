@@ -64,8 +64,8 @@ public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
     SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
     String buildStartedTime = result.elementText("buildStartedTime");
     // Remove ':' in the timezone because it is not was the Java format expect
-    int timezoneColonSeparatorIndex = buildStartedTime.length() - 3;
-    if (buildStartedTime.charAt(timezoneColonSeparatorIndex) == ':') {
+    int timezoneColonSeparatorIndex = buildStartedTime.lastIndexOf(':');
+    if (timezoneColonSeparatorIndex == buildStartedTime.length() -3) {
       buildStartedTime = buildStartedTime.substring(0, timezoneColonSeparatorIndex) + buildStartedTime.substring(timezoneColonSeparatorIndex + 1);
     }
     try {

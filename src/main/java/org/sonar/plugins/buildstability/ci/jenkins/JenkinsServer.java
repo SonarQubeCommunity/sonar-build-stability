@@ -76,13 +76,16 @@ public class JenkinsServer extends AbstractServer {
     return BUILD_UNMARSHALLER;
   }
 
-  @Override
-  public boolean isAuthenticatedLogin() {
-    return useJSecurityCheck && super.isAuthenticatedLogin();
-  }
-
   public void setUseJSecurityCheck(boolean useJSecurityCheck) {
     this.useJSecurityCheck = useJSecurityCheck;
+  }
+
+  public void doLogin(HttpClient client) throws IOException {
+    if (!useJSecurityCheck) {
+      super.doLogin(client);
+    } else if (isAuthenticatedLogin()) {
+      doLogin(client,getHost(), getUsername(), getPassword());
+    }
   }
 
   protected void doLogin(HttpClient client, String hostName, String username, String password) throws IOException {

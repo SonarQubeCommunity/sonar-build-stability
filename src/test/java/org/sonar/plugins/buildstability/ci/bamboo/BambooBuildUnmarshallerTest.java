@@ -51,6 +51,7 @@ public class BambooBuildUnmarshallerTest {
     assertThat(b.getNumber()).isEqualTo(83);
     assertThat(b.getStatus()).isEqualTo(Status.success);
     assertThat(b.getTimestamp()).isGreaterThan(0);
+    assertThat(b.getDuration()).isGreaterThan(0);
   }
 
   @Test
@@ -63,5 +64,29 @@ public class BambooBuildUnmarshallerTest {
     assertThat(b.getNumber()).isEqualTo(82);
     assertThat(b.getStatus()).isEqualTo(Status.success);
     assertThat(b.getTimestamp()).isGreaterThan(0);
+    assertThat(b.getDuration()).isGreaterThan(0);
+  }
+
+  @Test
+  public void testUnmarshallResultsEmpty() throws Exception {
+    SAXReader reader = new SAXReader();
+    reader.setEncoding("UTF-8");
+    InputStream result = this.getClass().getResourceAsStream("results-empty.xml");
+    Document doc = reader.read(result);
+    Build b = unmarshaller.toModel(doc.getRootElement());
+    assertThat(b).isNull();
+  }
+
+  @Test
+  public void testUnmarshallResultNoDate() throws Exception {
+    SAXReader reader = new SAXReader();
+    reader.setEncoding("UTF-8");
+    InputStream result = this.getClass().getResourceAsStream("result-no-date.xml");
+    Document doc = reader.read(result);
+    Build b = unmarshaller.toModel(doc.getRootElement());
+    assertThat(b.getNumber()).isEqualTo(82);
+    assertThat(b.getStatus()).isEqualTo(Status.failed);
+    assertThat(b.getTimestamp()).isEqualTo(0);
+    assertThat(b.getDuration()).isGreaterThan(0);
   }
 }

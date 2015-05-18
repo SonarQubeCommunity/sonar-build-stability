@@ -139,6 +139,7 @@ public class BuildStabilityMetrics implements Metrics {
     .setHidden(true)
     .create();
 
+  @SuppressWarnings("rawtypes")
   @Override
   public List<Metric> getMetrics() {
     return Arrays.<Metric>asList(

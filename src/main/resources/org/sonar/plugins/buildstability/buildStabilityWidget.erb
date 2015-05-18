@@ -69,9 +69,134 @@
       </div>
     </div>
     <% if build_details %>
-      <div>
-        <%= chart('ck=buildsbar&w=350&h=200&v=' + build_details.data) %>
-      </div>
+<style>
+  #vis-<%= widget.id -%> .vis .axis path, .axis line {
+    fill: none;
+    stroke: #777;
+    shape-rendering: crispEdges;
+  }        
+  #vis-<%= widget.id -%> .vis .axis text {
+    font-size: 10px;
+  }
+  #vis-<%= widget.id -%> .vis .tick {
+    stroke-dasharray: 1, 2;
+  }
+  #vis-<%= widget.id -%> .vis .x .tick text {
+    display:none;
+  }
+  #vis-<%= widget.id -%> .details {
+    visibility:hidden;
+    position: relative;
+    margin-left: 50px;
+    top : -16px;;
+  }
+  #vis-<%= widget.id -%> .details.hover {
+    visibility:visible;
+  }
+  #vis-<%= widget.id -%> .details span {
+    display:inline-block;
+  }
+  #vis-<%= widget.id -%> .details span, .vis text  {
+      font-weight: 300;
+  }
+  #vis-<%= widget.id -%> .details .widget-label {
+    width:60px;
+  }
+  #vis-<%= widget.id -%> .details i {
+    margin-right:6px;
+    margin-left:6px;
+  }
+  #vis-<%= widget.id -%> .vis .bs0{fill:#d4333f;}
+  #vis-<%= widget.id -%> .vis .bs1{fill:#f90}
+  #vis-<%= widget.id -%> .vis .bs2{fill:#0a0}
+  #vis-<%= widget.id -%> .vis .bs0:hover{fill:#a4030f;}
+  #vis-<%= widget.id -%> .vis .bs1:hover{fill:#b50}
+  #vis-<%= widget.id -%> .vis .bs2:hover{fill:#060}
+</style>
+  <div id="vis-<%= widget.id -%>">
+    <svg class="vis" width="100%" height="200"></svg>
+    <div class="details"><span class="b-number"></span><i></i><span class="b-start"></span> (<span class="b-duration"></span>)
+    </div>
+  </div>
+  <script>
+(function (buildsData, containerId) {
+  var buildsAsString = buildsData.split(';'),index, builds=[],properties,$=$j;
+  for(index=0;index<buildsAsString.length;index++) {
+     properties = buildsAsString[index].split(",");
+     builds.push({n:properties[0],t:parseInt(properties[1]), s:parseInt(properties[2]),d:parseInt(properties[3])});
+  }
+  var formatDuration = function(d) { 
+    var h=Math.floor(d/3600),
+        m=Math.floor((d-h*3600)/60),
+        s=Math.floor(d-m*60),
+        r='';
+    if (h) {
+        r=h+'h';
+    }
+    if (m) {
+        r+=(r?' ':'')+m+'m';
+    }
+    if (s && h===0) {
+        r+=(r?' ':'')+s+'s';
+    }
+    return r;
+  },
+  showDetails = function(d) {
+    $('#'+containerId+' .vis g.x.axis .tick text').filter(function() {
+      return $(this).text() === d.n;
+    }).attr('class', 'hover');
+    $('#'+containerId+' .b-number').html("#"+d.n);
+    $('#'+containerId+' .b-duration').text(formatDuration(d.d));
+    $('#'+containerId+' .b-start').text(d3.time.format("%Y/%m/%d %X")(new Date(d.t*1000)));
+    $('#'+containerId+' .details i').attr('class','icon-alert-'+statusToClass[d.s]);
+    $('#'+containerId+' .details').addClass('hover');
+  },
+  statusToClass=['error','warn','ok'],
+  update = function() {
+  	// Reset content
+  	$('#'+containerId+' .vis').html('');
+    vis = d3.select('#'+containerId+' .vis'), WIDTH = $('#'+containerId).width(), HEIGHT = 200, MARGINS = {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 50
+      }, xRange = d3.scale.ordinal().rangeBands([
+        MARGINS.left,
+        WIDTH - MARGINS.right
+      ],0.15).domain(builds.map(function (d) {
+        return d.n;
+      })), yRange = d3.scale.linear().range([
+        HEIGHT - MARGINS.top,
+        MARGINS.bottom
+      ]).domain([
+        0,
+        d3.max(builds, function (d) {
+            return d.d;
+        })
+      ]), xAxis = d3.svg.axis().scale(xRange).tickSize(0).tickFormat(function (d) { return ''; }), yAxis = d3.svg.axis().scale(yRange).tickSize(5).tickFormat(formatDuration).orient('left').tickSubdivide(true);
+    vis.append('svg:g').attr('class', 'x axis').attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')').call(xAxis);
+    vis.append('svg:g').attr('class', 'y axis').attr('transform', 'translate(' + MARGINS.left + ',0)').call(yAxis);
+    vis.selectAll('rect').data(builds).enter().append('rect').attr('x', function (d) {
+      return xRange(d.n);
+    }).attr('y', function (d) {
+      return yRange(d.d);
+    }).attr('width', xRange.rangeBand()).attr('height', function (d) {
+      return HEIGHT - MARGINS.bottom - yRange(d.d);
+    }).attr('class', function(d) {
+      return "bs"+d.s;
+    }).on('mouseenter', showDetails)
+    .on('mousemove', showDetails)
+    .on('mouseout', function (d) {
+      $('#'+containerId+' .details').removeClass('hover');
+    });
+  };
+  autoResize(200, function() {
+      update();
+  });
+  update();
+})('<%= build_details.data -%>','vis-<%= widget.id -%>');
+
+  </script>
     <% end %>
   </div>
 <%   end

@@ -38,9 +38,11 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.apache.commons.io.IOUtils.write;
 
 public final class MockHttpServer {
+  private static final String DEFAULT_ENCODING = "text/xml;charset=utf-8";
   private Server server;
   private String responseBody;
   private String requestBody;
+  private String encoding = DEFAULT_ENCODING;
   private Queue<String> mockResponseData = new LinkedList<String>();
   private Queue<Integer> mockResponseStatus = new LinkedList<Integer>();
 
@@ -64,7 +66,7 @@ public final class MockHttpServer {
         setResponseBody(mockResponseData.poll());
         setRequestBody(IOUtils.toString(baseRequest.getInputStream()));
         response.setStatus(mockResponseStatus.poll());
-        response.setContentType("text/xml;charset=utf-8");
+        response.setContentType(encoding);
         write(getResponseBody(), response.getOutputStream());
         baseRequest.setHandled(true);
       }
@@ -109,5 +111,9 @@ public final class MockHttpServer {
 
   public int getPort() {
     return server.getConnectors()[0].getLocalPort();
+  }
+
+  public void setEncoding(final String encoding) {
+    this.encoding = encoding;
   }
 }

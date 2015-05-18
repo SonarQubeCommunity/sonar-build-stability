@@ -32,7 +32,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,7 +83,7 @@ public class JenkinsServerTest {
 
   @Test
   public void testDoLoginNoSecurityCheck() throws Exception {
-    DefaultHttpClient client = mock(DefaultHttpClient.class);
+    HttpClient client = mock(HttpClient.class);
     server.setUseJSecurityCheck(false);
     server.doLogin(client);
     server.setUseJSecurityCheck(true);
@@ -94,10 +93,14 @@ public class JenkinsServerTest {
 
   @Test
   public void testIsAuthenticatedLogin() throws Exception {
+    HttpClient client = mock(HttpClient.class);
+    HttpResponse response1 = mock(HttpResponse.class, RETURNS_DEEP_STUBS);
+    when(response1.getStatusLine().getStatusCode()).thenReturn(200);
+    when(client.execute(any(HttpUriRequest.class))).thenReturn(response1);
     server.setPassword("pwd");
     server.setUsername("admin");
     server.setUseJSecurityCheck(true);
-    Assert.assertTrue(server.isAuthenticatedLogin());
+    server.doLogin(client);
   }
 
   @Test

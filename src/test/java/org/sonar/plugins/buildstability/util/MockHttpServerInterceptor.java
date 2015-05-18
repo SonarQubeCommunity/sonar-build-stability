@@ -47,4 +47,8 @@ public final class MockHttpServerInterceptor extends ExternalResource {
   public int getPort() {
     return server.getPort();
   }
+
+  public void setEncoding(final String encoding) {
+    server.setEncoding(encoding);
+  }
 }

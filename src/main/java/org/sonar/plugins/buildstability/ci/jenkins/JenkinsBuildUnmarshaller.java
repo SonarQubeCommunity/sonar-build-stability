@@ -41,6 +41,10 @@ public class JenkinsBuildUnmarshaller implements UnmarshallerBatch<Build> {
     build.setTimestamp(Long.parseLong(domElement.elementText("timestamp")));
     build.setDuration(Long.parseLong(domElement.elementText("duration")));
     build.setStatus("SUCCESS".equalsIgnoreCase(result)?Status.success:"UNSTABLE".equalsIgnoreCase(result)?Status.unstable:Status.failed);
+    if (build.getDuration() == 0) {
+      // Incomplete build -> estimate
+      build.setDuration(System.currentTimeMillis() - build.getTimestamp());
+    }
     return build;
   }
 

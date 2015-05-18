@@ -58,6 +58,19 @@ public class JenkinsBuildUnmarshallerTest {
   }
 
   @Test
+  public void testUnmarshallResultNotFinished() throws Exception {
+    final SAXReader reader = new SAXReader();
+    reader.setEncoding("UTF-8");
+    final InputStream result = this.getClass().getResourceAsStream("result-not-finished.xml");
+    final Document doc = reader.read(result);
+    final Build build = unmarshaller.toModel(doc.getRootElement());
+    assertThat(build.getNumber()).isEqualTo(32);
+    assertThat(build.getStatus()).isEqualTo(Status.success);
+    assertThat(build.getTimestamp()).isGreaterThan(0);
+    assertThat(build.getDuration()).isGreaterThan(0);
+  }
+
+  @Test
   public void testUnmarshallResults() throws Exception {
     final SAXReader reader = new SAXReader();
     reader.setEncoding("UTF-8");
