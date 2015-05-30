@@ -23,6 +23,7 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Status;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.text.ParseException;
@@ -49,9 +50,8 @@ public class TeamCityBuildUnmarshaller implements Unmarshaller<Build> {
 
     build.setNumber(Integer.parseInt(domElement.attributeValue("number")));
     build.setTimestamp(getTimeStamp(domElement.elementText("startDate")));
-    build.setResult(result);
     build.setDuration(calculateDuration(domElement.elementText("startDate"), domElement.elementText("finishDate")));
-    build.setSuccessful("SUCCESS".equalsIgnoreCase(result));
+    build.setStatus("SUCCESS".equalsIgnoreCase(result)?Status.success:Status.failed);
 
     return build;
   }
@@ -61,7 +61,7 @@ public class TeamCityBuildUnmarshaller implements Unmarshaller<Build> {
     return start == null ? 0 : start.getTime();
   }
 
-  private double calculateDuration(String startDate, String endDate) {
+  private long calculateDuration(String startDate, String endDate) {
     Date start = parseDate(startDate);
     Date end = parseDate(endDate);
 

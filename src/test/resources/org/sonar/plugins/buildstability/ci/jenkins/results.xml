@@ -1,0 +1,20 @@
+<builds>
+	<build>
+		<duration>162114</duration>
+		<number>230</number>
+		<result>UNSTABLE</result>
+		<timestamp>1431492210705</timestamp>
+	</build>
+	<build>
+		<duration>162114</duration>
+		<number>34</number>
+		<result>SUCCESS</result>
+		<timestamp>1431472210705</timestamp>
+	</build>
+	<build>
+		<duration>198297</duration>
+		<number>33</number>
+		<result>FAILED</result>
+		<timestamp>1431385809761</timestamp>
+	</build>
+</builds>

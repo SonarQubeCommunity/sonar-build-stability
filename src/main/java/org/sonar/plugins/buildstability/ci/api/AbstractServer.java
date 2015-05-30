@@ -19,12 +19,14 @@
  */
 package org.sonar.plugins.buildstability.ci.api;
 
+import java.io.IOException;
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.IOException;
+import org.apache.http.client.HttpClient;
 
 /**
  * @author Evgeny Mandrikov
@@ -76,11 +78,49 @@ public abstract class AbstractServer {
 
   public abstract Unmarshaller<Build> getBuildUnmarshaller();
 
-  public void doLogin(DefaultHttpClient client) throws IOException {
-    if (StringUtils.isNotBlank(getUsername()) && StringUtils.isNotBlank(getPassword())) {
-      client.getCredentialsProvider().setCredentials(
-          AuthScope.ANY,
-          new UsernamePasswordCredentials(getUsername(), getPassword()));
+  /**
+   * Return a non <code>null</code> URL when this servers supports to retrieve all builds after the given date.
+   * 
+   * @param date
+   *          the minimal date.
+   * @return <code>null</code> when unsupported, and a valid URL otherwise.
+   */
+  public String getBuildsSinceUrl(final Date date) {
+    // As default, this is not supported
+    return null;
+  }
+
+  /**
+   * Return a non <code>null</code> URL when this servers supports to retrieve the last builds with a given limit.
+   * 
+   * @param count
+   *          the maximal amount of builds to return.
+   * @return <code>null</code> when unsupported, and a valid URL otherwise.
+   */
+  public String getBuildsUrl(final int count) {
+    // As default, this is not supported
+    return null;
+  }
+
+  /**
+   * Proceed to login.
+   * 
+   * @param client
+   *          HTTP client used to proceed the login.
+   */
+  public void doLogin(HttpClient client) throws IOException {
+    if (isAuthenticatedLogin()) {
+      ((DefaultHttpClient)client).getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(getUsername(), getPassword()));
     }
   }
+
+  /**
+   * Indicate the authentication information is provided.
+   * 
+   * @return <code>true</code> when user and password are provided.
+   */
+  public boolean isAuthenticatedLogin() {
+    return StringUtils.isNotBlank(getUsername()) && StringUtils.isNotBlank(getPassword());
+  }
+
 }

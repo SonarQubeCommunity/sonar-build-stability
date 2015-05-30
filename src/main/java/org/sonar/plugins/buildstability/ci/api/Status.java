@@ -17,27 +17,16 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability;
+package org.sonar.plugins.buildstability.ci.api;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
- * @author Evgeny Mandrikov
+ * Build statuses
+ * @author Fabrice Daugan
  */
-public class BuildStabilityPluginTest {
-  private BuildStabilityPlugin plugin;
-
-  @Before
-  public void setUp() throws Exception {
-    plugin = new BuildStabilityPlugin();
-  }
-
-  @Test
-  public void testGetExtensions() throws Exception {
-    assertThat(plugin.getExtensions().size(), is(3));
-  }
+public enum Status {
+  
+  failed,
+  unstable,
+  success
 }

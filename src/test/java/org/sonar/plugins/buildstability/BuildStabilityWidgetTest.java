@@ -29,8 +29,11 @@ import static org.junit.Assert.assertThat;
  */
 public class BuildStabilityWidgetTest {
   @Test
-  public void testGetTemplatePath() {
-    String path = new BuildStabilityWidget().getTemplatePath();
+  public void testApi() {
+    BuildStabilityWidget widget = new BuildStabilityWidget();
+    String path = widget.getTemplatePath();
     assertThat(getClass().getResource(path), notNullValue());
+    assertThat(widget.getId(), notNullValue());
+    assertThat(widget.getTitle(), notNullValue());
   }
 }

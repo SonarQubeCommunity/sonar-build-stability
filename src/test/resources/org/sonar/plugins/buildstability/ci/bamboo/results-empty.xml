@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<results expand="results">
+  <results expand="result" size="10" max-result="10" start-index="0">
+  </results>
+  <link rel="self" href="https://bamboo-ci.codehaus.org/rest/api/latest/result/SONAR-BUILDSTABILITY" />
+</results>

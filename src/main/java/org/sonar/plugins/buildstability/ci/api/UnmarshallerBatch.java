@@ -17,27 +17,18 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.buildstability;
+package org.sonar.plugins.buildstability.ci.api;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.dom4j.Element;
 
 /**
- * @author Evgeny Mandrikov
+ * Unmarshaller managing multiples results at once in a DOM result as well as
+ * single result.
+ * 
+ * @author Fabrice Daugan
  */
-public class BuildStabilityPluginTest {
-  private BuildStabilityPlugin plugin;
-
-  @Before
-  public void setUp() throws Exception {
-    plugin = new BuildStabilityPlugin();
-  }
-
-  @Test
-  public void testGetExtensions() throws Exception {
-    assertThat(plugin.getExtensions().size(), is(3));
-  }
+public interface UnmarshallerBatch<MODEL extends Model> extends Unmarshaller<MODEL> {
+  List<MODEL> toModels(Element domElement);
 }

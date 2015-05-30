@@ -33,30 +33,24 @@ public class Build implements Model {
   private int number;
 
   /**
-   * Build result.
+   * True, if build unstable.
    */
-  private String result;
+  private Status status;
 
   /**
-   * True, if build successfull.
+   * Build duration in milliseconds.
    */
-  private boolean successful;
-
-  /**
-   * Build duration in millisec.
-   */
-  private double duration;
+  private long duration;
 
   /**
    * Build timestamp.
    */
   private long timestamp;
 
-  public Build(int number, long timestamp, String result, boolean successful, double duration) {
+  public Build(int number, long timestamp, Status status, long duration) {
     this.number = number;
     this.timestamp = timestamp;
-    this.result = result;
-    this.successful = successful;
+    this.status = status;
     this.duration = duration;
   }
 
@@ -71,27 +65,19 @@ public class Build implements Model {
     this.number = number;
   }
 
-  public String getResult() {
-    return result;
+  public void setStatus(Status status) {
+    this.status = status;
   }
 
-  public void setResult(String result) {
-    this.result = result;
+  public Status getStatus() {
+    return status;
   }
 
-  public boolean isSuccessful() {
-    return successful;
-  }
-
-  public void setSuccessful(boolean successful) {
-    this.successful = successful;
-  }
-
-  public double getDuration() {
+  public long getDuration() {
     return duration;
   }
 
-  public void setDuration(double duration) {
+  public void setDuration(long duration) {
     this.duration = duration;
   }
 
@@ -112,8 +98,7 @@ public class Build implements Model {
     return new ToStringBuilder(this).
         append("number", number).
         append("timestamp", timestamp).
-        append("result", result).
-        append("successful", successful).
+        append("status", status).
         append("duration", duration).
         toString();
   }

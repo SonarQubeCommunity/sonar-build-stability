@@ -19,10 +19,12 @@
  */
 package org.sonar.plugins.buildstability.ci.bamboo;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Status;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
 
 import java.text.ParseException;
@@ -58,13 +60,12 @@ public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
 
     String state = result.attributeValue("state");
     build.setNumber(Integer.parseInt(result.attributeValue("number")));
-    build.setResult(state);
 
     SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
     String buildStartedTime = result.elementText("buildStartedTime");
     // Remove ':' in the timezone because it is not was the Java format expect
-    int timezoneColonSeparatorIndex = buildStartedTime.length() - 3;
-    if (buildStartedTime.charAt(timezoneColonSeparatorIndex) == ':') {
+    int timezoneColonSeparatorIndex = buildStartedTime.lastIndexOf(':');
+    if (timezoneColonSeparatorIndex == buildStartedTime.length() -3) {
       buildStartedTime = buildStartedTime.substring(0, timezoneColonSeparatorIndex) + buildStartedTime.substring(timezoneColonSeparatorIndex + 1);
     }
     try {
@@ -73,8 +74,8 @@ public class BambooBuildUnmarshaller implements Unmarshaller<Build> {
     } catch (ParseException ignored) {
       LOG.warn("Unable to parse date {}. Expected format is {}", buildStartedTime, DATE_TIME_FORMAT);
     }
-    build.setDuration(Double.parseDouble(result.elementText("buildDurationInSeconds")) * 1000);
-    build.setSuccessful(SUCCESSFULL.equalsIgnoreCase(state));
+    build.setDuration((long) (Double.parseDouble(result.elementText("buildDurationInSeconds")) * DateUtils.MILLIS_PER_SECOND));
+    build.setStatus(SUCCESSFULL.equalsIgnoreCase(state) ? Status.success : Status.failed);
 
     return build;
   }

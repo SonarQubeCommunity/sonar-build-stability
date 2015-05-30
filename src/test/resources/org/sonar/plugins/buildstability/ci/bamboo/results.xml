@@ -6,9 +6,9 @@
       <link rel="self" href="https://bamboo-ci.codehaus.org/rest/api/latest/result/SONAR-BUILDSTABILITY-83" />
       <planName>BUILDSTABILITY</planName>
       <projectName>Sonar</projectName>
-      <buildStartedTime>2013-03-12T05:47:01.013-05:00</buildStartedTime>
+      <buildStartedTime>2013-03-12T05:47:01.013-0500</buildStartedTime>
       <prettyBuildStartedTime>Tue, 12 Mar, 05:47 AM</prettyBuildStartedTime>
-      <buildCompletedTime>2013-03-12T05:47:14.546-05:00</buildCompletedTime>
+      <buildCompletedTime>2013-03-12T05:47:14.546-0500</buildCompletedTime>
       <prettyBuildCompletedTime>Tue, 12 Mar, 05:47 AM</prettyBuildCompletedTime>
       <buildDurationInSeconds>13</buildDurationInSeconds>
       <buildDuration>13533</buildDuration>

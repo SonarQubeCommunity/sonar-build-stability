@@ -19,15 +19,9 @@
  */
 package org.sonar.plugins.buildstability.ci.teamcity;
 
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.sonar.plugins.buildstability.ci.api.AbstractServer;
 import org.sonar.plugins.buildstability.ci.api.Build;
 import org.sonar.plugins.buildstability.ci.api.Unmarshaller;
-
-import java.io.IOException;
 
 /**
  * See <a href="http://confluence.jetbrains.com/display/TW/REST+API+Plugin#RESTAPIPlugin-Usage">TeamCity REST APIs</a>.
@@ -58,9 +52,4 @@ public class TeamCityServer extends AbstractServer {
     return BUILD_UNMARSHALLER;
   }
 
-  @Override
-  public void doLogin(DefaultHttpClient client) throws IOException {
-    Credentials credentials = new UsernamePasswordCredentials(getUsername(), getPassword());
-    client.getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
-  }
 }

@@ -24,12 +24,14 @@ import org.dom4j.io.SAXReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.plugins.buildstability.ci.api.Build;
+import org.sonar.plugins.buildstability.ci.api.Status;
 
 import java.io.InputStream;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
+ * Test class of {@link TeamCityBuildUnmarshaller}
  * @author Alexei Guevara <alguevara@kijiji.ca>
  */
 public class TeamCityBuildUnmarshallerTest {
@@ -48,8 +50,34 @@ public class TeamCityBuildUnmarshallerTest {
     Document doc = reader.read(result);
     Build b = unmarshaller.toModel(doc.getRootElement());
     assertThat(b.getNumber()).isEqualTo(6);
-    assertThat(b.isSuccessful()).isTrue();
+    assertThat(b.getStatus()).isEqualTo(Status.success);
     assertThat(b.getTimestamp()).isGreaterThan(0);
     assertThat(b.getDuration()).isGreaterThan(0);
+  }
+
+  @Test
+  public void testUnmarshallResultNoDate() throws Exception {
+    SAXReader reader = new SAXReader();
+    reader.setEncoding("UTF-8");
+    InputStream result = this.getClass().getResourceAsStream("result-no-date.xml");
+    Document doc = reader.read(result);
+    Build b = unmarshaller.toModel(doc.getRootElement());
+    assertThat(b.getNumber()).isEqualTo(6);
+    assertThat(b.getStatus()).isEqualTo(Status.success);
+    assertThat(b.getTimestamp()).isEqualTo(0);
+    assertThat(b.getDuration()).isEqualTo(0);
+  }
+
+  @Test
+  public void testUnmarshallResultNoEnd() throws Exception {
+    SAXReader reader = new SAXReader();
+    reader.setEncoding("UTF-8");
+    InputStream result = this.getClass().getResourceAsStream("result-no-end.xml");
+    Document doc = reader.read(result);
+    Build b = unmarshaller.toModel(doc.getRootElement());
+    assertThat(b.getNumber()).isEqualTo(6);
+    assertThat(b.getStatus()).isEqualTo(Status.failed);
+    assertThat(b.getTimestamp()).isGreaterThan(0);
+    assertThat(b.getDuration()).isEqualTo(0);
   }
 }

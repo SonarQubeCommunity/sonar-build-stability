@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<build id="14" number="6" status="SUCCESS" href="/httpAuth/app/rest/builds/id:14"
+  webUrl="http://192.168.42.100:49153/viewLog.html?buildId=14&amp;buildTypeId=SonarBuildStability_Install"
+  personal="false" history="false" pinned="false">
+  <statusText>Success</statusText>
+  <buildType id="SonarBuildStability_Install" name="install"
+    href="/httpAuth/app/rest/buildTypes/id:SonarBuildStability_Install"
+    projectName="sonar-build-stability" projectId="SonarBuildStability"
+    webUrl="http://192.168.42.100:49153/viewType.html?buildTypeId=SonarBuildStability_Install" />
+  <startDate></startDate>
+  <finishDate></finishDate>
+  <agent href="/httpAuth/app/rest/agents/id:3" id="3" name="agent001" />
+  <tags />
+  <properties />
+  <snapshot-dependencies count="0" />
+  <artifact-dependencies count="0" />
+  <revisions>
+    <revision version="9c16ff77fd623026c3d832e5b03fb6d5655a24ac">
+      <vcs-root-instance id="2"
+        vcs-root-id="SonarBuildStability_HttpsGithubComAlexguevSonarBuildStabilityGitRefsHeadsMaster"
+        name="https://github.com/alexguev/sonar-build-stability.git#refs/heads/master"
+        href="/httpAuth/app/rest/vcs-root-instances/id:2" />
+    </revision>
+  </revisions>
+  <triggered date="20131124T053500+0000">
+    <user username="admin" name="" id="1" href="/httpAuth/app/rest/users/id:1" />
+  </triggered>
+  <changes count="0" href="/httpAuth/app/rest/changes?build=id:14" />
+  <relatedIssues href="/httpAuth/app/rest/builds/id:14/relatedIssues" />
+  <artifacts href="/httpAuth/app/rest/builds/id:14/artifacts/children" />
+</build>
