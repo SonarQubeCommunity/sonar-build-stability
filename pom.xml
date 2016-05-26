@@ -12,6 +12,7 @@
 
   <name>Sonar Build Stability Plugin</name>
   <description>Generates reports based on information about builds from Continuous Integration System.</description>
+  <url>http://redirect.sonarsource.com/plugins/buildstability.html</url>
   <inceptionYear>2010</inceptionYear>
   <organization>
     <name>SonarSource</name>
