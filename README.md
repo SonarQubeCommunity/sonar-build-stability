@@ -1,10 +1,10 @@
 Build Stability Plugin
 ======================
-
-Download and Version information: http://update.sonarsource.org/plugins/buildstability-confluence.html
+[![Build Status](https://api.travis-ci.org/SonarQubeCommunity/sonar-build-stability.svg)](https://travis-ci.org/SonarQubeCommunity/sonar-build-stability)
 
 ## Description / Features
 Generates reports based on information about builds from Continuous Integration System.
+
 ## Requirements
 <table>
 <tr><td>Plugin</td><td>1.1.2</td><td>1.2</td><td>1.3</td></tr>
@@ -52,6 +52,6 @@ sonar.build-stability.url=TeamCity:${TEAMCITY_URL}/viewType.html?buildTypeId=${P
 
 Run a new quality analysis and the metrics will be fed.
 
-### Known limitations
+## Known limitations
  * TeamCity build number format has to be configured so that build numbers are valid integers (%build.counter%)
 
