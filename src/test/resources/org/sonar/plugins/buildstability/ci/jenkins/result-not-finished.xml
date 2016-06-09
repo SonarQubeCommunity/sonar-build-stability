@@ -1,0 +1,16 @@
+<freeStyleBuild>
+	<action>
+		...
+	</action>
+	<building>false</building>
+	<displayName>#32</displayName>
+	<duration>0</duration>
+	<estimatedDuration>185470</estimatedDuration>
+	<fullDisplayName>JOB</fullDisplayName>
+	<id>32</id>
+	<number>32</number>
+	<queueId>5</queueId>
+	<result>SUCCESS</result>
+	<timestamp>1431287166008</timestamp>
+	<url>https://host/context/job/JOB/32/</url>
+</freeStyleBuild>

@@ -46,4 +46,9 @@ public class TeamCityServerTest {
   public void testGetBuildURLByNumber() throws Exception {
     assertThat(server.getBuildUrl("1")).isEqualTo("http://host:1111/httpAuth/app/rest/buildTypes/id:PROJECT_ID/builds/number:1");
   }
+
+  @Test
+  public void testApi() throws Exception {
+    assertThat(server.getBuildUnmarshaller()).isNotNull();
+  }
 }

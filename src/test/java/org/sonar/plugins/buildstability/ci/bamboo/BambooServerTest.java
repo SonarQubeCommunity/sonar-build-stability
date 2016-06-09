@@ -25,6 +25,7 @@ import org.junit.Test;
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
+ * Test class of {@link BambooServer}
  * @author Julien HENRY
  */
 public class BambooServerTest {
@@ -45,5 +46,10 @@ public class BambooServerTest {
   @Test
   public void testGetBuildURLByNumber() throws Exception {
     assertThat(server.getBuildUrl("1")).isEqualTo("http://bamboo/rest/api/latest/result/KEY/1?os_authType=basic&expand=results.result");
+  }
+
+  @Test
+  public void testApi() throws Exception {
+    assertThat(server.getBuildUnmarshaller()).isNotNull();
   }
 }

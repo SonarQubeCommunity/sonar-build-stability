@@ -61,4 +61,11 @@ public class CiFactoryTest {
     assertThat(connector.getServer().getKey()).isEqualTo("SonarBuildStability_Install");
     assertThat(connector.getServer()).isInstanceOf(TeamCityServer.class);
   }
+
+  @Test
+  public void testCreateMalFormedUrl() {
+    assertThat(CiFactory.create("TeamCity", "http://teamcity:port/viewType.html?typeId=SonarBuildStability_Install", "user", "pwd", false)).isNull();
+    assertThat(CiFactory.create("Jenkins", "http://jenkins/jb/", "user", "pwd", false)).isNull();
+    assertThat(CiFactory.create("Bamboo", "http://bamboo/brwse/", "user", "pwd", false)).isNull();
+  }
 }

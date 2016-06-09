@@ -131,20 +131,15 @@ public class BuildStabilityMetrics implements Metrics {
     .setDomain(DOMAIN_BUILD)
     .create();
 
-  public static final Metric<String> DURATIONS = new Metric.Builder("build_durations", "Durations", Metric.ValueType.DATA)
-    .setDescription("Durations")
+  public static final Metric<String> BUILDS_DETAILS = new Metric.Builder("build_details", "Builds", Metric.ValueType.DATA)
+    .setDescription("Builds details used to computes indicators")
     .setDirection(Metric.DIRECTION_NONE)
     .setQualitative(false)
     .setDomain(DOMAIN_BUILD)
+    .setHidden(true)
     .create();
 
-  public static final Metric<String> RESULTS = new Metric.Builder("build_results", "Results", Metric.ValueType.DATA)
-    .setDescription("Results")
-    .setDirection(Metric.DIRECTION_NONE)
-    .setQualitative(false)
-    .setDomain(DOMAIN_BUILD)
-    .create();
-
+  @SuppressWarnings("rawtypes")
   @Override
   public List<Metric> getMetrics() {
     return Arrays.<Metric>asList(
@@ -160,7 +155,6 @@ public class BuildStabilityMetrics implements Metrics {
       LONGEST_TIME_TO_FIX,
       AVG_BUILDS_TO_FIX,
 
-      DURATIONS,
-      RESULTS);
+      BUILDS_DETAILS);
   }
 }
